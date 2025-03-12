@@ -33,7 +33,7 @@ class InvoiceTableWidget extends StatelessWidget {
           return ConstrainedBox(
               constraints: const BoxConstraints(minWidth: double.infinity),
               child: DataTable(
-                  headingRowColor: MaterialStateProperty.resolveWith(
+                  headingRowColor: WidgetStateProperty.resolveWith(
                       (states) => GlobalColors.lightGray),
                   horizontalMargin: 12,
                   showBottomBorder: true,
@@ -69,6 +69,15 @@ class InvoiceTableWidget extends StatelessWidget {
                               ),
                               DataCell(
                                 Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 3),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(45),
+                                      color: e.revenues == 'Unpaid'
+                                          ? Colors.red.shade50
+                                          : e.revenues == 'Peding'
+                                              ? Colors.orange.shade50
+                                              : Colors.green.shade50),
                                   child: Text(
                                     e.revenues,
                                     style: TextStyle(
@@ -79,15 +88,6 @@ class InvoiceTableWidget extends StatelessWidget {
                                                 : Colors.green,
                                         fontSize: 13),
                                   ),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 3),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(45),
-                                      color: e.revenues == 'Unpaid'
-                                          ? Colors.red.shade50
-                                          : e.revenues == 'Peding'
-                                              ? Colors.orange.shade50
-                                              : Colors.green.shade50),
                                 ),
                               ),
                               DataCell(
