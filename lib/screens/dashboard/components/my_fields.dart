@@ -7,8 +7,8 @@ import 'file_info_card.dart';
 
 class MyFiles extends StatelessWidget {
   const MyFiles({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

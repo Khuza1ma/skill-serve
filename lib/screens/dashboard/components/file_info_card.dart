@@ -6,9 +6,9 @@ import '../../../models/my_files.dart';
 
 class FileInfoCard extends StatelessWidget {
   const FileInfoCard({
-    Key? key,
+    super.key,
     required this.info,
-  }) : super(key: key);
+  });
 
   final CloudStorageInfo info;
 
