@@ -22,7 +22,7 @@ List demoMyFiles = [
     numOfFiles: 1328,
     svgSrc: "assets/icons/Documents.svg",
     totalStorage: "1.9GB",
-    color: k2697FF,
+    color: AppColors.k2697FF,
     percentage: 35,
   ),
   CloudStorageInfo(
