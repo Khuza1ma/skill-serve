@@ -6,4 +6,3 @@ class AppColors {
   static const k212332 = Color(0xFF212332);
 }
 
-const defaultPadding = 16.0;
