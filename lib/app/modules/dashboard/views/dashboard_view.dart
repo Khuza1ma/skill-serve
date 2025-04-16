@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
-
-import 'package:get/get.dart';
-import '../../../constants/app_colors.dart';
 import '../controllers/dashboard_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
@@ -11,10 +9,10 @@ class DashboardView extends GetView<DashboardController> {
     return SafeArea(
       child: SingleChildScrollView(
         primary: false,
-        padding: EdgeInsets.all(defaultPadding),
+        padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            SizedBox(height: defaultPadding),
+            SizedBox(height: 16),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -22,7 +20,7 @@ class DashboardView extends GetView<DashboardController> {
                   flex: 5,
                   child: Column(
                     children: [
-                      SizedBox(height: defaultPadding),
+                      SizedBox(height: 16),
                     ],
                   ),
                 ),

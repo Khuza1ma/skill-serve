@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
-import '../../../routes/app_pages.dart';
-import '../../../ui/components/app_footer.dart';
 import '../../../ui/components/app_header.dart';
 import '../../../ui/components/side_menu.dart';
 import '../controllers/home_controller.dart';
+import '../../../routes/app_pages.dart';
 
 class HomeView extends GetResponsiveView<HomeController> {
   HomeView({super.key});
@@ -42,7 +40,6 @@ class HomeView extends GetResponsiveView<HomeController> {
         children: [
           const AppHeader(),
           _buildNavigator(),
-          const AppFooter(),
         ],
       ),
     );

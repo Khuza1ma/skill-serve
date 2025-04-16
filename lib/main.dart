@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:skill_serve/app/modules/home/views/home_view.dart';
 import 'app/constants/app_colors.dart';
 import 'app/routes/app_pages.dart';
 
@@ -18,12 +17,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Admin Panel',
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: AppColors.k212332,
+        scaffoldBackgroundColor: AppColors.k1f1d2c,
         textTheme:
             GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme).apply(
           bodyColor: Colors.white,
         ),
-        canvasColor: AppColors.k2A2D3E,
+        canvasColor: AppColors.k1f1d2c,
       ),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,

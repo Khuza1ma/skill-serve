@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../constants/app_colors.dart';
-import '../../modules/home/controllers/home_controller.dart';
-import 'dart:js_interop';
+import 'package:web/web.dart';
 
-import 'app_modals.dart';
+import '../../modules/home/controllers/home_controller.dart';
+import '../../constants/app_colors.dart';
+import 'package:flutter/material.dart';
 import 'app_text_form_field.dart';
+import 'app_modals.dart';
 
 class AppHeader extends StatelessWidget {
   const AppHeader({super.key});
@@ -17,18 +17,19 @@ class AppHeader extends StatelessWidget {
     return Obx(
       () => AppBar(
         elevation: 5,
-        shadowColor: AppColors.k3b7ddd.withOpacity(0.1),
-        backgroundColor: AppColors.kFFFFFF,
-        surfaceTintColor: AppColors.kFFFFFF,
+        toolbarHeight: 81,
+        shadowColor: AppColors.k806dff.withValues(alpha: 0.1),
+        backgroundColor: AppColors.k262837,
+        surfaceTintColor: AppColors.k262837,
         centerTitle: false,
         leading: IconButton(
           onPressed: () {
-            if (controller.isSideBarOpen()) {
-              //controller.isSideBarItemVisible.toggle();
-            }
             controller.isSideBarOpen.toggle();
           },
-          icon: const Icon(Icons.menu),
+          icon: const Icon(
+            Icons.menu,
+            size: 30,
+          ),
         ),
         titleSpacing: 0,
         title: controller.selectedTab.value == SideBarTab.dashboard
@@ -40,20 +41,10 @@ class AppHeader extends StatelessWidget {
                   labelText: 'Search',
                   // controller: controller.searchController,
                   textInputAction: TextInputAction.send,
-                  prefixIconConstraints: const BoxConstraints(minWidth: 20),
-                  labelTextStyle: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.k000000,
-                    fontWeight: FontWeight.w300,
-                  ),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.k000000,
-                    fontWeight: FontWeight.w300,
-                  ),
+                  prefixIconConstraints: const BoxConstraints(minWidth: 30),
                   isFilled: true,
                   fillColor: AppColors.kF8F8FC,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   onSubmit: (value) {
                     // controller.search(value);
                   },
@@ -63,6 +54,10 @@ class AppHeader extends StatelessWidget {
                     //   controller.search(value);
                     // }
                   },
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    size: 20,
+                  ),
                   suffixIcon: /*!controller.isSearching()*/ true
                       ? const SizedBox.shrink()
                       : IconButton(
@@ -81,42 +76,22 @@ class AppHeader extends StatelessWidget {
                     minWidth: 40,
                     minHeight: 40,
                   ),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: AppColors.kF8F8FC,
-                    ),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: AppColors.kF8F8FC,
-                    ),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: AppColors.kF8F8FC,
-                    ),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  hintTextStyle: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.k000000,
-                    fontWeight: FontWeight.w300,
-                  ),
                 ),
               ),
         actions: [
           IconButton(
             onPressed: () {
               if (controller.isFullScreen()) {
-                // document.exitFullscreen();
+                document.exitFullscreen();
               } else {
-                // document.documentElement?.requestFullscreen();
+                document.documentElement?.requestFullscreen();
               }
               controller.isFullScreen.toggle();
             },
-            icon: const Icon(Icons.fullscreen),
+            icon: const Icon(
+              Icons.fullscreen,
+              size: 30,
+            ),
           ),
           const SizedBox(width: 20),
           IconButton(
@@ -135,8 +110,9 @@ class AppHeader extends StatelessWidget {
             },
             icon: const Icon(
               Icons.power_settings_new,
+              size: 30,
             ),
-            color: Colors.black,
+            color: AppColors.kFFFFFF,
           ),
           const SizedBox(width: 10),
         ],

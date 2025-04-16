@@ -1,8 +1,7 @@
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import '../../constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-
-import '../../constants/app_colors.dart';
 
 class AppTextFormField extends StatelessWidget {
   final TextEditingController? controller;
@@ -86,10 +85,11 @@ class AppTextFormField extends StatelessWidget {
       keyboardType: keyboardType ?? TextInputType.text,
       onSubmitted: onSubmit,
       onChanged: onChange,
+      cursorColor: AppColors.k806dff,
       style: style ??
           TextStyle(
-            color: AppColors.k3B7DDD,
-            fontSize: 16,
+            color: AppColors.k000000,
+            fontSize: 15,
           ),
       textInputAction: textInputAction ?? TextInputAction.next,
       obscureText: obscureText ?? false,
@@ -110,7 +110,7 @@ class AppTextFormField extends StatelessWidget {
         hintText: hintText ?? '',
         hintStyle: hintTextStyle ??
             TextStyle(
-              color: AppColors.k7C7E80,
+              color: AppColors.kFFFFFF,
               fontSize: 16,
             ),
         prefixIconConstraints:
@@ -121,61 +121,24 @@ class AppTextFormField extends StatelessWidget {
         suffixIcon: suffixIcon ?? const SizedBox.shrink(),
         filled: isFilled ?? false,
         fillColor: fillColor ?? AppColors.kF3F6FA,
-        border: border ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 8),
-              borderSide: showBorder
-                  ? BorderSide(
-                      color: AppColors.kFFFFFF,
-                    )
-                  : BorderSide.none,
-            ),
-        disabledBorder: disabledBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 8),
-              borderSide: showBorder
-                  ? BorderSide(
-                      color: AppColors.kFFFFFF,
-                    )
-                  : BorderSide.none,
-            ),
-        enabledBorder: enabledBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 8),
-              borderSide: showBorder
-                  ? BorderSide(
-                      color: AppColors.kFFFFFF,
-                    )
-                  : BorderSide.none,
-            ),
-        errorBorder: errorBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 8),
-              borderSide: showBorder
-                  ? BorderSide(
-                      color: AppColors.kFFFFFF,
-                    )
-                  : BorderSide.none,
-            ),
-        focusedBorder: focusedBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 8),
-              borderSide: showBorder
-                  ? BorderSide(
-                      color: AppColors.kFFFFFF,
-                    )
-                  : BorderSide.none,
-            ),
-        focusedErrorBorder: focusedErrorBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 8),
-              borderSide: showBorder
-                  ? BorderSide(
-                      color: AppColors.kFFFFFF,
-                    )
-                  : BorderSide.none,
-            ),
+        border: border ?? buildOutlineInputBorder(),
+        disabledBorder: disabledBorder ?? buildOutlineInputBorder(),
+        enabledBorder: enabledBorder ?? buildOutlineInputBorder(),
+        errorBorder: errorBorder ?? buildOutlineInputBorder(),
+        focusedBorder: focusedBorder ?? buildOutlineInputBorder(),
+        focusedErrorBorder: focusedErrorBorder ?? buildOutlineInputBorder(),
       ),
+    );
+  }
+
+  OutlineInputBorder buildOutlineInputBorder() {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(borderRadius ?? 8),
+      borderSide: showBorder
+          ? BorderSide(
+              color: AppColors.kFFFFFF,
+            )
+          : BorderSide.none,
     );
   }
 }

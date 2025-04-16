@@ -18,8 +18,8 @@ void showCustomModal({
   Get.dialog(
     AlertDialog(
       alignment: alignment ?? Alignment.topCenter,
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
+      backgroundColor: AppColors.k262837,
+      surfaceTintColor: AppColors.k262837,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -29,13 +29,17 @@ void showCustomModal({
           Text(
             title,
             style: TextStyle(
-              color: AppColors.k000000,
+              color: AppColors.kFFFFFF,
               fontSize: 20,
             ),
           ),
           IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(Icons.close, color: Colors.black, size: 20),
+            icon: Icon(
+              Icons.close,
+              size: 20,
+              color: AppColors.kc6c6c8.withValues(alpha: 0.7),
+            ),
           ),
         ],
       ),
@@ -43,7 +47,9 @@ void showCustomModal({
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Divider(thickness: 1),
+          Divider(
+            thickness: 1,
+          ),
           const SizedBox(height: 10),
           child ??
               Text(
@@ -51,7 +57,7 @@ void showCustomModal({
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                  color: AppColors.k000000,
+                  color: AppColors.kFFFFFF,
                 ),
               ),
           const SizedBox(height: 10),
@@ -74,8 +80,8 @@ void showCustomModal({
                   fontSize: 14,
                 ),
                 buttonSize: const Size(80, 40),
-                backgroundColor: AppColors.k5C636A,
-                borderColor: AppColors.k5C636A,
+                backgroundColor: AppColors.k262837,
+                borderColor: AppColors.k806dff,
                 borderRadius: 5,
               ),
               AppButton(
@@ -104,7 +110,7 @@ enum ModalState { PRIMARY, SECONDARY, SUCCESS, DANGER, WARNING, INFO }
 Color getModalStateColor(ModalState? snackBarState) {
   switch (snackBarState) {
     case ModalState.PRIMARY:
-      return AppColors.k3B7DDD;
+      return AppColors.k806dff;
     case ModalState.SECONDARY:
       return AppColors.k6C757D;
     case ModalState.SUCCESS:
