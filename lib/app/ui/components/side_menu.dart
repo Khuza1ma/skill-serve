@@ -108,12 +108,10 @@ class SideBar extends StatelessWidget {
           },
           child: AnimatedContainer(
             duration: Duration(milliseconds: 300),
-            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              color: isSelected
-                  ? AppColors.k806dff.withValues(alpha: 0.1)
-                  : Colors.transparent,
+              color: isSelected ? AppColors.k806dff : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -121,13 +119,13 @@ class SideBar extends StatelessWidget {
                 Icon(
                   icon,
                   size: 20,
-                  color: isSelected ? AppColors.k806dff : AppColors.kc6c6c8,
+                  color: isSelected ? AppColors.kFFFFFF : AppColors.kc6c6c8,
                 ),
                 const SizedBox(width: 10),
                 Text(
                   label,
                   style: GoogleFonts.aBeeZee(
-                    color: isSelected ? AppColors.k806dff : AppColors.kc6c6c8,
+                    color: isSelected ? AppColors.kFFFFFF : AppColors.kc6c6c8,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
