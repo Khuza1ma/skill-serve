@@ -2,9 +2,9 @@ import 'package:get/get.dart';
 
 enum SideBarTab {
   dashboard,
-  volunteer,
-  workshop,
-  transactions,
+  projects,
+  projectsDetails,
+  appliedProjects,
 }
 
 class HomeController extends GetxController {

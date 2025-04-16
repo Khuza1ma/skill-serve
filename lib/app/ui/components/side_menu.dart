@@ -59,21 +59,21 @@ class SideBar extends StatelessWidget {
                             ),
                             _buildMenuItem(
                               icon: Icons.group,
-                              label: 'Volunteer',
-                              tab: SideBarTab.volunteer,
-                              route: 'Routes.Volunteer',
+                              label: 'Projects',
+                              tab: SideBarTab.projects,
+                              route: Routes.PROJECTS,
                             ),
                             _buildMenuItem(
                               icon: Icons.event,
-                              label: 'Workshop',
-                              tab: SideBarTab.workshop,
-                              route: 'Routes.Workshop',
+                              label: 'Projects Details',
+                              tab: SideBarTab.projectsDetails,
+                              route: Routes.PROJECTS_DETAILS,
                             ),
                             _buildMenuItem(
                               icon: Icons.money,
-                              label: 'Transactions',
-                              tab: SideBarTab.transactions,
-                              route: 'Routes.Transactions',
+                              label: 'Applied Projects',
+                              tab: SideBarTab.appliedProjects,
+                              route: Routes.APPLIED_PROJECTS,
                             ),
                           ],
                         ),
@@ -102,7 +102,7 @@ class SideBar extends StatelessWidget {
         return InkWell(
           onTap: () {
             if (!isSelected) {
-              // Get.offNamed(route, id: 1);
+              Get.offNamed(route, id: 1);
               controller.selectedTab(tab);
             }
           },
