@@ -8,6 +8,7 @@ abstract class Routes {
   static const PROJECTS = _Paths.PROJECTS;
   static const PROJECTS_DETAILS = _Paths.PROJECTS_DETAILS;
   static const APPLIED_PROJECTS = _Paths.APPLIED_PROJECTS;
+  static const LOGIN = _Paths.LOGIN;
 }
 
 abstract class _Paths {
@@ -17,4 +18,5 @@ abstract class _Paths {
   static const PROJECTS = '/projects';
   static const PROJECTS_DETAILS = '/projects-details';
   static const APPLIED_PROJECTS = '/applied-projects';
+  static const LOGIN = '/login';
 }
