@@ -43,43 +43,42 @@ class ProjectsView extends GetView<ProjectsController> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                Expanded(
-                  child: SfDataGridTheme(
-                    data: SfDataGridThemeData(
-                      headerColor: AppColors.k806dff,
+                SfDataGridTheme(
+                  data: SfDataGridThemeData(
+                    headerColor: AppColors.k806dff,
+                  ),
+                  // child: Obx(
+                  //   () => SfDataGrid(
+                  //     headerGridLinesVisibility: GridLinesVisibility.none,
+                  //     gridLinesVisibility: GridLinesVisibility.horizontal,
+                  //     source: ProjectDataSource(
+                  //       projects: [],
+                  //     ),
+                  //     columnWidthMode: ColumnWidthMode.fill,
+                  //     columns: _buildColumns(),
+                  //   ),
+                  // ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      topRight: Radius.circular(8),
                     ),
-                    // child: Obx(
-                    //   () => SfDataGrid(
-                    //     headerGridLinesVisibility: GridLinesVisibility.none,
-                    //     gridLinesVisibility: GridLinesVisibility.horizontal,
-                    //     source: ProjectDataSource(
-                    //       projects: [],
-                    //     ),
-                    //     columnWidthMode: ColumnWidthMode.fill,
-                    //     columns: _buildColumns(),
-                    //   ),
-                    // ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8),
+                    child: SfDataGrid(
+                      shrinkWrapRows: true,
+                      headerGridLinesVisibility: GridLinesVisibility.none,
+                      gridLinesVisibility: GridLinesVisibility.horizontal,
+                      source: ProjectDataSource(
+                        projects: ['1', '2', '3'],
                       ),
-                      child: SfDataGrid(
-                        headerGridLinesVisibility: GridLinesVisibility.none,
-                        gridLinesVisibility: GridLinesVisibility.horizontal,
-                        source: ProjectDataSource(
-                          projects: ['1', '2', '3'],
-                        ),
-                        columnWidthMode: ColumnWidthMode.fill,
-                        columns: _buildColumns(),
-                      ),
+                      columnWidthMode: ColumnWidthMode.fill,
+                      columns: _buildColumns(),
                     ),
                   ),
                 ),
+                _buildDataPager(context),
                 // Obx(
                 //   () => _buildDataPager(context),
                 // ),
-                _buildDataPager(context)
               ],
             ).paddingOnly(top: 16, right: 16, left: 16),
           ),
@@ -90,35 +89,53 @@ class ProjectsView extends GetView<ProjectsController> {
 
   Widget _buildDataPager(BuildContext context) {
     return SfDataPagerTheme(
-      data: SfDataPagerThemeData(selectedItemColor: AppColors.k1f1d2c),
+      data: SfDataPagerThemeData(
+        selectedItemColor: AppColors.kc6c6c8,
+        backgroundColor: AppColors.k000000,
+        itemColor: AppColors.k262837,
+        disabledItemColor: AppColors.k1f1d2c,
+        itemTextStyle: TextStyle(
+          color: AppColors.kFFFFFF,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+        disabledItemTextStyle: TextStyle(
+          color: AppColors.kFFFFFF,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
       child: true
           ? const SizedBox.shrink()
-          : SfDataPager(
-              delegate: ProjectDataSource(projects: []),
-              availableRowsPerPage: DataGridUtils.pageSizes,
-              pageCount: 0,
-              onRowsPerPageChanged: (int? rowsPerPage) {
-                logW('rowsPerPage: $rowsPerPage');
-                controller.limit(rowsPerPage);
-                // controller.fetchAndStoreCity(
-                //   skip: 0,
-                //   limit: controller.limit(),
-                // );
-              },
-              controller: controller.dataPagerController,
-              onPageNavigationStart: (int newPageIndex) {
-                controller.startPageIndex(newPageIndex);
-              },
-              onPageNavigationEnd: (int newPageIndex) {
-                if (controller.currentPageIndex() != newPageIndex &&
-                    controller.startPageIndex() != newPageIndex) {
-                  controller.currentPageIndex.value = newPageIndex;
+          : Container(
+              color: AppColors.k000000,
+              child: SfDataPager(
+                delegate: ProjectDataSource(projects: []),
+                availableRowsPerPage: DataGridUtils.pageSizes,
+                pageCount: 2,
+                onRowsPerPageChanged: (int? rowsPerPage) {
+                  logW('rowsPerPage: $rowsPerPage');
+                  controller.limit(rowsPerPage);
                   // controller.fetchAndStoreCity(
-                  //   skip: newPageIndex * controller.limit(),
+                  //   skip: 0,
                   //   limit: controller.limit(),
                   // );
-                }
-              },
+                },
+                controller: controller.dataPagerController,
+                onPageNavigationStart: (int newPageIndex) {
+                  controller.startPageIndex(newPageIndex);
+                },
+                onPageNavigationEnd: (int newPageIndex) {
+                  if (controller.currentPageIndex() != newPageIndex &&
+                      controller.startPageIndex() != newPageIndex) {
+                    controller.currentPageIndex.value = newPageIndex;
+                    // controller.fetchAndStoreCity(
+                    //   skip: newPageIndex * controller.limit(),
+                    //   limit: controller.limit(),
+                    // );
+                  }
+                },
+              ),
             ),
     );
   }
