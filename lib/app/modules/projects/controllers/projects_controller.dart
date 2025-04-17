@@ -1,23 +1,10 @@
 import 'package:get/get.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import '../../../utils/data_grid_utils.dart';
 
 class ProjectsController extends GetxController {
-  //TODO: Implement ProjectsController
-
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
+  DataPagerController dataPagerController = DataPagerController();
+  RxInt limit = DataGridUtils.pageSizes.first.obs;
+  RxInt currentPageIndex = 0.obs;
+  RxInt startPageIndex = (-1).obs;
 }
