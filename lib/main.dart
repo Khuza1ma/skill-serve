@@ -16,13 +16,15 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Admin Panel',
-      theme: ThemeData.dark().copyWith(
+      theme: ThemeData(
         scaffoldBackgroundColor: AppColors.k1f1d2c,
-        textTheme:
-            GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme).apply(
-          bodyColor: Colors.white,
+        progressIndicatorTheme: const ProgressIndicatorThemeData(
+          color: AppColors.kFFFFFF,
         ),
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
+            .apply(bodyColor: AppColors.kFFFFFF),
         canvasColor: AppColors.k1f1d2c,
+        colorSchemeSeed: AppColors.k806dff,
       ),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,

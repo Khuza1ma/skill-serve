@@ -75,14 +75,10 @@ void showCustomModal({
                   }
                 },
                 buttonText: 'Close',
-                buttonTextStyle: TextStyle(
-                  color: AppColors.kFFFFFF,
-                  fontSize: 14,
-                ),
                 buttonSize: const Size(80, 40),
-                backgroundColor: AppColors.k262837,
-                borderColor: AppColors.k806dff,
-                borderRadius: 5,
+                buttonColor: AppColors.k262837,
+                border: BorderSide(color: getModalStateColor(modalState)),
+                borderRadius: BorderRadius.circular(5),
               ),
               AppButton(
                 onPressed: () {
@@ -90,14 +86,12 @@ void showCustomModal({
                   onSubmit.call();
                 },
                 buttonText: buttonTitle ?? 'Submit',
-                buttonTextStyle: TextStyle(
-                  color: AppColors.kFFFFFF,
-                  fontSize: 14,
-                ),
                 buttonSize: const Size(140, 40),
-                backgroundColor: getModalStateColor(modalState),
-                borderColor: getModalStateColor(modalState),
-                borderRadius: 5,
+                buttonColor: getModalStateColor(modalState),
+                border: BorderSide(
+                  color: getModalStateColor(modalState),
+                ),
+                borderRadius: BorderRadius.circular(5),
               ),
             ]
           : [],

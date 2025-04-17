@@ -1,144 +1,261 @@
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import '../../constants/app_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:skill_serve/app/utils/num_ext.dart';
 
-class AppTextFormField extends StatelessWidget {
-  final TextEditingController? controller;
-  final InputBorder? enabledBorder;
-  final InputBorder? focusedBorder;
-  final InputBorder? errorBorder;
-  final InputBorder? disabledBorder;
-  final InputBorder? focusedErrorBorder;
-  final InputBorder? border;
-  final double? borderRadius;
-  final Widget? suffixIcon;
-  final Widget? prefixIcon;
-  final String? hintText;
-  final String? labelText;
-  final TextStyle? style;
-  final TextStyle? hintTextStyle;
-  final TextStyle? labelTextStyle;
-  final BoxConstraints? constraints;
-  final bool? isFilled;
-  final bool? obscureText;
-  final bool showBorder;
-  final Color? fillColor;
-  final TextInputType? keyboardType;
-  final TextInputAction? textInputAction;
-  final EdgeInsetsGeometry? contentPadding;
-  final BoxConstraints? prefixIconConstraints;
-  final BoxConstraints? suffixIconConstraints;
-  final List<TextInputFormatter>? inputFormatters;
-  final Function(String?)? validator;
-  final String? initialValue;
-  final String name;
-  final Function(String?)? onSubmit;
-  final Function(String?)? onChange;
-  final int maxLines;
+import '../../constants/app_colors.dart';
 
-  const AppTextFormField({
-    super.key,
-    this.controller,
-    this.enabledBorder,
-    this.focusedBorder,
-    this.errorBorder,
-    this.disabledBorder,
-    this.focusedErrorBorder,
-    this.border,
-    this.borderRadius,
-    this.suffixIcon,
-    this.prefixIcon,
-    this.hintText,
-    this.labelText,
-    this.style,
-    this.hintTextStyle,
-    this.labelTextStyle,
-    this.constraints,
-    this.isFilled,
-    this.obscureText,
-    this.fillColor,
-    this.showBorder = false,
-    this.textInputAction,
-    this.keyboardType,
-    this.contentPadding,
-    this.prefixIconConstraints,
-    this.suffixIconConstraints,
-    this.validator,
-    this.initialValue,
-    this.inputFormatters,
-    this.onSubmit,
-    this.onChange,
-    this.maxLines = 1,
+/// AppTextField
+class AppTextField extends StatelessWidget {
+  /// AppTextField
+  const AppTextField({
     required this.name,
+    this.focusNode,
+    this.cursorColor,
+    this.contentPadding,
+    this.readOnly = false,
+    this.isRequired = false,
+    this.obscureText = false,
+    this.maxLength,
+    this.controller,
+    this.hintText,
+    this.label,
+    this.initialValue,
+    this.hintStyle,
+    this.labelStyle,
+    this.textStyle,
+    this.keyboardType,
+    this.suffix,
+    this.validator,
+    this.onChanged,
+    this.errorMessage,
+    this.suffixText,
+    this.prefix,
+    this.inputFormatters,
+    this.autoFillHints,
+    this.textAlign,
+    this.onTap,
+    this.maxLines = 1,
+    this.textInputAction = TextInputAction.done,
+    this.textCapitalization,
+    this.prefixText,
+    this.fillColor,
+    this.border,
+    this.constraints,
+    this.errorText,
+    super.key,
   });
 
+  /// controller
+  final TextEditingController? controller;
+
+  /// hintText
+  final String? hintText;
+
+  /// label
+  final String? label;
+
+  /// initialValue
+  final String? initialValue;
+
+  /// hintStyle
+  final TextStyle? hintStyle;
+
+  /// labelStyle
+  final TextStyle? labelStyle;
+
+  /// textStyle
+  final TextStyle? textStyle;
+
+  /// keyboardType
+  final TextInputType? keyboardType;
+
+  /// suffix
+  final Widget? suffix;
+
+  /// obscureText
+  final bool obscureText;
+
+  /// validator
+  final String? Function(String? value)? validator;
+
+  /// onChanged
+  final void Function(String? value)? onChanged;
+
+  /// name
+  final String name;
+
+  /// readOnly
+  final bool readOnly;
+
+  /// isRequired
+  final bool isRequired;
+
+  /// maxLength
+  final int? maxLength;
+
+  /// errorMessage
+  final String? errorMessage;
+
+  /// suffixText
+  final String? suffixText;
+
+  /// prefix
+  final Widget? prefix;
+
+  /// prefixText
+  final String? prefixText;
+
+  /// inputFormatters
+  final List<TextInputFormatter>? inputFormatters;
+
+  /// autoFillHints
+  final List<String>? autoFillHints;
+
+  /// contentPadding
+  final EdgeInsets? contentPadding;
+
+  /// textAlign
+  final TextAlign? textAlign;
+
+  /// onTap
+  final Function(String)? onTap;
+
+  /// maxLines
+  final int? maxLines;
+
+  /// textInputAction
+  final TextInputAction? textInputAction;
+
+  /// textCapitalization
+  final TextCapitalization? textCapitalization;
+
+  /// fillColor
+  final Color? fillColor;
+
+  /// focusNode
+  final FocusNode? focusNode;
+
+  /// cursorColor
+  final Color? cursorColor;
+
+  /// constraints
+  final InputBorder? border;
+
+  /// errorText
+  final BoxConstraints? constraints;
+
+  /// errorText
+  final String? errorText;
+
   @override
-  Widget build(BuildContext context) {
-    return FormBuilderTextField(
-      name: name,
-      initialValue: initialValue,
-      inputFormatters: inputFormatters,
-      controller: controller,
-      validator: (value) => validator?.call(value),
-      textAlignVertical: TextAlignVertical.center,
-      keyboardType: keyboardType ?? TextInputType.text,
-      onSubmitted: onSubmit,
-      onChanged: onChange,
-      cursorColor: AppColors.k806dff,
-      style: style ??
-          TextStyle(
-            color: AppColors.k000000,
-            fontSize: 15,
-          ),
-      textInputAction: textInputAction ?? TextInputAction.next,
-      obscureText: obscureText ?? false,
-      decoration: InputDecoration(
-        contentPadding: contentPadding ?? EdgeInsets.zero,
-        floatingLabelBehavior: FloatingLabelBehavior.never,
-        label: Text(labelText ?? ''),
-        labelStyle: labelTextStyle ??
-            TextStyle(
-              color: AppColors.k7C7E80,
-              fontSize: 16,
+  Widget build(BuildContext context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          if (label != null) ...<Widget>[
+            RichText(
+              text: TextSpan(
+                text: label,
+                style: labelStyle ??
+                    GoogleFonts.poppins(
+                      color: AppColors.kFFFFFF,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                    ),
+                children: <InlineSpan>[
+                  if (isRequired)
+                    TextSpan(
+                      text: ' *',
+                      style: GoogleFonts.poppins(
+                        color: AppColors.kFF0000,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                      ),
+                    ),
+                ],
+              ),
             ),
-        constraints: constraints ??
-            const BoxConstraints(
-              minWidth: 10,
-              maxHeight: 35,
-            ),
-        hintText: hintText ?? '',
-        hintStyle: hintTextStyle ??
-            TextStyle(
-              color: AppColors.kFFFFFF,
-              fontSize: 16,
-            ),
-        prefixIconConstraints:
-            prefixIconConstraints ?? const BoxConstraints(minWidth: 10),
-        suffixIconConstraints:
-            suffixIconConstraints ?? const BoxConstraints(minWidth: 10),
-        prefixIcon: prefixIcon ?? const SizedBox.shrink(),
-        suffixIcon: suffixIcon ?? const SizedBox.shrink(),
-        filled: isFilled ?? false,
-        fillColor: fillColor ?? AppColors.kF3F6FA,
-        border: border ?? buildOutlineInputBorder(),
-        disabledBorder: disabledBorder ?? buildOutlineInputBorder(),
-        enabledBorder: enabledBorder ?? buildOutlineInputBorder(),
-        errorBorder: errorBorder ?? buildOutlineInputBorder(),
-        focusedBorder: focusedBorder ?? buildOutlineInputBorder(),
-        focusedErrorBorder: focusedErrorBorder ?? buildOutlineInputBorder(),
+            5.verticalSpace
+          ],
+          _buildTextField(),
+        ],
+      );
+
+  TextSelectionTheme _buildTextField() {
+    final Color cursorColor = this.cursorColor ?? AppColors.k806dff;
+    final Color selectionColor = this.cursorColor?.withValues(alpha: 0.3) ??
+        AppColors.k806dff.withValues(alpha: 0.1);
+
+    return TextSelectionTheme(
+      data: TextSelectionThemeData(
+        selectionHandleColor: cursorColor,
+        selectionColor: selectionColor,
+        cursorColor: cursorColor,
+      ),
+      child: FormBuilderTextField(
+        name: name,
+        focusNode: focusNode,
+        style: textStyle ?? GoogleFonts.poppins(color: AppColors.k000000),
+        initialValue: initialValue?.toString(),
+        controller: controller,
+        keyboardType: keyboardType,
+        obscureText: obscureText,
+        readOnly: readOnly,
+        onTap: () {
+          onTap?.call('');
+        },
+        cursorColor: cursorColor,
+        decoration: _buildInputDecoration(),
+        textAlign: textAlign ?? TextAlign.start,
+        maxLength: maxLength,
+        validator: validator,
+        onChanged: onChanged,
+        inputFormatters: inputFormatters,
+        textCapitalization: textCapitalization ?? TextCapitalization.none,
+        autofillHints: autoFillHints,
+        maxLines: maxLines,
+        textInputAction: textInputAction,
       ),
     );
   }
 
-  OutlineInputBorder buildOutlineInputBorder() {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(borderRadius ?? 8),
-      borderSide: showBorder
-          ? BorderSide(
-              color: AppColors.kFFFFFF,
-            )
-          : BorderSide.none,
-    );
-  }
+  InputDecoration _buildInputDecoration() => InputDecoration(
+        isDense: true,
+        constraints: constraints,
+        fillColor: fillColor ?? AppColors.kFFFFFF,
+        filled: true,
+        contentPadding: contentPadding ?? const EdgeInsets.all(12),
+        prefixIcon: prefix,
+        prefixText: prefixText,
+        suffixIcon: suffix,
+        suffixText: suffixText,
+        suffixStyle: textStyle,
+        hintText: hintText,
+        errorText: errorText,
+        hintStyle: hintStyle ??
+            GoogleFonts.poppins(
+              color: AppColors.ka1a5b7,
+              fontSize: 16,
+            ),
+        errorMaxLines: 5,
+        errorStyle: GoogleFonts.poppins(
+          color: AppColors.kFF0000,
+          fontSize: 11,
+        ),
+        border: border ?? _buildOutlineInputBorder(),
+        disabledBorder: border ?? _buildOutlineInputBorder(),
+        enabledBorder: border ?? _buildOutlineInputBorder(),
+        errorBorder: border ?? _buildOutlineInputBorder(),
+        focusedErrorBorder: border ?? _buildOutlineInputBorder(),
+        focusedBorder: border ?? _buildOutlineInputBorder(),
+      );
+
+  OutlineInputBorder _buildOutlineInputBorder() => OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(
+          color: Colors.transparent,
+        ),
+      );
 }
