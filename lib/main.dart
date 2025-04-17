@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app/constants/app_colors.dart';
+import 'app/data/config/initialize_app.dart';
+import 'app/data/local/user_provider.dart';
 import 'app/routes/app_pages.dart';
 
-void main() {
+Future<void> main() async {
+  await initializeCoreApp();
   runApp(MyApp());
 }
 
@@ -26,7 +29,7 @@ class MyApp extends StatelessWidget {
         canvasColor: AppColors.k1f1d2c,
         colorSchemeSeed: AppColors.k806dff,
       ),
-      initialRoute: AppPages.INITIAL,
+      initialRoute: UserProvider.initialRoute,
       getPages: AppPages.routes,
       defaultTransition: Transition.fadeIn,
     );
