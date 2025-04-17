@@ -23,7 +23,6 @@ class LoginView extends GetView<LoginController> {
       body: Row(
         children: [
           Expanded(
-            flex: 2,
             child: Container(
               height: double.maxFinite,
               decoration: BoxDecoration(color: AppColors.k1f1d2c, boxShadow: [
@@ -62,60 +61,67 @@ class LoginView extends GetView<LoginController> {
           Expanded(
             child: DefaultTabController(
               length: 2,
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                margin: EdgeInsets.symmetric(
-                    vertical: Get.height * 0.16, horizontal: 24),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: AppColors.k1f1d2c,
-                ),
-                child: FormBuilder(
-                  key: controller.formKey,
-                  child: Obx(
-                    () => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.kFFFFFF,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(8),
-                            ),
-                          ),
-                          child: const TabBar(
-                            labelColor: AppColors.kFFFFFF,
-                            indicatorSize: TabBarIndicatorSize.tab,
-                            indicator: BoxDecoration(
-                              color: AppColors.k806dff,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: Get.height * 0.7,
+                    width: Get.width * 0.3,
+                    padding: const EdgeInsets.all(24),
+                    margin: EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: AppColors.k1f1d2c,
+                    ),
+                    child: FormBuilder(
+                      key: controller.formKey,
+                      child: Obx(
+                        () => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.kFFFFFF,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                              ),
+                              child: const TabBar(
+                                physics: NeverScrollableScrollPhysics(),
+                                labelColor: AppColors.kFFFFFF,
+                                indicatorSize: TabBarIndicatorSize.tab,
+                                indicator: BoxDecoration(
+                                  color: AppColors.k806dff,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8),
+                                  ),
+                                ),
+                                dividerHeight: 0,
+                                tabs: <Widget>[
+                                  Tab(
+                                    child: Text('Login'),
+                                  ),
+                                  Tab(
+                                    child: Text('Sign-up'),
+                                  ),
+                                ],
                               ),
                             ),
-                            dividerHeight: 0,
-                            tabs: <Widget>[
-                              Tab(
-                                child: Text('Login'),
+                            Expanded(
+                              child: TabBarView(
+                                children: <Widget>[
+                                  loginView(),
+                                  signUpView(),
+                                ],
                               ),
-                              Tab(
-                                child: Text('Sign-up'),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          child: TabBarView(
-                            children: <Widget>[
-                              loginView(),
-                              signUpView(),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
