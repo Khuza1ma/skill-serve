@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../../constants/app_colors.dart';
+import '../../../data/config/logger.dart';
 import '../../../data/data_grid/project_details_data_grid.dart';
+import '../../../utils/data_grid_utils.dart';
 import '../controllers/projects_details_controller.dart';
 
 class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
@@ -13,14 +15,14 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
   Widget build(BuildContext context) {
     return Obx(
       () {
-        if (controller.selectedProject.value == null) {
+        if (controller.selectedProject.isEmpty) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
 
         final projectDetailsDataSource = ProjectDetailsDataSource(
-          project: controller.selectedProject.value!,
+          project: controller.selectedProject,
         );
 
         return Column(
@@ -45,29 +47,28 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Expanded(
-                      child: SfDataGridTheme(
-                        data: SfDataGridThemeData(
-                          headerColor: AppColors.k806dff,
+                    SfDataGridTheme(
+                      data: SfDataGridThemeData(
+                        headerColor: AppColors.k806dff,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          topRight: Radius.circular(8),
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8),
-                            topRight: Radius.circular(8),
-                          ),
-                          child: SfDataGrid(
-                            shrinkWrapRows: true,
-                            source: projectDetailsDataSource,
-                            columnWidthMode: ColumnWidthMode.fill,
-                            headerGridLinesVisibility: GridLinesVisibility.none,
-                            gridLinesVisibility: GridLinesVisibility.horizontal,
-                            isScrollbarAlwaysShown: true,
-                            showHorizontalScrollbar: true,
-                            columns: _buildColumns(),
-                          ),
+                        child: SfDataGrid(
+                          shrinkWrapRows: true,
+                          source: projectDetailsDataSource,
+                          columnWidthMode: ColumnWidthMode.fill,
+                          headerGridLinesVisibility: GridLinesVisibility.none,
+                          gridLinesVisibility: GridLinesVisibility.horizontal,
+                          isScrollbarAlwaysShown: true,
+                          showHorizontalScrollbar: true,
+                          columns: _buildColumns(),
                         ),
                       ),
                     ),
+                    _buildDataPager(context),
                   ],
                 ).paddingOnly(top: 16, right: 16, left: 16),
               ),
@@ -75,6 +76,57 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
           ],
         ).paddingAll(16);
       },
+    );
+  }
+
+  Widget _buildDataPager(BuildContext context) {
+    return SfDataPagerTheme(
+      data: SfDataPagerThemeData(
+        selectedItemColor: AppColors.kc6c6c8,
+        backgroundColor: AppColors.k000000,
+        itemColor: AppColors.k262837,
+        disabledItemColor: AppColors.k1f1d2c,
+        itemTextStyle: TextStyle(
+          color: AppColors.kFFFFFF,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+        disabledItemTextStyle: TextStyle(
+          color: AppColors.kFFFFFF,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      child: controller.selectedProject.isEmpty
+          ? const SizedBox.shrink()
+          : Container(
+              color: AppColors.k000000,
+              child: SfDataPager(
+                delegate: ProjectDetailsDataSource(
+                  project: controller.selectedProject,
+                  // controller: controller,
+                ),
+                availableRowsPerPage: DataGridUtils.pageSizes,
+                pageCount:
+                    (controller.selectedProject.length / controller.limit.value)
+                        .ceil()
+                        .toDouble(),
+                onRowsPerPageChanged: (int? rowsPerPage) {
+                  logW('rowsPerPage: $rowsPerPage');
+                  controller.limit(rowsPerPage);
+                },
+                controller: controller.dataPagerController,
+                onPageNavigationStart: (int newPageIndex) {
+                  controller.startPageIndex(newPageIndex);
+                },
+                onPageNavigationEnd: (int newPageIndex) {
+                  if (controller.currentPageIndex() != newPageIndex &&
+                      controller.startPageIndex() != newPageIndex) {
+                    controller.currentPageIndex.value = newPageIndex;
+                  }
+                },
+              ),
+            ),
     );
   }
 

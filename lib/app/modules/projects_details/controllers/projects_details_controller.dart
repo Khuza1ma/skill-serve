@@ -8,7 +8,7 @@ class ProjectsDetailsController extends GetxController {
   RxInt limit = DataGridUtils.pageSizes.first.obs;
   RxInt currentPageIndex = 0.obs;
   RxInt startPageIndex = (-1).obs;
-  final Rx<Project?> selectedProject = Rx<Project?>(null);
+  final RxList<Project?> selectedProject = <Project?>[].obs;
 
   @override
   void onInit() {
@@ -17,18 +17,20 @@ class ProjectsDetailsController extends GetxController {
   }
 
   void loadProjectDetails() {
-    selectedProject.value = Project(
-      projectId: '1',
-      title: 'Sample Project',
-      organizerName: 'Organization Name',
-      location: 'New York',
-      description: 'This is a sample project description',
-      requiredSkills: ['Flutter', 'Dart', 'Firebase'],
-      timeCommitment: '10 hours/week',
-      startDate: DateTime.now().add(const Duration(days: 7)),
-      applicationDeadline: DateTime.now().add(const Duration(days: 30)),
-      status: 'Available',
-      createdAt: DateTime.now(),
-    );
+    selectedProject.value = [
+      Project(
+        projectId: '1',
+        title: 'Sample Project',
+        organizerName: 'Organization Name',
+        location: 'New York',
+        description: 'This is a sample project description',
+        requiredSkills: ['Flutter', 'Dart', 'Firebase'],
+        timeCommitment: '10 hours/week',
+        startDate: DateTime.now().add(const Duration(days: 7)),
+        applicationDeadline: DateTime.now().add(const Duration(days: 30)),
+        status: 'Available',
+        createdAt: DateTime.now(),
+      )
+    ];
   }
 }

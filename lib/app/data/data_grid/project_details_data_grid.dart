@@ -7,7 +7,7 @@ import '../../data/models/project_model.dart';
 import '../../modules/projects_details/controllers/projects_details_controller.dart';
 
 class ProjectDetailsDataSource extends DataGridSource {
-  final Project project;
+  final List<Project?> project;
   ProjectsDetailsController controller = Get.find<ProjectsDetailsController>();
 
   ProjectDetailsDataSource({
@@ -15,44 +15,43 @@ class ProjectDetailsDataSource extends DataGridSource {
   });
 
   @override
-  List<DataGridRow> get rows => [
-        DataGridRow(
+  List<DataGridRow> get rows => project.map((proj) {
+        return DataGridRow(
           cells: [
             DataGridCell<int>(
                 columnName: 'sr_no',
                 value: (controller.currentPageIndex.value *
                         controller.limit.value) +
+                    project.indexOf(proj) +
                     1),
             DataGridCell<String>(
-                columnName: 'ProjectId', value: project.projectId),
-            DataGridCell<String>(columnName: 'Title', value: project.title),
+                columnName: 'ProjectId', value: proj?.projectId),
+            DataGridCell<String>(columnName: 'Title', value: proj?.title),
             DataGridCell<String>(
                 columnName: 'Organizer Name',
-                value: project.organizerName ?? 'N/A'),
+                value: proj?.organizerName ?? 'N/A'),
+            DataGridCell<String>(columnName: 'Location', value: proj?.location),
             DataGridCell<String>(
-                columnName: 'Location', value: project.location),
-            DataGridCell<String>(
-                columnName: 'Description', value: project.description),
+                columnName: 'Description', value: proj?.description),
             DataGridCell<String>(
                 columnName: 'Required Skills',
-                value: project.requiredSkills.join(', ')),
+                value: proj?.requiredSkills.join(', ')),
             DataGridCell<String>(
-                columnName: 'Time Commitment', value: project.timeCommitment),
+                columnName: 'Time Commitment', value: proj?.timeCommitment),
             DataGridCell<DateTime>(
-                columnName: 'Start Date', value: project.startDate),
+                columnName: 'Start Date', value: proj?.startDate),
             DataGridCell<DateTime>(
                 columnName: 'Application Deadline',
-                value: project.applicationDeadline),
-            DataGridCell<String>(columnName: 'Status', value: project.status),
+                value: proj?.applicationDeadline),
+            DataGridCell<String>(columnName: 'Status', value: proj?.status),
             DataGridCell<String>(
                 columnName: 'Assigned Volunteer ID',
-                value: project.assignedVolunteerId ?? 'Not Assigned'),
+                value: proj?.assignedVolunteerId ?? 'Not Assigned'),
             DataGridCell<DateTime>(
-                columnName: 'Created At', value: project.createdAt),
+                columnName: 'Created At', value: proj?.createdAt),
           ],
-        ),
-      ];
-
+        );
+      }).toList();
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
     return DataGridRowAdapter(
