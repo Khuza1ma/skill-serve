@@ -17,30 +17,22 @@ class ProjectsView extends GetView<ProjectsController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 10),
         Expanded(
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
             elevation: 5,
-            // shadowColor: Colors.black12,
             color: AppColors.k262837,
-            // surfaceTintColor: AppColors.kFFFFFF,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Projects',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+                const Text(
+                  'Projects',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 SfDataGridTheme(
