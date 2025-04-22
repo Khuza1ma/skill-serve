@@ -4,6 +4,7 @@ import 'package:web/web.dart';
 import '../../modules/home/controllers/home_controller.dart';
 import '../../constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import '../../routes/app_pages.dart';
 import 'app_text_form_field.dart';
 import 'app_modals.dart';
 
@@ -29,6 +30,7 @@ class AppHeader extends StatelessWidget {
           icon: const Icon(
             Icons.menu,
             size: 30,
+            color: AppColors.kc6c6c8,
           ),
         ),
         titleSpacing: 0,
@@ -36,29 +38,28 @@ class AppHeader extends StatelessWidget {
             ? const SizedBox.shrink()
             : SizedBox(
                 width: 400,
-                child: AppTextFormField(
+                child: AppTextField(
                   name: 'search',
-                  labelText: 'Search',
+                  hintText: 'Search',
                   // controller: controller.searchController,
                   textInputAction: TextInputAction.send,
-                  prefixIconConstraints: const BoxConstraints(minWidth: 30),
-                  isFilled: true,
                   fillColor: AppColors.kF8F8FC,
-                  borderRadius: 8,
-                  onSubmit: (value) {
-                    // controller.search(value);
-                  },
-                  onChange: (value) {
+
+                  // onSubmit: (value) {
+                  //   // controller.search(value);
+                  // },
+                  onChanged: (value) {
                     // controller.isSearching(!(value?.isEmpty ?? false));
                     // if (value?.isEmpty ?? true) {
                     //   controller.search(value);
                     // }
                   },
-                  prefixIcon: const Icon(
+                  prefix: const Icon(
                     Icons.search,
                     size: 20,
+                    color: AppColors.ka1a5b7,
                   ),
-                  suffixIcon: /*!controller.isSearching()*/ true
+                  suffix: /*!controller.isSearching()*/ true
                       ? const SizedBox.shrink()
                       : IconButton(
                           icon: const Icon(
@@ -72,10 +73,6 @@ class AppHeader extends StatelessWidget {
                             // controller.search(controller.searchController.text);
                           },
                         ),
-                  suffixIconConstraints: const BoxConstraints(
-                    minWidth: 40,
-                    minHeight: 40,
-                  ),
                 ),
               ),
         actions: [
@@ -91,6 +88,7 @@ class AppHeader extends StatelessWidget {
             icon: const Icon(
               Icons.fullscreen,
               size: 30,
+              color: AppColors.kc6c6c8,
             ),
           ),
           const SizedBox(width: 20),
@@ -103,6 +101,7 @@ class AppHeader extends StatelessWidget {
                 onSubmit: () async {
                   Get.back();
                   // await controller.logout();
+                  Get.offAllNamed(Routes.LOGIN);
                 },
                 modalState: ModalState.PRIMARY,
                 alignment: Alignment.center,
@@ -112,7 +111,7 @@ class AppHeader extends StatelessWidget {
               Icons.power_settings_new,
               size: 30,
             ),
-            color: AppColors.kFFFFFF,
+            color: AppColors.kc6c6c8,
           ),
           const SizedBox(width: 10),
         ],
