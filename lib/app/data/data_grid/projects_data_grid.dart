@@ -27,9 +27,9 @@ class ProjectDataSource extends DataGridSource {
                       index +
                       1),
               DataGridCell<String>(
-                  columnName: 'title', value: 'project.name' ?? ''),
+                  columnName: 'title', value: 'project.name'),
               DataGridCell<String>(
-                  columnName: 'organizer_name', value: 'project.state' ?? ''),
+                  columnName: 'organizer_name', value: 'project.state'),
               DataGridCell<String>(columnName: 'location', value: '0'),
               DataGridCell<String>(columnName: 'time_commitment', value: '0'),
               DataGridCell<DateTime>(
