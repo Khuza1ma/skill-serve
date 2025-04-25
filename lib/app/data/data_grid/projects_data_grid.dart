@@ -26,8 +26,7 @@ class ProjectDataSource extends DataGridSource {
                           controller.limit.value) +
                       index +
                       1),
-              DataGridCell<String>(
-                  columnName: 'title', value: 'project.name'),
+              DataGridCell<String>(columnName: 'title', value: 'project.name'),
               DataGridCell<String>(
                   columnName: 'organizer_name', value: 'project.state'),
               DataGridCell<String>(columnName: 'location', value: '0'),
