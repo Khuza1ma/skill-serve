@@ -13,69 +13,75 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
   const AppliedProjectsView({super.key});
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            elevation: 5,
-            color: AppColors.k262837,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Applied Projects',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Obx(() {
-                  if (controller.appliedProjects.isEmpty) {
-                    return const Expanded(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
+    return Obx(
+      () {
+        if (controller.isLoading.value) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
 
-                  return SfDataGridTheme(
-                    data: SfDataGridThemeData(
-                      headerColor: AppColors.k806dff,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8),
+        final appliedProjectDataSource = AppliedProjectDataSource(
+          appliedProjects: controller.appliedProjects,
+          controller: controller,
+        );
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                elevation: 5,
+                color: AppColors.k262837,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Applied Projects',
+                      style: TextStyle(
+                        color: AppColors.kFFFFFF,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                      child: SfDataGrid(
-                        shrinkWrapRows: true,
-                        headerGridLinesVisibility: GridLinesVisibility.none,
-                        gridLinesVisibility: GridLinesVisibility.horizontal,
-                        source: AppliedProjectDataSource(
-                          appliedProjects: controller.appliedProjects,
-                          controller: controller,
+                    ),
+                    const SizedBox(height: 20),
+                    SfDataGridTheme(
+                      data: SfDataGridThemeData(
+                        headerColor: AppColors.k806dff,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          topRight: Radius.circular(8),
                         ),
-                        columnWidthMode: ColumnWidthMode.fill,
-                        columns: _buildColumns(),
+                        child: SfDataGrid(
+                          shrinkWrapRows: true,
+                          headerGridLinesVisibility: GridLinesVisibility.none,
+                          gridLinesVisibility: GridLinesVisibility.horizontal,
+                          source: appliedProjectDataSource,
+                          columnWidthMode: ColumnWidthMode.fill,
+                          isScrollbarAlwaysShown: true,
+                          showHorizontalScrollbar: true,
+                          columns: _buildColumns(),
+                        ),
                       ),
                     ),
-                  );
-                }),
-                _buildDataPager(context),
-              ],
-            ).paddingOnly(top: 16, right: 16, left: 16),
-          ),
-        )
-      ],
-    ).paddingAll(16);
+                    _buildDataPager(context, appliedProjectDataSource),
+                  ],
+                ).paddingOnly(top: 16, right: 16, left: 16),
+              ),
+            )
+          ],
+        ).paddingAll(16);
+      },
+    );
   }
 
-  Widget _buildDataPager(BuildContext context) {
+  Widget _buildDataPager(
+      BuildContext context, AppliedProjectDataSource dataSource) {
     return SfDataPagerTheme(
       data: SfDataPagerThemeData(
         selectedItemColor: AppColors.kc6c6c8,
@@ -98,15 +104,9 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
           : Container(
               color: AppColors.k000000,
               child: SfDataPager(
-                delegate: AppliedProjectDataSource(
-                  appliedProjects: controller.appliedProjects,
-                  controller: controller,
-                ),
+                delegate: dataSource,
                 availableRowsPerPage: DataGridUtils.pageSizes,
-                pageCount:
-                    (controller.appliedProjects.length / controller.limit.value)
-                        .ceil()
-                        .toDouble(),
+                pageCount: controller.pageCount,
                 onRowsPerPageChanged: (int? rowsPerPage) {
                   logW('rowsPerPage: $rowsPerPage');
                   controller.limit(rowsPerPage);
@@ -143,6 +143,7 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
     double? width,
   }) {
     return GridColumn(
+      columnWidthMode: ColumnWidthMode.fill,
       width: width ?? double.nan,
       columnName: columnName,
       label: Container(
