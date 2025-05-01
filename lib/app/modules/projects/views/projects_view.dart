@@ -14,72 +14,73 @@ class ProjectsView extends GetView<ProjectsController> {
   const ProjectsView({super.key});
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            elevation: 5,
-            color: AppColors.k262837,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Projects',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  ),
+    return Obx(
+      () {
+        if (controller.isLoading.value) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        final projectDataSource = ProjectDataSource(
+          projects: controller.projects,
+        );
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                const SizedBox(height: 20),
-                SfDataGridTheme(
-                  data: SfDataGridThemeData(
-                    headerColor: AppColors.k806dff,
-                  ),
-                  // child: Obx(
-                  //   () => SfDataGrid(
-                  //     headerGridLinesVisibility: GridLinesVisibility.none,
-                  //     gridLinesVisibility: GridLinesVisibility.horizontal,
-                  //     source: ProjectDataSource(
-                  //       projects: [],
-                  //     ),
-                  //     columnWidthMode: ColumnWidthMode.fill,
-                  //     columns: _buildColumns(),
-                  //   ),
-                  // ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      topRight: Radius.circular(8),
-                    ),
-                    child: SfDataGrid(
-                      shrinkWrapRows: true,
-                      headerGridLinesVisibility: GridLinesVisibility.none,
-                      gridLinesVisibility: GridLinesVisibility.horizontal,
-                      source: ProjectDataSource(
-                        projects: ['1', '2', '3'],
+                elevation: 5,
+                color: AppColors.k262837,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Projects',
+                      style: TextStyle(
+                        color: AppColors.kFFFFFF,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                      columnWidthMode: ColumnWidthMode.fill,
-                      columns: _buildColumns(),
                     ),
-                  ),
-                ),
-                _buildDataPager(context),
-                // Obx(
-                //   () => _buildDataPager(context),
-                // ),
-              ],
-            ).paddingOnly(top: 16, right: 16, left: 16),
-          ),
-        )
-      ],
-    ).paddingAll(16);
+                    const SizedBox(height: 20),
+                    SfDataGridTheme(
+                      data: SfDataGridThemeData(
+                        headerColor: AppColors.k806dff,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          topRight: Radius.circular(8),
+                        ),
+                        child: SfDataGrid(
+                          shrinkWrapRows: true,
+                          headerGridLinesVisibility: GridLinesVisibility.none,
+                          gridLinesVisibility: GridLinesVisibility.horizontal,
+                          source: projectDataSource,
+                          columnWidthMode: ColumnWidthMode.fill,
+                          isScrollbarAlwaysShown: true,
+                          showHorizontalScrollbar: true,
+                          columns: _buildColumns(),
+                        ),
+                      ),
+                    ),
+                    _buildDataPager(context, projectDataSource),
+                  ],
+                ).paddingOnly(top: 16, right: 16, left: 16),
+              ),
+            )
+          ],
+        ).paddingAll(16);
+      },
+    );
   }
 
-  Widget _buildDataPager(BuildContext context) {
+  Widget _buildDataPager(BuildContext context, ProjectDataSource dataSource) {
     return SfDataPagerTheme(
       data: SfDataPagerThemeData(
         selectedItemColor: AppColors.kc6c6c8,
@@ -97,21 +98,17 @@ class ProjectsView extends GetView<ProjectsController> {
           fontWeight: FontWeight.w500,
         ),
       ),
-      child: true
+      child: controller.projects.isEmpty
           ? const SizedBox.shrink()
           : Container(
               color: AppColors.k000000,
               child: SfDataPager(
-                delegate: ProjectDataSource(projects: []),
+                delegate: dataSource,
                 availableRowsPerPage: DataGridUtils.pageSizes,
-                pageCount: 2,
+                pageCount: controller.pageCount,
                 onRowsPerPageChanged: (int? rowsPerPage) {
                   logW('rowsPerPage: $rowsPerPage');
                   controller.limit(rowsPerPage);
-                  // controller.fetchAndStoreCity(
-                  //   skip: 0,
-                  //   limit: controller.limit(),
-                  // );
                 },
                 controller: controller.dataPagerController,
                 onPageNavigationStart: (int newPageIndex) {
@@ -121,10 +118,6 @@ class ProjectsView extends GetView<ProjectsController> {
                   if (controller.currentPageIndex() != newPageIndex &&
                       controller.startPageIndex() != newPageIndex) {
                     controller.currentPageIndex.value = newPageIndex;
-                    // controller.fetchAndStoreCity(
-                    //   skip: newPageIndex * controller.limit(),
-                    //   limit: controller.limit(),
-                    // );
                   }
                 },
               ),
@@ -152,6 +145,7 @@ class ProjectsView extends GetView<ProjectsController> {
     double? width,
   }) {
     return GridColumn(
+      columnWidthMode: ColumnWidthMode.fill,
       width: width ?? double.nan,
       columnName: columnName,
       label: Container(
