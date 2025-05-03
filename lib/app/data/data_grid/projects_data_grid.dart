@@ -3,11 +3,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
+import '../../data/models/project_model.dart';
 import '../../modules/projects/controllers/projects_controller.dart';
 
 class ProjectDataSource extends DataGridSource {
-  List<String> projects;
+  final List<Project> projects;
   ProjectsController controller = Get.find<ProjectsController>();
+
   ProjectDataSource({
     required this.projects,
   });
@@ -26,16 +28,20 @@ class ProjectDataSource extends DataGridSource {
                           controller.limit.value) +
                       index +
                       1),
-              DataGridCell<String>(columnName: 'title', value: 'project.name'),
+              DataGridCell<String>(columnName: 'title', value: project.title),
               DataGridCell<String>(
-                  columnName: 'organizer_name', value: 'project.state'),
-              DataGridCell<String>(columnName: 'location', value: '0'),
-              DataGridCell<String>(columnName: 'time_commitment', value: '0'),
+                  columnName: 'organizer_name',
+                  value: project.organizerName ?? 'N/A'),
+              DataGridCell<String>(
+                  columnName: 'location', value: project.location),
+              DataGridCell<String>(
+                  columnName: 'time_commitment', value: project.timeCommitment),
               DataGridCell<DateTime>(
-                  columnName: 'start_date', value: DateTime.now()),
-              DataGridCell<String>(columnName: 'status', value: '0'),
+                  columnName: 'start_date', value: project.startDate),
+              DataGridCell<String>(columnName: 'status', value: project.status),
               DataGridCell<String>(
-                  columnName: 'assigned_volunteer', value: '0'),
+                  columnName: 'assigned_volunteer',
+                  value: project.assignedVolunteerId ?? 'Not Assigned'),
             ],
           ),
         ),
@@ -53,14 +59,32 @@ class ProjectDataSource extends DataGridSource {
           padding: const EdgeInsets.all(8.0),
           child: cell.value is Widget
               ? cell.value
-              : Text(
-                  cell.value.toString(),
-                  style: GoogleFonts.poppins(
-                    color: AppColors.kc6c6c8,
-                  ),
-                ),
+              : cell.value is DateTime
+                  ? Text(
+                      _formatDateTime(cell.value),
+                      style: GoogleFonts.poppins(
+                        color: AppColors.kc6c6c8,
+                      ),
+                    )
+                  : cell.value is List<String>
+                      ? Text(
+                          cell.value.join(', '),
+                          style: GoogleFonts.poppins(
+                            color: AppColors.kc6c6c8,
+                          ),
+                        )
+                      : Text(
+                          cell.value.toString(),
+                          style: GoogleFonts.poppins(
+                            color: AppColors.kc6c6c8,
+                          ),
+                        ),
         );
       }).toList(),
     );
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
   }
 }

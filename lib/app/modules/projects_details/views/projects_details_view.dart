@@ -15,7 +15,7 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
   Widget build(BuildContext context) {
     return Obx(
       () {
-        if (controller.selectedProject.isEmpty) {
+        if (controller.isLoading.value) {
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -68,7 +68,7 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
                         ),
                       ),
                     ),
-                    _buildDataPager(context),
+                    _buildDataPager(context, projectDetailsDataSource),
                   ],
                 ).paddingOnly(top: 16, right: 16, left: 16),
               ),
@@ -79,7 +79,8 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
     );
   }
 
-  Widget _buildDataPager(BuildContext context) {
+  Widget _buildDataPager(
+      BuildContext context, ProjectDetailsDataSource dataSource) {
     return SfDataPagerTheme(
       data: SfDataPagerThemeData(
         selectedItemColor: AppColors.kc6c6c8,
@@ -102,15 +103,9 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
           : Container(
               color: AppColors.k000000,
               child: SfDataPager(
-                delegate: ProjectDetailsDataSource(
-                  project: controller.selectedProject,
-                  // controller: controller,
-                ),
+                delegate: dataSource,
                 availableRowsPerPage: DataGridUtils.pageSizes,
-                pageCount:
-                    (controller.selectedProject.length / controller.limit.value)
-                        .ceil()
-                        .toDouble(),
+                pageCount: controller.pageCount,
                 onRowsPerPageChanged: (int? rowsPerPage) {
                   logW('rowsPerPage: $rowsPerPage');
                   controller.limit(rowsPerPage);
