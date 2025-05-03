@@ -65,8 +65,8 @@ class LoginView extends GetView<LoginController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    height: Get.height * 0.7,
-                    width: Get.width * 0.3,
+                    height: Get.height * 0.85,
+                    width: Get.width * 0.35,
                     padding: const EdgeInsets.all(24),
                     margin: EdgeInsets.symmetric(vertical: 24, horizontal: 24),
                     decoration: BoxDecoration(
@@ -207,110 +207,116 @@ class LoginView extends GetView<LoginController> {
 
   Widget signUpView() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 15,
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'Sign up your account',
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: AppColors.k806dff,
-            ),
+        Expanded(
+          child: ListView(
+            children: [
+              15.verticalSpace,
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Sign up your account',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.k806dff,
+                  ),
+                ),
+              ),
+              24.verticalSpace,
+              AppTextField(
+                prefix: const Icon(Icons.mail),
+                name: 'username',
+                label: 'Username',
+                hintText: 'Username',
+                validator: FormBuilderValidators.required(
+                  errorText: 'Please enter your username',
+                ),
+                isRequired: true,
+                readOnly: controller.isLoading(),
+              ),
+              16.verticalSpace,
+              AppTextField(
+                prefix: const Icon(Icons.mail),
+                name: 'email',
+                label: 'Email',
+                hintText: 'Email',
+                validator: FormBuilderValidators.email(
+                  errorText: 'Please enter a valid email address',
+                ),
+                isRequired: true,
+                readOnly: controller.isLoading(),
+              ),
+              16.verticalSpace,
+              AppTextField(
+                prefix: const Icon(Icons.lock),
+                name: 'password',
+                label: 'Password',
+                hintText: 'Password',
+                isRequired: true,
+                obscureText: controller.hidePassword(),
+                keyboardType: TextInputType.visiblePassword,
+                validator: FormBuilderValidators.required(
+                  errorText: 'Please enter your password',
+                ),
+                suffix: IconButton.filledTonal(
+                  style: ButtonStyle(
+                    shape: WidgetStateProperty.all(const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    )),
+                  ),
+                  iconSize: 24,
+                  onPressed: controller.hidePassword.toggle,
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    controller.hidePassword()
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    color: AppColors.k806dff,
+                  ),
+                ),
+                autoFillHints: const <String>[
+                  AutofillHints.password,
+                ],
+                readOnly: controller.isLoading(),
+              ),
+              16.verticalSpace,
+              AppTextField(
+                prefix: const Icon(Icons.lock),
+                name: 'confirm_password',
+                label: 'Confirm Password',
+                hintText: 'Confirm Password',
+                isRequired: true,
+                obscureText: controller.hidePassword(),
+                keyboardType: TextInputType.visiblePassword,
+                validator: FormBuilderValidators.required(
+                  errorText: 'Please enter your password',
+                ),
+                suffix: IconButton.filledTonal(
+                  style: ButtonStyle(
+                    shape: WidgetStateProperty.all(const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    )),
+                  ),
+                  iconSize: 24,
+                  onPressed: controller.hidePassword.toggle,
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    controller.hidePassword()
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    color: AppColors.k806dff,
+                  ),
+                ),
+                autoFillHints: const <String>[
+                  AutofillHints.password,
+                ],
+                readOnly: controller.isLoading(),
+              ),
+            ],
           ),
         ),
-        24.verticalSpace,
-        AppTextField(
-          prefix: const Icon(Icons.mail),
-          name: 'username',
-          label: 'Username',
-          hintText: 'Username',
-          validator: FormBuilderValidators.required(
-            errorText: 'Please enter your username',
-          ),
-          isRequired: true,
-          readOnly: controller.isLoading(),
-        ),
-        16.verticalSpace,
-        AppTextField(
-          prefix: const Icon(Icons.mail),
-          name: 'email',
-          label: 'Email',
-          hintText: 'Email',
-          validator: FormBuilderValidators.email(
-            errorText: 'Please enter a valid email address',
-          ),
-          isRequired: true,
-          readOnly: controller.isLoading(),
-        ),
-        16.verticalSpace,
-        AppTextField(
-          prefix: const Icon(Icons.lock),
-          name: 'password',
-          label: 'Password',
-          hintText: 'Password',
-          isRequired: true,
-          obscureText: controller.hidePassword(),
-          keyboardType: TextInputType.visiblePassword,
-          validator: FormBuilderValidators.required(
-            errorText: 'Please enter your password',
-          ),
-          suffix: IconButton.filledTonal(
-            style: ButtonStyle(
-              shape: WidgetStateProperty.all(const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-              )),
-            ),
-            iconSize: 24,
-            onPressed: controller.hidePassword.toggle,
-            padding: EdgeInsets.zero,
-            icon: Icon(
-              controller.hidePassword()
-                  ? Icons.visibility_off
-                  : Icons.visibility,
-              color: AppColors.k806dff,
-            ),
-          ),
-          autoFillHints: const <String>[
-            AutofillHints.password,
-          ],
-          readOnly: controller.isLoading(),
-        ),
-        16.verticalSpace,
-        AppTextField(
-          prefix: const Icon(Icons.lock),
-          name: 'confirm_password',
-          label: 'Confirm Password',
-          hintText: 'Confirm Password',
-          isRequired: true,
-          obscureText: controller.hidePassword(),
-          keyboardType: TextInputType.visiblePassword,
-          validator: FormBuilderValidators.required(
-            errorText: 'Please enter your password',
-          ),
-          suffix: IconButton.filledTonal(
-            style: ButtonStyle(
-              shape: WidgetStateProperty.all(const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-              )),
-            ),
-            iconSize: 24,
-            onPressed: controller.hidePassword.toggle,
-            padding: EdgeInsets.zero,
-            icon: Icon(
-              controller.hidePassword()
-                  ? Icons.visibility_off
-                  : Icons.visibility,
-              color: AppColors.k806dff,
-            ),
-          ),
-          autoFillHints: const <String>[
-            AutofillHints.password,
-          ],
-          readOnly: controller.isLoading(),
-        ),
-        30.verticalSpace,
         AppButton(
           onPressed: () {
             controller.loginUser();
