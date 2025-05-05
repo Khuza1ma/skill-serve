@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../data/local/user_provider.dart';
 import '../../../ui/components/app_header.dart';
 import '../../../ui/components/side_menu.dart';
 import '../controllers/home_controller.dart';
@@ -49,7 +50,11 @@ class HomeView extends GetResponsiveView<HomeController> {
     return Expanded(
       child: Navigator(
         key: Get.nestedKey(1),
-        // initialRoute: UserProvider.currentUser,
+        initialRoute:
+            UserProvider.currentUser?.currentUserRole?.toLowerCase() ==
+                    'volunteer'
+                ? Routes.VOLUNTEER_DASHBOARD
+                : Routes.ORGANIZER_DASHBOARD,
         onGenerateRoute: (settings) {
           // Save app pages routes in temp list
           var routes = [...AppPages.routes];

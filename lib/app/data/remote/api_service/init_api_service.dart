@@ -85,7 +85,7 @@ class APIService {
   /// encryption keys in the backend matches with the one in frontend
   static Future<Response<Map<String, dynamic>?>?> post({
     required String path,
-    FormData? data,
+    Map<String, dynamic>? data,
     Map<String, dynamic>? params,
     bool encrypt = true,
     String? forcedBaseUrl,
@@ -162,36 +162,36 @@ class APIService {
   /// Upload file to the server. You will get the URL in the response if the
   /// [file] was uploaded successfully. Else you will get null in response.
   ///
-  static Future<String?> uploadFile({
-    required File file,
-    required String folder,
-  }) async {
-    final Response<Map<String, dynamic>?>? response = await APIService.post(
-      path: '/user/upload/$folder/images',
-      data: FormData.fromMap(
-        <String, dynamic>{
-          'images': MultipartFile.fromBytes(
-            List<int>.from(await file.readAsBytes()),
-            contentType:
-                http_parser.MediaType('image', path.extension(file.path)),
-            filename: file.path,
-          ),
-        },
-      ),
-      encrypt: false,
-    );
-
-    if (response?.statusCode != 200) {
-      return null;
-    }
-
-    final Map<String, dynamic>? data = response?.data;
-
-    if (data?['code'] == 'FILE_UPLOADED') {
-      logE(data?['file']);
-      return data?['file'] as String?;
-    } else {
-      return null;
-    }
-  }
+  // static Future<String?> uploadFile({
+  //   required File file,
+  //   required String folder,
+  // }) async {
+  //   final Response<Map<String, dynamic>?>? response = await APIService.post(
+  //     path: '/user/upload/$folder/images',
+  //     data: FormData.fromMap(
+  //       <String, dynamic>{
+  //         'images': MultipartFile.fromBytes(
+  //           List<int>.from(await file.readAsBytes()),
+  //           contentType:
+  //               http_parser.MediaType('image', path.extension(file.path)),
+  //           filename: file.path,
+  //         ),
+  //       },
+  //     ),
+  //     encrypt: false,
+  //   );
+  //
+  //   if (response?.statusCode != 200) {
+  //     return null;
+  //   }
+  //
+  //   final Map<String, dynamic>? data = response?.data;
+  //
+  //   if (data?['code'] == 'FILE_UPLOADED') {
+  //     logE(data?['file']);
+  //     return data?['file'] as String?;
+  //   } else {
+  //     return null;
+  //   }
+  // }
 }

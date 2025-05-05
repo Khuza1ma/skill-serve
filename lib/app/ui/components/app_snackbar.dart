@@ -18,7 +18,7 @@ void appSnackbar({
       GetSnackBar(
         message: message,
         duration: const Duration(seconds: 2),
-        snackPosition: snackBarPosition ?? SnackPosition.TOP,
+        snackPosition: snackBarPosition ?? SnackPosition.BOTTOM,
         backgroundColor: getSnackBarColor(snackBarState),
         titleText: title == null ? null : Text(title),
         maxWidth: maxWidth,

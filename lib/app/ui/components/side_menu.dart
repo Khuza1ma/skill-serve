@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:skill_serve/app/constants/asset_constants.dart';
+import '../../data/local/user_provider.dart';
 import '../../modules/home/controllers/home_controller.dart';
 import '../../constants/app_colors.dart';
 import '../../routes/app_pages.dart';
@@ -50,32 +51,11 @@ class SideBar extends StatelessWidget {
                     Expanded(
                       child: SingleChildScrollView(
                         child: Column(
-                          children: [
-                            _buildMenuItem(
-                              icon: Icons.dashboard,
-                              label: 'Dashboard',
-                              tab: SideBarTab.dashboard,
-                              route: Routes.DASHBOARD,
-                            ),
-                            _buildMenuItem(
-                              icon: Icons.group,
-                              label: 'Projects',
-                              tab: SideBarTab.projects,
-                              route: Routes.PROJECTS,
-                            ),
-                            _buildMenuItem(
-                              icon: Icons.event,
-                              label: 'Projects Details',
-                              tab: SideBarTab.projectsDetails,
-                              route: Routes.PROJECTS_DETAILS,
-                            ),
-                            _buildMenuItem(
-                              icon: Icons.money,
-                              label: 'Applied Projects',
-                              tab: SideBarTab.appliedProjects,
-                              route: Routes.APPLIED_PROJECTS,
-                            ),
-                          ],
+                          children: UserProvider.currentUser?.currentUserRole
+                                      ?.toLowerCase() ==
+                                  'volunteer'
+                              ? _volunteerMenu()
+                              : _organizerMenu(),
                         ),
                       ),
                     ),
@@ -88,6 +68,46 @@ class SideBar extends StatelessWidget {
               ),
       ),
     );
+  }
+
+  List<Widget> _volunteerMenu() {
+    return [
+      _buildMenuItem(
+        icon: Icons.dashboard,
+        label: 'Dashboard',
+        tab: SideBarTab.dashboard,
+        route: Routes.VOLUNTEER_DASHBOARD,
+      ),
+      _buildMenuItem(
+        icon: Icons.group,
+        label: 'Projects',
+        tab: SideBarTab.projects,
+        route: Routes.PROJECTS,
+      ),
+      _buildMenuItem(
+        icon: Icons.event,
+        label: 'Projects Details',
+        tab: SideBarTab.projectsDetails,
+        route: Routes.PROJECTS_DETAILS,
+      ),
+      _buildMenuItem(
+        icon: Icons.money,
+        label: 'Applied Projects',
+        tab: SideBarTab.appliedProjects,
+        route: Routes.APPLIED_PROJECTS,
+      ),
+    ];
+  }
+
+  List<Widget> _organizerMenu() {
+    return [
+      _buildMenuItem(
+        icon: Icons.dashboard,
+        label: 'Dashboard',
+        tab: SideBarTab.dashboard,
+        route: Routes.ORGANIZER_DASHBOARD,
+      ),
+    ];
   }
 
   Widget _buildMenuItem({

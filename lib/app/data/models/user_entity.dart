@@ -20,15 +20,25 @@ class User {
         currentUserRole: json['role'] as String? ?? '',
       );
 
-  factory User.fromJson(String str) =>
-      User.fromMap(json.decode(str) as Map<String, dynamic>);
-
+  factory User.fromJson(String json) {
+    final Map<String, dynamic> jsonMap =
+        jsonDecode(json) as Map<String, dynamic>;
+    return User.fromMap(jsonMap);
+  }
   String? currentUserId;
   String? currentUsername;
   String? currentUserEmail;
   String? currentUserRole;
 
-  String toJson() => json.encode(toMap());
+  Map<String, dynamic> toJson() {
+    final json = {
+      '_id': currentUserId,
+      'username': currentUsername,
+      'email': currentUserEmail,
+      'role': currentUserRole,
+    };
+    return json;
+  }
 
   Map<String, dynamic> toMap() => <String, dynamic>{
         'current_user_id': currentUserId,

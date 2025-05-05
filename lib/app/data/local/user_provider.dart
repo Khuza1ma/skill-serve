@@ -1,7 +1,8 @@
 import '../../routes/app_pages.dart';
-import '../config/encryption.dart';
 import '../models/user_entity.dart';
+import '../config/encryption.dart';
 import 'local_store.dart';
+import 'dart:convert';
 
 /// Helper class for local stored User
 class UserProvider {
@@ -26,7 +27,8 @@ class UserProvider {
     _isLoggedIn = true;
     _userEntity = user;
     _authToken = userAuthToken;
-    LocalStore.user(AppEncryption.encrypt(plainText: user.toJson()));
+    LocalStore.user(
+        AppEncryption.encrypt(plainText: jsonEncode(user.toJson())));
     LocalStore.authToken(userAuthToken);
   }
 

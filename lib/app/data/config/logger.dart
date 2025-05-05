@@ -7,7 +7,7 @@ void initLogger() {
   _logger = Logger(
     printer: PrettyPrinter(
       lineLength: 180,
-      methodCount: 0,
+      methodCount: 2,
       errorMethodCount: 10,
     ),
   );

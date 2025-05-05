@@ -1,3 +1,4 @@
+import 'package:skill_serve/app/data/config/logger.dart';
 import 'package:skill_serve/app/utils/api_ext.dart';
 import '../../local/user_provider.dart';
 import '../api_service/init_api_service.dart';
@@ -16,15 +17,16 @@ class UserService {
     try {
       final Response<Map<String, dynamic>?>? response = await APIService.post(
         path: 'auth/login/',
-        data: FormData.fromMap(<String, dynamic>{
+        data: {
           'usernameOrEmail': username,
           'password': password,
-        }),
+        },
       );
 
       if ((response?.isOk ?? false)) {
         final Map<String, dynamic>? loginData = response?.data?['data'];
         if ((loginData != null)) {
+          logI('Login data: $loginData');
           user = User.fromMap(
             loginData,
           );
@@ -52,10 +54,10 @@ class UserService {
     try {
       final Response<Map<String, dynamic>?>? response = await APIService.post(
         path: 'api/user/register/',
-        data: FormData.fromMap(<String, dynamic>{
-          'username': username,
+        data: {
+          'usernameOrEmail': username,
           'password': password,
-        }),
+        },
       );
 
       if (response?.isOk ?? false) {

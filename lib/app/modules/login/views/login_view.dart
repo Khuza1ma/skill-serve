@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:skill_serve/app/routes/app_pages.dart';
 import 'package:skill_serve/app/utils/num_ext.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
@@ -194,7 +193,6 @@ class LoginView extends GetView<LoginController> {
         AppButton(
           onPressed: () {
             controller.loginUser();
-            Get.offAllNamed(Routes.HOME);
           },
           buttonText: 'Login',
           fontSize: 20,
