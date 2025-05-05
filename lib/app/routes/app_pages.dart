@@ -2,10 +2,14 @@ import 'package:get/get.dart';
 
 import '../modules/applied_projects/bindings/applied_projects_binding.dart';
 import '../modules/applied_projects/views/applied_projects_view.dart';
+import '../modules/create_project/bindings/create_project_binding.dart';
+import '../modules/create_project/views/create_project_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/manage_project/bindings/manage_project_binding.dart';
+import '../modules/manage_project/views/manage_project_view.dart';
 import '../modules/organizer_dashboard/bindings/organizer_dashboard_binding.dart';
 import '../modules/organizer_dashboard/views/organizer_dashboard_view.dart';
 import '../modules/projects/bindings/projects_binding.dart';
@@ -57,6 +61,16 @@ class AppPages {
       name: _Paths.ORGANIZER_DASHBOARD,
       page: () => const OrganizerDashboardView(),
       binding: OrganizerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.CREATE_PROJECT,
+      page: () => const CreateProjectView(),
+      binding: CreateProjectBinding(),
+    ),
+    GetPage(
+      name: _Paths.MANAGE_PROJECT,
+      page: () => const ManageProjectView(),
+      binding: ManageProjectBinding(),
     ),
   ];
 }

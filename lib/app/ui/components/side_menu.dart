@@ -107,6 +107,18 @@ class SideBar extends StatelessWidget {
         tab: SideBarTab.dashboard,
         route: Routes.ORGANIZER_DASHBOARD,
       ),
+      _buildMenuItem(
+        icon: Icons.group,
+        label: 'Create Projects',
+        tab: SideBarTab.createProject,
+        route: Routes.CREATE_PROJECT,
+      ),
+      _buildMenuItem(
+        icon: Icons.event,
+        label: 'Manage Projects',
+        tab: SideBarTab.manageProject,
+        route: Routes.MANAGE_PROJECT,
+      ),
     ];
   }
 

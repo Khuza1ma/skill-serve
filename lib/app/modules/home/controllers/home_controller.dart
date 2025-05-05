@@ -5,6 +5,8 @@ enum SideBarTab {
   projects,
   projectsDetails,
   appliedProjects,
+  createProject,
+  manageProject,
 }
 
 class HomeController extends GetxController {

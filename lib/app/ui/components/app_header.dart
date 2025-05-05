@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
-import 'package:web/web.dart';
+import 'package:web/web.dart' as web;
 
+import '../../data/local/user_provider.dart';
 import '../../modules/home/controllers/home_controller.dart';
 import '../../constants/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -79,9 +80,9 @@ class AppHeader extends StatelessWidget {
           IconButton(
             onPressed: () {
               if (controller.isFullScreen()) {
-                document.exitFullscreen();
+                web.document.exitFullscreen();
               } else {
-                document.documentElement?.requestFullscreen();
+                web.document.documentElement?.requestFullscreen();
               }
               controller.isFullScreen.toggle();
             },
@@ -92,26 +93,100 @@ class AppHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 20),
-          IconButton(
-            onPressed: () {
-              showCustomModal(
-                title: 'Confirm Logout',
-                content: 'Are you sure you want to logout? ',
-                buttonTitle: "Confirm",
-                onSubmit: () async {
-                  Get.back();
-                  // await controller.logout();
-                  Get.offAllNamed(Routes.LOGIN);
-                },
-                modalState: ModalState.PRIMARY,
-                alignment: Alignment.center,
-              );
-            },
-            icon: const Icon(
-              Icons.power_settings_new,
-              size: 30,
+          PopupMenuButton<String>(
+            offset: const Offset(0, 40),
+            tooltip: 'Show Profile',
+            icon: const CircleAvatar(
+              backgroundColor: AppColors.k806dff,
+              radius: 18,
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
+                size: 24,
+              ),
             ),
-            color: AppColors.kc6c6c8,
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'profile',
+                enabled: false,
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: AppColors.k806dff,
+                      child: Text(
+                        UserProvider.currentUser?.currentUsername
+                                ?.substring(0, 1)
+                                .toUpperCase() ??
+                            '',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.kFFFFFF,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            UserProvider.currentUser?.currentUsername ?? '',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.k806dff,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            UserProvider.currentUser?.currentUserEmail ?? '',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColors.k262837,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuDivider(),
+              PopupMenuItem<String>(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.power_settings_new, color: AppColors.kFF0000),
+                    SizedBox(width: 8),
+                    Text(
+                      'Logout',
+                      style: TextStyle(
+                        color: AppColors.kFF0000,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            onSelected: (String value) {
+              if (value == 'logout') {
+                showCustomModal(
+                  title: 'Confirm Logout',
+                  content: 'Are you sure you want to logout? ',
+                  buttonTitle: "Confirm",
+                  onSubmit: () async {
+                    Get.back();
+                    // await controller.logout();
+                    Get.offAllNamed(Routes.LOGIN);
+                  },
+                  modalState: ModalState.PRIMARY,
+                  alignment: Alignment.center,
+                );
+              }
+              // Handle other menu options here
+            },
           ),
           const SizedBox(width: 10),
         ],

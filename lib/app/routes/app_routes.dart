@@ -13,6 +13,8 @@ abstract class Routes {
   static const APPLIED_PROJECTS = _Paths.APPLIED_PROJECTS;
   static const LOGIN = _Paths.LOGIN;
   static const ORGANIZER_DASHBOARD = _Paths.ORGANIZER_DASHBOARD;
+  static const CREATE_PROJECT = _Paths.CREATE_PROJECT;
+  static const MANAGE_PROJECT = _Paths.MANAGE_PROJECT;
 }
 
 abstract class _Paths {
@@ -24,4 +26,6 @@ abstract class _Paths {
   static const APPLIED_PROJECTS = '/applied-projects';
   static const LOGIN = '/login';
   static const ORGANIZER_DASHBOARD = '/organizer-dashboard';
+  static const CREATE_PROJECT = '/create-project';
+  static const MANAGE_PROJECT = '/manage-project';
 }

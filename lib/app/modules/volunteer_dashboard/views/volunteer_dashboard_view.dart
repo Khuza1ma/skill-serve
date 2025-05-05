@@ -1,3 +1,5 @@
+import 'package:skill_serve/app/data/local/user_provider.dart';
+
 import '../../../data/models/applied_project_model.dart';
 import '../controllers/volunteer_dashboard_controller.dart';
 import 'package:flutter/material.dart';
@@ -74,17 +76,19 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
+          spacing: 12,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Profile Avatar
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: AppColors.k806dff,
                   child: Text(
-                    controller.userProfile['name'].substring(0, 1),
+                    UserProvider.currentUser?.currentUsername
+                            ?.substring(0, 1)
+                            .toUpperCase() ??
+                        '',
                     style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -92,15 +96,13 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 20),
-
-                // Profile Details
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        controller.userProfile['name'],
+                        UserProvider.currentUser?.currentUsername ?? '',
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -109,7 +111,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        controller.userProfile['email'],
+                        UserProvider.currentUser?.currentUserEmail ?? '',
                         style: const TextStyle(
                           fontSize: 16,
                           color: AppColors.kc6c6c8,
@@ -117,60 +119,40 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Volunteer ID: ${controller.userProfile['volunteerId']}',
+                        'Volunteer ID: ${UserProvider.currentUser?.currentUserId}',
                         style: const TextStyle(
                           fontSize: 14,
                           color: AppColors.kc6c6c8,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children:
-                            (controller.userProfile['skills'] as List<String>)
-                                .map((skill) => Chip(
-                                      label: Text(skill),
-                                      backgroundColor:
-                                          AppColors.k806dff.withOpacity(0.2),
-                                      labelStyle: const TextStyle(
-                                        color: AppColors.kFFFFFF,
-                                      ),
-                                    ))
-                                .toList(),
-                      ),
                     ],
                   ),
                 ),
-
-                // Project Stats
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    _buildStatItem(
-                      'Applied Projects',
-                      controller.totalAppliedProjects.toString(),
-                      AppColors.k3B7DDD,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildStatItem(
-                      'Approved',
-                      controller.getStatusCount('Approved').toString(),
-                      AppColors.k1CBB8C,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildStatItem(
-                      'Pending',
-                      controller.getStatusCount('Pending').toString(),
-                      AppColors.kFCB92C,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildStatItem(
-                      'Rejected',
-                      controller.getStatusCount('Rejected').toString(),
-                      AppColors.kDC3545,
-                    ),
-                  ],
+              ],
+            ),
+            Row(
+              spacing: 12,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildStatItem(
+                  'Applied Projects',
+                  controller.totalAppliedProjects.toString(),
+                  AppColors.k3B7DDD,
+                ),
+                _buildStatItem(
+                  'Approved',
+                  controller.getStatusCount('Approved').toString(),
+                  AppColors.k1CBB8C,
+                ),
+                _buildStatItem(
+                  'Pending',
+                  controller.getStatusCount('Pending').toString(),
+                  AppColors.kFCB92C,
+                ),
+                _buildStatItem(
+                  'Rejected',
+                  controller.getStatusCount('Rejected').toString(),
+                  AppColors.kDC3545,
                 ),
               ],
             ),
@@ -182,6 +164,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
 
   Widget _buildStatItem(String label, String value, Color color) {
     return Container(
+      width: 180,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
@@ -193,7 +176,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
           Text(
             value,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 28,
               fontWeight: FontWeight.bold,
               color: color,
             ),
@@ -202,7 +185,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
           Text(
             label,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 16,
               color: color.withOpacity(0.8),
             ),
           ),
