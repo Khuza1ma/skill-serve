@@ -170,9 +170,13 @@ class LoginView extends GetView<LoginController> {
           ),
           suffix: IconButton.filledTonal(
             style: ButtonStyle(
-              shape: WidgetStateProperty.all(const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-              )),
+              shape: WidgetStateProperty.all(
+                const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(4),
+                  ),
+                ),
+              ),
             ),
             iconSize: 24,
             onPressed: controller.hidePassword.toggle,
@@ -317,7 +321,7 @@ class LoginView extends GetView<LoginController> {
         ),
         AppButton(
           onPressed: () {
-            controller.loginUser();
+            controller.registerUser();
           },
           buttonText: 'Sign Up',
           fontSize: 20,

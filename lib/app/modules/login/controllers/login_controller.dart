@@ -21,8 +21,6 @@ class LoginController extends GetxController {
     isLoading.value = true;
     try {
       if (formKey.currentState?.saveAndValidate() ?? false) {
-        logW(formKey.currentState?.value['username']);
-        logW(formKey.currentState?.value['password']);
         final User? user = await UserService.login(
           username: formKey.currentState?.value['username'],
           password: formKey.currentState?.value['password'],
@@ -40,6 +38,28 @@ class LoginController extends GetxController {
             message: 'Login failed',
             snackBarState: SnackBarState.DANGER,
           );
+        }
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> registerUser() async {
+    isLoading.value = true;
+    try {
+      if (formKey.currentState?.saveAndValidate() ?? false) {
+        final bool isRegistered = await UserService.signUp(
+          username: formKey.currentState?.value['username'],
+          password: formKey.currentState?.value['password'],
+          email: formKey.currentState?.value['email'],
+        );
+        if (isRegistered) {
+          appSnackbar(
+            message: 'Registration successful',
+            snackBarState: SnackBarState.SUCCESS,
+          );
+          await Get.offAllNamed(Routes.HOME);
         }
       }
     } finally {

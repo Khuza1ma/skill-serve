@@ -79,19 +79,19 @@ class SideBar extends StatelessWidget {
         route: Routes.VOLUNTEER_DASHBOARD,
       ),
       _buildMenuItem(
-        icon: Icons.group,
+        icon: Icons.work_outline,
         label: 'Projects',
         tab: SideBarTab.projects,
         route: Routes.PROJECTS,
       ),
       _buildMenuItem(
-        icon: Icons.event,
+        icon: Icons.info_outline,
         label: 'Projects Details',
         tab: SideBarTab.projectsDetails,
         route: Routes.PROJECTS_DETAILS,
       ),
       _buildMenuItem(
-        icon: Icons.money,
+        icon: Icons.assignment_turned_in,
         label: 'Applied Projects',
         tab: SideBarTab.appliedProjects,
         route: Routes.APPLIED_PROJECTS,
@@ -108,13 +108,13 @@ class SideBar extends StatelessWidget {
         route: Routes.ORGANIZER_DASHBOARD,
       ),
       _buildMenuItem(
-        icon: Icons.group,
+        icon: Icons.add_box_outlined,
         label: 'Create Projects',
         tab: SideBarTab.createProject,
         route: Routes.CREATE_PROJECT,
       ),
       _buildMenuItem(
-        icon: Icons.event,
+        icon: Icons.settings_applications,
         label: 'Manage Projects',
         tab: SideBarTab.manageProject,
         route: Routes.MANAGE_PROJECT,

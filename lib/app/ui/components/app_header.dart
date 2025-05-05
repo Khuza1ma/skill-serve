@@ -177,6 +177,7 @@ class AppHeader extends StatelessWidget {
                   content: 'Are you sure you want to logout? ',
                   buttonTitle: "Confirm",
                   onSubmit: () async {
+                    UserProvider.onLogout();
                     Get.back();
                     // await controller.logout();
                     Get.offAllNamed(Routes.LOGIN);

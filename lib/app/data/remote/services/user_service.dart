@@ -1,8 +1,9 @@
 import 'package:skill_serve/app/data/config/logger.dart';
 import 'package:skill_serve/app/utils/api_ext.dart';
-import '../../local/user_provider.dart';
+import '../../../ui/components/app_snackbar.dart';
 import '../api_service/init_api_service.dart';
 import '../../config/error_handling.dart';
+import '../../local/user_provider.dart';
 import '../../models/user_entity.dart';
 import 'package:dio/dio.dart';
 
@@ -50,17 +51,31 @@ class UserService {
   static Future<bool> signUp({
     required String username,
     required String password,
+    required String email,
   }) async {
     try {
       final Response<Map<String, dynamic>?>? response = await APIService.post(
-        path: 'api/user/register/',
+        path: 'auth/register/',
         data: {
-          'usernameOrEmail': username,
+          'username': username,
+          'email': email,
           'password': password,
+          'role': 'volunteer',
         },
       );
 
       if (response?.isOk ?? false) {
+        final Map<String, dynamic>? loginData = response?.data?['data'];
+        if ((loginData != null)) {
+          logI('Login data: $loginData');
+          final user = User.fromMap(
+            loginData,
+          );
+          UserProvider.onLogin(
+            user: user,
+            userAuthToken: loginData['token'],
+          );
+        }
         return true;
       } else {
         return false;
@@ -70,6 +85,11 @@ class UserService {
         e,
         st,
         showSnackBar: false,
+      );
+      appSnackbar(
+        title: 'Registration failed',
+        message: '${e.response?.data['message']}',
+        snackBarState: SnackBarState.DANGER,
       );
       return false;
     }
