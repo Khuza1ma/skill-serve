@@ -19,12 +19,14 @@ class UserProvider {
   static bool get isLoggedIn => _isLoggedIn;
 
   ///Set [currentUser] and [authToken]
-  static void onLogin(User user, String userAuthToken) {
+  static void onLogin({
+    required User user,
+    required String userAuthToken,
+  }) {
     _isLoggedIn = true;
     _userEntity = user;
     _authToken = userAuthToken;
     LocalStore.user(AppEncryption.encrypt(plainText: user.toJson()));
-    LocalStore.userId(user.currentUserId);
     LocalStore.authToken(userAuthToken);
   }
 
@@ -48,7 +50,6 @@ class UserProvider {
     _authToken = null;
     LocalStore.authToken.erase();
     LocalStore.user.erase();
-    LocalStore.userId.erase();
   }
 
   /// Get initial route based on user login status

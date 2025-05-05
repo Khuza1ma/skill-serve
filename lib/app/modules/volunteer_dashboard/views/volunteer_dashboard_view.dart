@@ -1,12 +1,12 @@
 import '../../../data/models/applied_project_model.dart';
-import '../controllers/dashboard_controller.dart';
+import '../controllers/volunteer_dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../constants/app_colors.dart';
 
-class DashboardView extends GetView<DashboardController> {
-  const DashboardView({super.key});
+class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
+  const VolunteerDashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {

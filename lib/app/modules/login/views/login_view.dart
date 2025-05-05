@@ -193,7 +193,7 @@ class LoginView extends GetView<LoginController> {
         30.verticalSpace,
         AppButton(
           onPressed: () {
-            // controller.loginUser();
+            controller.loginUser();
             Get.offAllNamed(Routes.HOME);
           },
           buttonText: 'Login',

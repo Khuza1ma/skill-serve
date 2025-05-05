@@ -14,40 +14,23 @@ class UserService {
   }) async {
     User? user;
     try {
-      final Response<Map<String, dynamic>?>? loginResponse =
-          await APIService.post(
-        path: 'api/token-auth/',
+      final Response<Map<String, dynamic>?>? response = await APIService.post(
+        path: 'auth/login/',
         data: FormData.fromMap(<String, dynamic>{
-          'username': username,
+          'usernameOrEmail': username,
           'password': password,
         }),
       );
 
-      final Response<Map<String, dynamic>?>? userInfoResponse =
-          await APIService.get(
-        path: 'api/get_info/',
-        options: Options(
-          headers: <String, dynamic>{
-            'Authorization': "Token ${loginResponse?.data?['token']}"
-          },
-        ),
-      );
-
-      if ((loginResponse?.isOk ?? false) && (userInfoResponse?.isOk ?? false)) {
-        final Map<String, dynamic>? loginData = loginResponse?.data;
-        final Map<String, dynamic>? userData = userInfoResponse?.data;
-
-        if ((loginData?['token'] != null) &&
-            (userData?['current_user_id'] != null)) {
-          user = User(
-            currentUserId: userData?['current_user_id'],
-            currentUsername: userData?['current_username'],
-            currentUserEmail: userData?['current_user_email'],
+      if ((response?.isOk ?? false)) {
+        final Map<String, dynamic>? loginData = response?.data?['data'];
+        if ((loginData != null)) {
+          user = User.fromMap(
+            loginData,
           );
-
           UserProvider.onLogin(
-            user,
-            loginData?['token'],
+            user: user,
+            userAuthToken: loginData['token'],
           );
         }
       }

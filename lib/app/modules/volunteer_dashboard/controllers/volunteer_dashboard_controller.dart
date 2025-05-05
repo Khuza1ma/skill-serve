@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import '../../../data/models/applied_project_model.dart';
 
-class DashboardController extends GetxController {
+class VolunteerDashboardController extends GetxController {
   final RxBool isLoading = true.obs;
   final RxList<AppliedProject> appliedProjects = <AppliedProject>[].obs;
   final RxMap<String, int> projectStatusCounts = <String, int>{}.obs;

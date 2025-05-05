@@ -53,10 +53,6 @@ class LocalStore {
   static final StoreObject<String> user =
       StoreObject<String>(key: StorageKeys.userDataKey);
 
-  /// user id
-  static final StoreObject<int> userId =
-      StoreObject<int>(key: StorageKeys.userId);
-
   /// Erase all local stored data
   static Future<void> erase() async {
     await _Store.erase();

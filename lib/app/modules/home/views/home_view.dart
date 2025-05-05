@@ -49,6 +49,7 @@ class HomeView extends GetResponsiveView<HomeController> {
     return Expanded(
       child: Navigator(
         key: Get.nestedKey(1),
+        // initialRoute: UserProvider.currentUser,
         onGenerateRoute: (settings) {
           // Save app pages routes in temp list
           var routes = [...AppPages.routes];
