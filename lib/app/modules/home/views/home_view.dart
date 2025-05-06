@@ -51,7 +51,7 @@ class HomeView extends GetResponsiveView<HomeController> {
       child: Navigator(
         key: Get.nestedKey(1),
         initialRoute:
-            UserProvider.currentUser?.currentUserRole?.toLowerCase() ==
+            UserProvider.currentUser?.currentUserRole?.toLowerCase() !=
                     'volunteer'
                 ? Routes.VOLUNTEER_DASHBOARD
                 : Routes.ORGANIZER_DASHBOARD,
