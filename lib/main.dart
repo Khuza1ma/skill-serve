@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,6 +20,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      scrollBehavior: MaterialScrollBehavior().copyWith(
+        dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch,
+          PointerDeviceKind.stylus,
+          PointerDeviceKind.unknown
+        },
+      ),
       title: 'Flutter Admin Panel',
       theme: ThemeData(
         scaffoldBackgroundColor: AppColors.k1f1d2c,
