@@ -29,6 +29,22 @@ class ManageProjectController extends GetxController {
   // For skills input
   final skillController = TextEditingController();
 
+  // For skills input
+  final requiredSkills = <String>[].obs;
+
+  // Add a skill to the list
+  void addSkill() {
+    if (skillController.text.trim().isNotEmpty) {
+      requiredSkills.add(skillController.text.trim());
+      skillController.clear();
+    }
+  }
+
+  // Remove a skill from the list
+  void removeSkill(String skill) {
+    requiredSkills.remove(skill);
+  }
+
   @override
   void onInit() {
     super.onInit();

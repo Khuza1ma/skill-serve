@@ -1,11 +1,12 @@
-import 'dart:ui';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'app/constants/app_colors.dart';
+
+import 'dart:ui';
+
 import 'app/data/config/initialize_app.dart';
 import 'app/data/local/user_provider.dart';
+import 'app/constants/app_colors.dart';
 import 'app/routes/app_pages.dart';
 
 Future<void> main() async {

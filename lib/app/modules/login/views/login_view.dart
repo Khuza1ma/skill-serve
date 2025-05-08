@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../../ui/components/app_button.dart';
 import '../../../ui/components/app_text_form_field.dart';
 import '../../../constants/asset_constants.dart';
@@ -195,8 +196,9 @@ class LoginView extends GetView<LoginController> {
         ),
         30.verticalSpace,
         AppButton(
-          onPressed: () {
+          onPressed: () async {
             controller.loginUser();
+            await Get.offAllNamed(Routes.HOME);
           },
           buttonText: 'Login',
           fontSize: 20,
