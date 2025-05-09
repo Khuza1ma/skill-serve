@@ -52,7 +52,7 @@ class SideBar extends StatelessWidget {
                       child: SingleChildScrollView(
                         child: Column(
                           children: UserProvider.currentUser?.currentUserRole
-                                      ?.toLowerCase() !=
+                                      ?.toLowerCase() ==
                                   'volunteer'
                               ? _volunteerMenu()
                               : _organizerMenu(),

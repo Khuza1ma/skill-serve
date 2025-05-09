@@ -186,13 +186,12 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
 
   Widget _buildStatItem(String label, String value, Color color) {
     return Container(
-      width: 180,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -209,7 +208,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
             label,
             style: TextStyle(
               fontSize: 16,
-              color: color.withOpacity(0.8),
+              color: color.withValues(alpha: 0.8),
             ),
           ),
         ],
@@ -327,7 +326,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.k806dff.withOpacity(0.1),
+                color: AppColors.k806dff.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -386,7 +385,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
             value: percentage / 100,
-            backgroundColor: color.withOpacity(0.2),
+            backgroundColor: color.withValues(alpha: 0.2),
             valueColor: AlwaysStoppedAnimation<Color>(color),
             minHeight: 8,
           ),
@@ -492,9 +491,9 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: statusColor.withOpacity(0.3)),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -760,9 +759,9 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: statusColor.withOpacity(0.3)),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -845,9 +844,9 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.k806dff.withOpacity(0.1),
+        color: AppColors.k806dff.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.k806dff.withOpacity(0.3)),
+        border: Border.all(color: AppColors.k806dff.withValues(alpha: 0.3)),
       ),
       child: Text(
         skill,

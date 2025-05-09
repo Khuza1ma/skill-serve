@@ -1,3 +1,4 @@
+import 'package:skill_serve/app/ui/components/app_snackbar.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:flutter/material.dart';
@@ -470,11 +471,10 @@ class ManageProjectView extends GetView<ManageProjectController> {
             onPressed: () {
               Navigator.pop(context);
               controller.deleteProject(project.projectId).then((_) {
-                Get.snackbar(
-                  'Success',
-                  'Project deleted successfully',
-                  backgroundColor: Colors.green,
-                  colorText: Colors.white,
+                appSnackbar(
+                  title: 'Success',
+                  message: 'Project deleted successfully',
+                  snackBarState: SnackBarState.SUCCESS,
                 );
               });
             },
