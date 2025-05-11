@@ -28,21 +28,24 @@ class SideBar extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   spacing: 20,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: 10,
-                      children: [
-                        Image.asset(AppAssets.logo, height: 40, width: 40),
-                        Text(
-                          'Skill Serve',
-                          style: GoogleFonts.montserrat(
-                            color: AppColors.kc6c6c8,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
+                    Hero(
+                      tag: 'logo',
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 10,
+                        children: [
+                          Image.asset(AppAssets.logo, height: 40, width: 40),
+                          Text(
+                            'Skill Serve',
+                            style: GoogleFonts.montserrat(
+                              color: AppColors.kc6c6c8,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                      ],
-                    ).paddingOnly(top: 20),
+                        ],
+                      ).paddingOnly(top: 20),
+                    ),
                     Divider(
                       color: AppColors.kc6c6c8.withValues(alpha: 0.2),
                       height: 1,
