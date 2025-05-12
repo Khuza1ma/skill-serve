@@ -38,7 +38,7 @@ class LoginView extends GetView<LoginController> {
                 children: [
                   Hero(
                     tag: 'logo',
-                    child:                  Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       spacing: 20,
                       children: [
@@ -201,7 +201,7 @@ class LoginView extends GetView<LoginController> {
         AppButton(
           onPressed: () async {
             controller.loginUser();
-            await Get.offAllNamed(Routes.HOME);
+            // await Get.offAllNamed(Routes.HOME);
           },
           buttonText: 'Login',
           fontSize: 20,
