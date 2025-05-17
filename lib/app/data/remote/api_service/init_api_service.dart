@@ -1,19 +1,16 @@
-import 'package:http_parser/http_parser.dart' as http_parser;
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:flutter/foundation.dart';
-import 'package:path/path.dart' as path;
-import 'package:dio/dio.dart';
 import 'dart:io';
 
-import '../../local/user_provider.dart';
-import '../../config/logger.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:http_parser/http_parser.dart' as http_parser;
+import 'package:path/path.dart' as path;
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-/// DIO interceptor to add the authentication token
-InterceptorsWrapper addAuthToken() => InterceptorsWrapper(
-      onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
+import '../../config/logger.dart';
+import '../../local/user_providptions, RequestInterceptorHandler handler) {
         if (UserProvider.authToken != null) {
           options.headers.addAll(<String, dynamic>{
-            'Authorization': 'Token ${UserProvider.authToken}',
+            'Authorization': 'Bearer ${UserProvider.authToken}',
           });
         }
         handler.next(options);
@@ -24,7 +21,7 @@ InterceptorsWrapper addAuthToken() => InterceptorsWrapper(
 class APIService {
   static final Dio _dio = Dio();
 
-  static const String _baseUrl = 'http://localhost:5000/api/';
+  static const String _baseUrl = 'http://192.168.1.3:5000/api/';
 
   /// Initialize the API service
   static void initialize() {

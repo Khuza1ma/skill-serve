@@ -1,11 +1,11 @@
-import 'package:skill_serve/app/data/local/user_provider.dart';
-
-import '../../../data/models/applied_project_model.dart';
-import '../controllers/volunteer_dashboard_controller.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:skill_serve/app/data/local/user_provider.dart';
+
 import '../../../constants/app_colors.dart';
+import '../../../data/models/applied_project_model.dart';
+import '../controllers/volunteer_dashboard_controller.dart';
 
 class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
   const VolunteerDashboardView({super.key});
@@ -13,65 +13,53 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(
-        () {
-          if (controller.isLoading.value) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Dashboard',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.k806dff,
-                  ),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Dashboard',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.k806dff,
                 ),
-                const SizedBox(height: 24),
+              ),
+              const SizedBox(height: 24),
 
-                // Profile Summary Card
-                _buildProfileSummaryCard(),
-                const SizedBox(height: 24),
+              // Profile Summary Card
+              _buildProfileSummaryCard(),
+              const SizedBox(height: 24),
 
-                // Project Statistics Row
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: _buildProjectStatusChart(),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      flex: 1,
-                      child: _buildProjectsOverviewCard(),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
+              // Project Statistics Row
+              Row(
+                children: [
+                  Expanded(flex: 1, child: _buildProjectStatusChart()),
+                  const SizedBox(width: 16),
+                  Expanded(flex: 1, child: _buildProjectsOverviewCard()),
+                ],
+              ),
+              const SizedBox(height: 24),
 
-                // Recent Applied Projects
-                _buildRecentAppliedProjectsCard(),
-              ],
-            ),
-          );
-        },
-      ),
+              // Recent Applied Projects
+              _buildRecentAppliedProjectsCard(),
+            ],
+          ),
+        );
+      }),
     );
   }
 
   Widget _buildProfileSummaryCard() {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       color: AppColors.k262837,
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -184,10 +172,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
           const SizedBox(height: 4),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 16,
-              color: color.withOpacity(0.8),
-            ),
+            style: TextStyle(fontSize: 16, color: color.withOpacity(0.8)),
           ),
         ],
       ),
@@ -201,28 +186,45 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
       'Rejected': AppColors.kDC3545,
     };
 
-    final sections = <PieChartSectionData>[];
-    controller.projectStatusCounts.forEach((status, count) {
-      sections.add(
-        PieChartSectionData(
-          value: count.toDouble(),
-          title: '$status\n$count',
-          color: statusColors[status] ?? AppColors.k17A2B8,
-          radius: 100,
-          titleStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: AppColors.kFFFFFF,
-          ),
+    final sections = <PieChartSectionData>[
+      PieChartSectionData(
+        value: controller.projectStatusCounts.value.approved.toDouble(),
+        title: 'Approved\n${controller.projectStatusCounts.value.approved}',
+        color: statusColors['Approved'] ?? AppColors.k17A2B8,
+        radius: 100,
+        titleStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: AppColors.kFFFFFF,
         ),
-      );
-    });
+      ),
+      PieChartSectionData(
+        value: controller.projectStatusCounts.value.pending.toDouble(),
+        title: 'Pending\n${controller.projectStatusCounts.value.pending}',
+        color: statusColors['Pending'] ?? AppColors.k17A2B8,
+        radius: 100,
+        titleStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: AppColors.kFFFFFF,
+        ),
+      ),
+      PieChartSectionData(
+        value: controller.projectStatusCounts.value.rejected.toDouble(),
+        title: 'Rejected\n${controller.projectStatusCounts.value.rejected}',
+        color: statusColors['Rejected'] ?? AppColors.k17A2B8,
+        radius: 100,
+        titleStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: AppColors.kFFFFFF,
+        ),
+      ),
+    ];
 
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       color: AppColors.k262837,
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -238,17 +240,24 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
               ),
             ),
             const SizedBox(height: 20),
-            SizedBox(
-              height: 250,
-              child: PieChart(
-                PieChartData(
-                  sections: sections,
-                  centerSpaceRadius: 40,
-                  sectionsSpace: 2,
-                  borderData: FlBorderData(show: false),
+            (sections.isEmpty)
+                ? const Center(
+                  child: Text(
+                    'No data available',
+                    style: TextStyle(color: AppColors.kFFFFFF),
+                  ),
+                )
+                : SizedBox(
+                  height: 250,
+                  child: PieChart(
+                    PieChartData(
+                      sections: sections,
+                      centerSpaceRadius: 40,
+                      sectionsSpace: 2,
+                      borderData: FlBorderData(show: false),
+                    ),
+                  ),
                 ),
-              ),
-            ),
           ],
         ),
       ),
@@ -258,9 +267,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
   Widget _buildProjectsOverviewCard() {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       color: AppColors.k262837,
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -278,19 +285,19 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
             const SizedBox(height: 20),
             _buildProgressItem(
               'Completed Projects',
-              controller.userProfile['completedProjects'],
+              controller.projectStatusCounts.value.approved,
               AppColors.k1CBB8C,
             ),
             const SizedBox(height: 16),
             _buildProgressItem(
               'Ongoing Projects',
-              controller.userProfile['ongoingProjects'],
+              controller.projectStatusCounts.value.pending,
               AppColors.k3B7DDD,
             ),
             const SizedBox(height: 16),
             _buildProgressItem(
               'Applied Projects',
-              controller.totalAppliedProjects,
+              controller.projectStatusCounts.value.totalAppliedProjects,
               AppColors.kFCB92C,
             ),
             const SizedBox(height: 20),
@@ -302,17 +309,12 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.info_outline,
-                    color: AppColors.k806dff,
-                  ),
+                  const Icon(Icons.info_outline, color: AppColors.k806dff),
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Text(
                       'Your profile shows a good balance of completed and ongoing projects.',
-                      style: TextStyle(
-                        color: AppColors.kFFFFFF,
-                      ),
+                      style: TextStyle(color: AppColors.kFFFFFF),
                     ),
                   ),
                 ],
@@ -336,10 +338,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
           children: [
             Text(
               label,
-              style: const TextStyle(
-                color: AppColors.kFFFFFF,
-                fontSize: 14,
-              ),
+              style: const TextStyle(color: AppColors.kFFFFFF, fontSize: 14),
             ),
             Text(
               value.toString(),
@@ -368,9 +367,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
   Widget _buildRecentAppliedProjectsCard() {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       color: AppColors.k262837,
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -394,9 +391,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
                   },
                   child: const Text(
                     'View All',
-                    style: TextStyle(
-                      color: AppColors.k806dff,
-                    ),
+                    style: TextStyle(color: AppColors.k806dff),
                   ),
                 ),
               ],
@@ -446,10 +441,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
               color: statusColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(
-              statusIcon,
-              color: statusColor,
-            ),
+            child: Icon(statusIcon, color: statusColor),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -494,10 +486,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
               const SizedBox(height: 4),
               Text(
                 'Applied: ${project.dateApplied}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.kc6c6c8,
-                ),
+                style: const TextStyle(fontSize: 12, color: AppColors.kc6c6c8),
               ),
             ],
           ),

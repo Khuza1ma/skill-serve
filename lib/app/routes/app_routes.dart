@@ -20,7 +20,7 @@ abstract class Routes {
 abstract class _Paths {
   _Paths._();
   static const HOME = '/home';
-  static const VOLUNTEER_DASHBOARD = '/';
+  static const VOLUNTEER_DASHBOARD = '/volunteer-dashboard';
   static const PROJECTS = '/projects';
   static const PROJECTS_DETAILS = '/projects-details';
   static const APPLIED_PROJECTS = '/applied-projects';

@@ -1,13 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:web/web.dart' as web;
 
+import '../../constants/app_colors.dart';
 import '../../data/local/user_provider.dart';
 import '../../modules/home/controllers/home_controller.dart';
-import '../../constants/app_colors.dart';
-import 'package:flutter/material.dart';
 import '../../routes/app_pages.dart';
-import 'app_text_form_field.dart';
 import 'app_modals.dart';
+import 'app_text_form_field.dart';
 
 class AppHeader extends StatelessWidget {
   const AppHeader({super.key});
@@ -66,7 +66,7 @@ class AppHeader extends StatelessWidget {
                           icon: const Icon(
                             Icons.close,
                             size: 18,
-                          ),flutter clean
+                          ),
                           constraints: const BoxConstraints(),
                           padding: EdgeInsets.zero,
                           onPressed: () {
