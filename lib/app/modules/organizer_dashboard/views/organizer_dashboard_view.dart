@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:skill_serve/app/data/models/project_model.dart';
+import 'package:skill_serve/app/modules/home/controllers/home_controller.dart';
 
 import '../../../constants/app_colors.dart';
+import '../../../data/config/logger.dart';
 import '../../../data/local/user_provider.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/organizer_dashboard_controller.dart';
 
 class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
@@ -403,7 +406,11 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Get.toNamed('/manage-project');
+                    // Navigate to Manage Projects screen
+
+                    Get.find<HomeController>().selectedTab.value =
+                        SideBarTab.manageProject;
+                    Get.offNamed(Routes.MANAGE_PROJECT, id: 1);
                   },
                   child: const Text(
                     'Manage Projects',
@@ -427,7 +434,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
               )
             else
               ...controller.projects
-                  .take(3)
+                  .take(5)
                   .map((project) => _buildProjectItem(project)),
           ],
         ),
@@ -504,7 +511,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
           ),
           const SizedBox(height: 8),
           Text(
-            project.description ?? '',
+            project.requiredSkills?.join(', ') ?? '',
             style: const TextStyle(color: AppColors.kc6c6c8, fontSize: 14),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -539,8 +546,10 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: project.requiredSkills?.map((skill) => _buildSkillChip(skill))
-                .toList()??[],
+            children: project.requiredSkills
+                    ?.map((skill) => _buildSkillChip(skill))
+                    .toList() ??
+                [],
           ),
         ],
       ),
@@ -563,6 +572,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
   }
 
   String _formatDate(DateTime? date) {
+    logWTF('Date: $date');
     if (date == null) return 'N/A';
     return DateFormat('MMM d, yyyy').format(date);
   }

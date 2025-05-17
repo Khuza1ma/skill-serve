@@ -35,12 +35,11 @@ class VolunteerDashboardResponse {
   factory VolunteerDashboardResponse.fromMap(Map<String, dynamic> json) {
     return VolunteerDashboardResponse(
       projectStatusCounts: ProjectStatusCounts.fromMap(
-        json['projectStatusCounts'],
+        json['project_status_counts'],
       ),
-      appliedProjects:
-          (json['appliedProjects'] as List)
-              .map((project) => AppliedProject.fromJson(project))
-              .toList(),
+      appliedProjects: (json['applied_projects'] as List)
+          .map((project) => AppliedProject.fromJson(project))
+          .toList(),
     );
   }
 }

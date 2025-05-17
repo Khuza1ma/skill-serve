@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:skill_serve/app/ui/components/app_snackbar.dart';
+import 'package:skill_serve/app/utils/data_grid_utils.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -12,7 +13,6 @@ import '../../../data/models/project_model.dart';
 import '../../../ui/components/app_button.dart';
 import '../../../ui/components/app_modals.dart';
 import '../../../ui/components/app_text_form_field.dart';
-import '../../../utils/data_grid_utils.dart';
 import '../controllers/manage_project_controller.dart';
 
 class ManageProjectView extends GetView<ManageProjectController> {
@@ -60,7 +60,8 @@ class ManageProjectView extends GetView<ManageProjectController> {
                   ),
                   AppButton(
                     buttonText: 'Add New Project',
-                    onPressed: () {},
+                    onPressed: () =>
+                        _showEditProjectDialog(context, isDesktop, null),
                     buttonSize: const Size(150, 40),
                     leading: Icon(
                       Icons.add,
@@ -100,6 +101,7 @@ class ManageProjectView extends GetView<ManageProjectController> {
                             gridLinesVisibility: GridLinesVisibility.horizontal,
                             isScrollbarAlwaysShown: true,
                             showHorizontalScrollbar: true,
+                            rowsPerPage: controller.pageSize.value,
                             columns: _buildColumns(),
                           ),
                         ),
@@ -142,9 +144,17 @@ class ManageProjectView extends GetView<ManageProjectController> {
               child: SfDataPager(
                 delegate: dataSource,
                 availableRowsPerPage: DataGridUtils.pageSizes,
-                pageCount: (controller.projects.length / 10).ceil().toDouble(),
+                pageCount: controller.totalPages.value.toDouble(),
+                onPageNavigationStart: (int pageIndex) {
+                  if (pageIndex + 1 != controller.currentPage.value) {
+                    controller.onPageChanged(pageIndex + 1);
+                  }
+                },
                 onRowsPerPageChanged: (int? rowsPerPage) {
-                  logW('rowsPerPage: $rowsPerPage');
+                  if (rowsPerPage != null &&
+                      rowsPerPage != controller.pageSize.value) {
+                    controller.onPageSizeChanged(rowsPerPage);
+                  }
                 },
               ),
             ),

@@ -13,9 +13,9 @@ class OrganizerProjectStatusCounts {
 
   factory OrganizerProjectStatusCounts.fromMap(Map<String, dynamic> json) {
     return OrganizerProjectStatusCounts(
-      openProjects: json['openProjects'] ?? 0,
-      closedProjects: json['closedProjects'] ?? 0,
-      totalApplications: json['totalApplications'] ?? 0,
+      openProjects: json['open_projects'] ?? 0,
+      closedProjects: json['closed_projects'] ?? 0,
+      totalApplications: json['total_applications'] ?? 0,
     );
   }
 }
@@ -32,12 +32,11 @@ class OrganizerDashboardResponse {
   factory OrganizerDashboardResponse.fromMap(Map<String, dynamic> json) {
     return OrganizerDashboardResponse(
       projectStatusCounts: OrganizerProjectStatusCounts.fromMap(
-        json['projectStatusCounts'],
+        json['project_status_counts'],
       ),
-      projects:
-          (json['projects'] as List)
-              .map((project) => Project.fromJson(project))
-              .toList(),
+      projects: (json['projects'] as List)
+          .map((project) => Project.fromJson(project))
+          .toList(),
     );
   }
 }

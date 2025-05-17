@@ -3,10 +3,17 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:skill_serve/app/data/config/logger.dart';
 import 'package:skill_serve/app/data/models/project_model.dart';
+import 'package:skill_serve/app/data/remote/services/project_service.dart';
 
 class ManageProjectController extends GetxController {
   final isLoading = false.obs;
   RxList<Project> projects = <Project>[].obs;
+
+  // Pagination
+  final currentPage = 1.obs;
+  final totalPages = 1.obs;
+  final totalItems = 0.obs;
+  final pageSize = 10.obs;
 
   // Selected project for editing
   Rx<Project?> selectedProject = Rx<Project?>(null);
@@ -67,71 +74,71 @@ class ManageProjectController extends GetxController {
   Future<void> fetchProjects() async {
     try {
       isLoading.value = true;
-      // For now, we'll use mock data
-      await Future.delayed(const Duration(seconds: 1));
-      {
-        projects.value = [
-          Project(
-            projectId: 'PRJ-001',
-            title: 'Community Garden Development',
-            organizerName: 'Green Earth Initiative',
-            location: 'Downtown Community Center',
-            description:
-                'Help us develop a community garden that will provide fresh produce for local food banks and teach gardening skills to community members.',
-            requiredSkills: [
-              'Gardening',
-              'Project Management',
-              'Community Outreach'
-            ],
-            timeCommitment: '10 hours per week',
-            startDate: DateTime.now().add(const Duration(days: 15)),
-            applicationDeadline: DateTime.now().add(const Duration(days: 7)),
-            status: 'Open',
-            createdAt: DateTime.now().subtract(const Duration(days: 5)),
-            endDate: DateTime.now(),
-            contactEmail: '',
-            maxVolunteers: 2,
-          ),
-          Project(
-            projectId: 'PRJ-002',
-            title: 'Youth Mentorship Program',
-            organizerName: 'Future Leaders Foundation',
-            location: 'City Youth Center',
-            description:
-                'Mentor underprivileged youth in academic subjects and life skills to help them achieve their full potential.',
-            requiredSkills: ['Teaching', 'Mentoring', 'Communication'],
-            timeCommitment: '5 hours per week',
-            startDate: DateTime.now().add(const Duration(days: 10)),
-            applicationDeadline: DateTime.now().add(const Duration(days: 5)),
-            status: 'Open',
-            createdAt: DateTime.now().subtract(const Duration(days: 3)),
-            endDate: DateTime.now(),
-            contactEmail: '',
-            maxVolunteers: 3,
-          ),
-          Project(
-            projectId: 'PRJ-003',
-            title: 'Homeless Shelter Support',
-            organizerName: 'Helping Hands Charity',
-            location: 'Downtown Shelter',
-            description:
-                'Assist in running the local homeless shelter, including meal preparation, distribution of supplies, and administrative support.',
-            requiredSkills: ['Organization', 'Food Preparation', 'Compassion'],
-            timeCommitment: '8 hours per week',
-            startDate: DateTime.now().add(const Duration(days: 7)),
-            applicationDeadline: DateTime.now().add(const Duration(days: 3)),
-            status: 'Open',
-            createdAt: DateTime.now().subtract(const Duration(days: 4)),
-            endDate: DateTime.now(),
-            contactEmail: '',
-            maxVolunteers: 3,
-          ),
-        ];
+      logI(
+          'Fetching projects - Page: ${currentPage.value}, PageSize: ${pageSize.value}');
+      final result = await ProjectService.fetchProjects(
+        page: currentPage.value,
+        limit: pageSize.value,
+      );
+
+      if (result != null &&
+          result.containsKey('projects') &&
+          result.containsKey('pagination')) {
+        final projectsList = result['projects'];
+        final pagination = result['pagination'];
+
+        if (projectsList is List<Project> &&
+            pagination is Map<String, dynamic>) {
+          projects.value = projectsList;
+          totalPages.value = pagination['pages'] as int? ?? 1;
+          totalItems.value = pagination['total'] as int? ?? 0;
+          logI(
+              'Updated pagination - Total: $totalItems, Pages: $totalPages, Current Page: $currentPage');
+        } else {
+          logE('Invalid data structure received from service');
+          Get.snackbar(
+            'Error',
+            'Invalid data structure received from server',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      } else {
+        logE('No data received from service');
+        Get.snackbar(
+          'Error',
+          'No data received from server',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       }
-    } catch (e) {
-      logE('Error fetching projects: $e');
+    } catch (e, st) {
+      logE('Error fetching projects: $e\n$st');
+      Get.snackbar(
+        'Error',
+        'Failed to fetch projects: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  void onPageChanged(int page) {
+    if (page != currentPage.value) {
+      logI('Changing page from ${currentPage.value} to $page');
+      currentPage.value = page;
+      fetchProjects();
+    }
+  }
+
+  void onPageSizeChanged(int size) {
+    if (size != pageSize.value) {
+      logI('Changing page size from ${pageSize.value} to $size');
+      pageSize.value = size;
+      currentPage.value = 1; // Reset to first page when changing page size
+      fetchProjects();
     }
   }
 
@@ -163,10 +170,7 @@ class ManageProjectController extends GetxController {
 
       // Create a new project
       final newProject = Project(
-        projectId: 'PRJ-${(projects.length + 1).toString().padLeft(3, '0')}',
         title: titleController.text,
-        organizerName:
-            'Current Organization', // This would come from user session
         location: locationController.text,
         description: descriptionController.text,
         requiredSkills: skills,
@@ -175,17 +179,24 @@ class ManageProjectController extends GetxController {
         applicationDeadline:
             DateFormat('yyyy-MM-dd').parse(applicationDeadlineController.text),
         status: selectedStatus.value,
-        createdAt: DateTime.now(),
-        assignedVolunteerId: null,
-
-        endDate: DateTime.now(), contactEmail: '', maxVolunteers: 2,
+        endDate: DateTime.now(),
+        contactEmail: '',
+        maxVolunteers: 2,
       );
 
-      // Add to projects list (in a real app, this would be an API call)
-      projects.add(newProject);
-
-      // Clear form
-      _clearForm();
+      final createdProject = await ProjectService.createProject(newProject);
+      if (createdProject != null) {
+        // Refresh the projects list
+        await fetchProjects();
+        _clearForm();
+        Get.back();
+        Get.snackbar(
+          'Success',
+          'Project created successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      }
     } catch (e) {
       logE('Error creating project: $e');
       Get.snackbar(
@@ -204,12 +215,6 @@ class ManageProjectController extends GetxController {
     try {
       isLoading.value = true;
 
-      // Find the project index
-      final index = projects.indexWhere((p) => p.projectId == projectId);
-      if (index == -1) {
-        throw Exception('Project not found');
-      }
-
       // Parse skills from comma-separated string
       final skills = skillController.text
           .split(',')
@@ -221,7 +226,6 @@ class ManageProjectController extends GetxController {
       final updatedProject = Project(
         projectId: projectId,
         title: titleController.text,
-        organizerName: projects[index].organizerName,
         location: locationController.text,
         description: descriptionController.text,
         requiredSkills: skills,
@@ -230,19 +234,22 @@ class ManageProjectController extends GetxController {
         applicationDeadline:
             DateFormat('yyyy-MM-dd').parse(applicationDeadlineController.text),
         status: selectedStatus.value,
-        assignedVolunteerId: projects[index].assignedVolunteerId,
-        createdAt: projects[index].createdAt,
-        updatedAt: DateTime.now(),
         endDate: DateTime.now(),
-        contactEmail: projects[index].contactEmail,
-        maxVolunteers: projects[index].maxVolunteers,
+        contactEmail: '',
+        maxVolunteers: 2,
       );
 
-      // Update in projects list (in a real app, this would be an API call)
-      projects[index] = updatedProject;
-
-      // Clear form
+      // TODO: Implement update project API call
+      // For now, just refresh the list
+      await fetchProjects();
       _clearForm();
+      Get.back();
+      Get.snackbar(
+        'Success',
+        'Project updated successfully',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
       logE('Error updating project: $e');
       Get.snackbar(
@@ -260,9 +267,15 @@ class ManageProjectController extends GetxController {
   Future<void> deleteProject(String projectId) async {
     try {
       isLoading.value = true;
-
-      // Remove from projects list (in a real app, this would be an API call)
-      projects.removeWhere((p) => p.projectId == projectId);
+      // TODO: Implement delete project API call
+      // For now, just refresh the list
+      await fetchProjects();
+      Get.snackbar(
+        'Success',
+        'Project deleted successfully',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
       logE('Error deleting project: $e');
       Get.snackbar(
