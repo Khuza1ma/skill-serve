@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:flutter/material.dart';
+
 import '../../constants/app_colors.dart';
 import '../../data/models/project_model.dart';
 import '../../modules/projects_details/controllers/projects_details_controller.dart';
@@ -34,8 +35,7 @@ class ProjectDetailsDataSource extends DataGridSource {
             DataGridCell<String>(
                 columnName: 'description', value: proj.description),
             DataGridCell<List<String>>(
-                columnName: 'required_skills',
-                value: proj.requiredSkills),
+                columnName: 'required_skills', value: proj.requiredSkills),
             DataGridCell<String>(
                 columnName: 'time_commitment', value: proj.timeCommitment),
             DataGridCell<DateTime>(
@@ -46,13 +46,13 @@ class ProjectDetailsDataSource extends DataGridSource {
             DataGridCell<String>(columnName: 'status', value: proj.status),
             DataGridCell<String>(
                 columnName: 'assigned_volunteer_id',
-                value: proj.assignedVolunteerId ?? 'Not Assigned'),
+                value: proj.assignedVolunteerId?.toString() ?? 'Not Assigned'),
             DataGridCell<DateTime>(
                 columnName: 'created_at', value: proj.createdAt),
           ],
         );
       }).toList();
-      
+
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
     return DataGridRowAdapter(

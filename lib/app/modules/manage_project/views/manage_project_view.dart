@@ -1,19 +1,19 @@
-import 'package:skill_serve/app/ui/components/app_snackbar.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:skill_serve/app/ui/components/app_snackbar.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../../constants/app_colors.dart';
+import '../../../data/config/logger.dart';
 import '../../../data/data_grid/manage_project_data_grid.dart';
-import '../../../ui/components/app_text_form_field.dart';
-import '../controllers/manage_project_controller.dart';
 import '../../../data/models/project_model.dart';
 import '../../../ui/components/app_button.dart';
 import '../../../ui/components/app_modals.dart';
+import '../../../ui/components/app_text_form_field.dart';
 import '../../../utils/data_grid_utils.dart';
-import '../../../constants/app_colors.dart';
-import '../../../data/config/logger.dart';
+import '../controllers/manage_project_controller.dart';
 
 class ManageProjectView extends GetView<ManageProjectController> {
   const ManageProjectView({super.key});
@@ -207,17 +207,18 @@ class ManageProjectView extends GetView<ManageProjectController> {
       BuildContext context, bool isDesktop, Project? project) {
     // If editing an existing project, populate the form fields
     if (project != null) {
-      controller.titleController.text = project.title;
-      controller.descriptionController.text = project.description;
-      controller.locationController.text = project.location;
-      controller.timeCommitmentController.text = project.timeCommitment;
+      controller.titleController.text = project.title ?? '';
+      controller.descriptionController.text = project.description ?? '';
+      controller.locationController.text = project.location ?? '';
+      controller.timeCommitmentController.text = project.timeCommitment ?? '';
       controller.startDateController.text =
-          DateFormat('yyyy-MM-dd').format(project.startDate);
-      controller.applicationDeadlineController.text =
-          DateFormat('yyyy-MM-dd').format(project.applicationDeadline);
+          DateFormat('yyyy-MM-dd').format(project.startDate ?? DateTime.now());
+      controller.applicationDeadlineController.text = DateFormat('yyyy-MM-dd')
+          .format(project.applicationDeadline ?? DateTime.now());
 
       // For skills, we need to handle the list
-      controller.skillController.text = project.requiredSkills.join(', ');
+      controller.skillController.text =
+          project.requiredSkills?.join(', ') ?? '';
     }
 
     final dialogWidth = isDesktop ? 800.0 : Get.width * 0.9;
@@ -418,7 +419,7 @@ class ManageProjectView extends GetView<ManageProjectController> {
                           if (project != null) {
                             // Update existing project
                             controller
-                                .updateProject(project.projectId)
+                                .updateProject(project.projectId ?? '')
                                 .then((_) {
                               Get.back();
                               Get.snackbar(
@@ -470,7 +471,7 @@ class ManageProjectView extends GetView<ManageProjectController> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              controller.deleteProject(project.projectId).then((_) {
+              controller.deleteProject(project.projectId ?? '').then((_) {
                 appSnackbar(
                   title: 'Success',
                   message: 'Project deleted successfully',

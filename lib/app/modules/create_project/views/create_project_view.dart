@@ -72,14 +72,15 @@ class CreateProjectView extends GetView<CreateProjectController> {
 
           const SizedBox(height: 32),
 
-          // Submit Button - centered and with appropriate width
-          Obx(() => AppButton(
-                buttonText: 'Create Project',
-                onPressed: controller.submitProject,
-                isLoading: controller.isLoading.value,
-                fontSize: isDesktop ? 18 : 16,
-                padding: EdgeInsets.symmetric(vertical: isDesktop ? 16 : 12),
-              )),
+          Obx(
+            () => AppButton(
+              buttonText: 'Create Project',
+              onPressed: controller.submitProject,
+              isLoading: controller.isLoading.value,
+              fontSize: isDesktop ? 18 : 16,
+              padding: EdgeInsets.symmetric(vertical: isDesktop ? 16 : 12),
+            ),
+          ),
         ],
       ),
     );

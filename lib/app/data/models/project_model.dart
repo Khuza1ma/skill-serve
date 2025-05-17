@@ -1,77 +1,138 @@
 class Project {
-  final String projectId;
-  final String title;
+  final String? title;
   final String? organizerName;
   final String? organizerId;
-  final String location;
-  final String description;
-  final List<String> requiredSkills;
-  final String timeCommitment;
-  final DateTime startDate;
-  final DateTime endDate;
-  final DateTime applicationDeadline;
+  final String? location;
+  final String? description;
+  final List<String>? requiredSkills;
+  final String? timeCommitment;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final DateTime? applicationDeadline;
   final String? status;
-  final String? assignedVolunteerId;
+  final int? assignedVolunteerId;
   final String? contactEmail;
+  final int? maxVolunteers;
   final DateTime? createdAt;
+  final String? projectId;
   final DateTime? updatedAt;
-  final int maxVolunteers;
+  final int? v;
 
   Project({
-    required this.projectId,
-    required this.title,
+    this.title,
     this.organizerName,
     this.organizerId,
-    required this.location,
-    required this.description,
-    required this.requiredSkills,
-    required this.timeCommitment,
-    required this.startDate,
-    required this.endDate,
-    required this.applicationDeadline,
+    this.location,
+    this.description,
+    this.requiredSkills,
+    this.timeCommitment,
+    this.startDate,
+    this.endDate,
+    this.applicationDeadline,
     this.status,
     this.assignedVolunteerId,
     this.contactEmail,
+    this.maxVolunteers,
     this.createdAt,
+    this.projectId,
     this.updatedAt,
-    required this.maxVolunteers,
+    this.v,
   });
 
-  factory Project.fromJson(Map<String, dynamic> json) {
-    return Project(
-      projectId: json['_id'] as String,
-      title: json['title'] as String,
-      organizerName: json['organizer_name'] as String,
-      organizerId: json['organizer_id'] as String?,
-      location: json['location'] as String,
-      description: json['description'] as String,
-      requiredSkills: List<String>.from(json['required_skills']),
-      timeCommitment: json['time_commitment'] as String,
-      startDate: DateTime.parse(json['start_date'] as String),
-      endDate: DateTime.parse(json['end_date'] as String),
-      applicationDeadline:
-          DateTime.parse(json['application_deadline'] as String),
-      status: json['status'] as String,
-      assignedVolunteerId: json['assigned_volunteer_id'] as String?,
-      contactEmail: json['contact_email'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
-      maxVolunteers: json['max_volunteers'] as int,
-    );
-  }
+  Project copyWith({
+    String? title,
+    String? organizerName,
+    String? organizerId,
+    String? location,
+    String? description,
+    List<String>? requiredSkills,
+    String? timeCommitment,
+    DateTime? startDate,
+    DateTime? endDate,
+    DateTime? applicationDeadline,
+    String? status,
+    int? assignedVolunteerId,
+    String? contactEmail,
+    int? maxVolunteers,
+    DateTime? createdAt,
+    String? id,
+    DateTime? updatedAt,
+    int? v,
+  }) =>
+      Project(
+        title: title ?? this.title,
+        organizerName: organizerName ?? this.organizerName,
+        organizerId: organizerId ?? this.organizerId,
+        location: location ?? this.location,
+        description: description ?? this.description,
+        requiredSkills: requiredSkills ?? this.requiredSkills,
+        timeCommitment: timeCommitment ?? this.timeCommitment,
+        startDate: startDate ?? this.startDate,
+        endDate: endDate ?? this.endDate,
+        applicationDeadline: applicationDeadline ?? this.applicationDeadline,
+        status: status ?? this.status,
+        assignedVolunteerId: assignedVolunteerId ?? this.assignedVolunteerId,
+        contactEmail: contactEmail ?? this.contactEmail,
+        maxVolunteers: maxVolunteers ?? this.maxVolunteers,
+        createdAt: createdAt ?? this.createdAt,
+        projectId: id ?? projectId,
+        updatedAt: updatedAt ?? this.updatedAt,
+        v: v ?? this.v,
+      );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'description': description,
-      'location': location,
-      'status': status,
-      'required_skills': requiredSkills,
-      'time_commitment': timeCommitment,
-      'start_date': startDate.toIso8601String(),
-      'end_date': endDate.toIso8601String(),
-      'application_deadline': applicationDeadline.toIso8601String(),
-      'max_volunteers': maxVolunteers,
-    };
-  }
+  factory Project.fromJson(Map<String, dynamic> json) => Project(
+        title: json["title"],
+        organizerName: json["organizer_name"],
+        organizerId: json["organizer_id"],
+        location: json["location"],
+        description: json["description"],
+        requiredSkills: json["required_skills"] == null
+            ? []
+            : List<String>.from(json["required_skills"]!.map((x) => x)),
+        timeCommitment: json["time_commitment"],
+        startDate: json["start_date"] == null
+            ? null
+            : DateTime.parse(json["start_date"]),
+        endDate:
+            json["end_date"] == null ? null : DateTime.parse(json["end_date"]),
+        applicationDeadline: json["application_deadline"] == null
+            ? null
+            : DateTime.parse(json["application_deadline"]),
+        status: json["status"],
+        assignedVolunteerId: json["assigned_volunteer_id"] == null
+            ? null
+            : int.parse(json["assigned_volunteer_id"]),
+        contactEmail: json["contact_email"],
+        maxVolunteers: json["max_volunteers"],
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        projectId: json["_id"],
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
+        v: json["__v"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "title": title,
+        "organizer_name": organizerName,
+        "organizer_id": organizerId,
+        "location": location,
+        "description": description,
+        "required_skills": requiredSkills == null
+            ? []
+            : List<dynamic>.from(requiredSkills!.map((x) => x)),
+        "time_commitment": timeCommitment,
+        "start_date": startDate?.toIso8601String(),
+        "application_deadline": applicationDeadline?.toIso8601String(),
+        "status": status,
+        "assigned_volunteer_id": assignedVolunteerId,
+        "contact_email": contactEmail,
+        "max_volunteers": maxVolunteers,
+        "created_at": createdAt?.toIso8601String(),
+        "_id": projectId,
+        "updated_at": updatedAt?.toIso8601String(),
+        "__v": v,
+      };
 }

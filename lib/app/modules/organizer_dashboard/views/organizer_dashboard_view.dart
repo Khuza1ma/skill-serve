@@ -468,7 +468,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
             children: [
               Expanded(
                 child: Text(
-                  project.title,
+                  project.title ?? '',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: AppColors.kFFFFFF,
@@ -504,7 +504,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
           ),
           const SizedBox(height: 8),
           Text(
-            project.description,
+            project.description ?? '',
             style: const TextStyle(color: AppColors.kc6c6c8, fontSize: 14),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -519,7 +519,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
               ),
               const SizedBox(width: 4),
               Text(
-                project.location,
+                project.location ?? '',
                 style: const TextStyle(color: AppColors.kc6c6c8, fontSize: 14),
               ),
               const SizedBox(width: 16),
@@ -539,9 +539,8 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: project.requiredSkills
-                .map((skill) => _buildSkillChip(skill))
-                .toList(),
+            children: project.requiredSkills?.map((skill) => _buildSkillChip(skill))
+                .toList()??[],
           ),
         ],
       ),

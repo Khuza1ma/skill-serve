@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:flutter/material.dart';
+
 import '../../constants/app_colors.dart';
 import '../../data/models/project_model.dart';
 import '../../modules/projects/controllers/projects_controller.dart';
@@ -41,7 +42,7 @@ class ProjectDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'status', value: project.status),
               DataGridCell<String>(
                   columnName: 'assigned_volunteer',
-                  value: project.assignedVolunteerId ?? 'Not Assigned'),
+                  value: project.assignedVolunteerId?.toString() ?? '1'),
             ],
           ),
         ),
