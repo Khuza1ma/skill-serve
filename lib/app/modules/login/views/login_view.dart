@@ -12,7 +12,6 @@ import '../../../constants/asset_constants.dart';
 import '../../../ui/components/app_button.dart';
 import '../controllers/login_controller.dart';
 import '../../../constants/app_colors.dart';
-import '../../../routes/app_pages.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({super.key});
@@ -152,11 +151,18 @@ class LoginView extends GetView<LoginController> {
         AppTextField(
           prefix: const Icon(Icons.mail),
           name: 'username',
-          label: 'Username',
-          hintText: 'Username',
-          validator: FormBuilderValidators.required(
-            errorText: 'Please enter your username',
-          ),
+          label: 'Username or Email',
+          hintText: 'Username or Email',
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your username or email';
+            }
+            if (value.contains('@')) {
+              return FormBuilderValidators.email(
+                  errorText: 'Please enter a valid email address')(value);
+            }
+            return null;
+          },
           isRequired: true,
           readOnly: controller.isLoading(),
         ),

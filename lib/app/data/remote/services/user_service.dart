@@ -94,4 +94,28 @@ class UserService {
       return false;
     }
   }
+
+  /// Logout a user
+  static Future<bool> logout() async {
+    try {
+      final response = await APIService.post(
+        path: 'auth/logout/',
+        data: {},
+      );
+      if (response?.statusCode == 200) {
+        UserProvider.onLogout();
+        return true;
+      }
+      return false;
+    } on DioException catch (e, st) {
+      letMeHandleAllErrors(e, st, showSnackBar: false);
+      appSnackbar(
+        title: 'Logout failed',
+        message: '${e.response?.data['message']}',
+        snackBarState: SnackBarState.DANGER,
+      );
+      return false;
+    }
+  }
+
 }

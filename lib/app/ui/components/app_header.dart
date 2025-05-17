@@ -66,7 +66,7 @@ class AppHeader extends StatelessWidget {
                           icon: const Icon(
                             Icons.close,
                             size: 18,
-                          ),
+                          ),flutter clean
                           constraints: const BoxConstraints(),
                           padding: EdgeInsets.zero,
                           onPressed: () {
@@ -177,9 +177,8 @@ class AppHeader extends StatelessWidget {
                   content: 'Are you sure you want to logout? ',
                   buttonTitle: "Confirm",
                   onSubmit: () async {
-                    UserProvider.onLogout();
+                    await controller.logout();
                     Get.back();
-                    // await controller.logout();
                     Get.offAllNamed(Routes.LOGIN);
                   },
                   modalState: ModalState.PRIMARY,
