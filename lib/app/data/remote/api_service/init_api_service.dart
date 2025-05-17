@@ -1,13 +1,12 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http_parser/http_parser.dart' as http_parser;
-import 'package:path/path.dart' as path;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-import '../../config/logger.dart';
-import '../../local/user_providptions, RequestInterceptorHandler handler) {
+import '../../local/user_provider.dart';
+
+/// DIO interceptor to add the authentication token
+InterceptorsWrapper addAuthToken() => InterceptorsWrapper(
+      onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
         if (UserProvider.authToken != null) {
           options.headers.addAll(<String, dynamic>{
             'Authorization': 'Bearer ${UserProvider.authToken}',

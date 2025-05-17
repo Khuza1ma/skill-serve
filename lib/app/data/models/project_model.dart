@@ -1,66 +1,77 @@
 class Project {
   final String projectId;
   final String title;
-  final String? organizerName; // Optional
+  final String? organizerName;
+  final String? organizerId;
   final String location;
   final String description;
   final List<String> requiredSkills;
   final String timeCommitment;
   final DateTime startDate;
+  final DateTime endDate;
   final DateTime applicationDeadline;
-  final String status; // Could use enum: "Available", "Assigned"
-  final String? assignedVolunteerId; // Nullable
-  final DateTime createdAt;
+  final String? status;
+  final String? assignedVolunteerId;
+  final String? contactEmail;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final int maxVolunteers;
 
   Project({
     required this.projectId,
     required this.title,
     this.organizerName,
+    this.organizerId,
     required this.location,
     required this.description,
     required this.requiredSkills,
     required this.timeCommitment,
     required this.startDate,
+    required this.endDate,
     required this.applicationDeadline,
-    required this.status,
+    this.status,
     this.assignedVolunteerId,
-    required this.createdAt,
+    this.contactEmail,
+    this.createdAt,
+    this.updatedAt,
+    required this.maxVolunteers,
   });
 
-  // Factory method to create a Project from a Map (for JSON parsing)
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
-      projectId: json['projectId'] as String,
+      projectId: json['_id'] as String,
       title: json['title'] as String,
-      organizerName: json['organizerName'] as String?,
+      organizerName: json['organizer_name'] as String,
+      organizerId: json['organizer_id'] as String?,
       location: json['location'] as String,
       description: json['description'] as String,
-      requiredSkills: List<String>.from(json['requiredSkills']),
-      timeCommitment: json['timeCommitment'] as String,
-      startDate: DateTime.parse(json['startDate'] as String),
+      requiredSkills: List<String>.from(json['required_skills']),
+      timeCommitment: json['time_commitment'] as String,
+      startDate: DateTime.parse(json['start_date'] as String),
+      endDate: DateTime.parse(json['end_date'] as String),
       applicationDeadline:
-          DateTime.parse(json['applicationDeadline'] as String),
+          DateTime.parse(json['application_deadline'] as String),
       status: json['status'] as String,
-      assignedVolunteerId: json['assignedVolunteerId'] as String?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      assignedVolunteerId: json['assigned_volunteer_id'] as String?,
+      contactEmail: json['contact_email'] as String,
+      createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] as String),
+      maxVolunteers: json['max_volunteers'] as int,
     );
   }
 
-  // Method to convert a Project to a Map (for JSON serialization)
   Map<String, dynamic> toJson() {
     return {
-      'projectId': projectId,
       'title': title,
-      'organizerName': organizerName,
-      'location': location,
       'description': description,
-      'requiredSkills': requiredSkills,
-      'timeCommitment': timeCommitment,
-      'startDate': startDate.toIso8601String(),
-      'applicationDeadline': applicationDeadline.toIso8601String(),
+      'location': location,
       'status': status,
-      'assignedVolunteerId': assignedVolunteerId,
-      'createdAt': createdAt.toIso8601String(),
+      'required_skills': requiredSkills,
+      'time_commitment': timeCommitment,
+      'start_date': startDate.toIso8601String(),
+      'end_date': endDate.toIso8601String(),
+      'application_deadline': applicationDeadline.toIso8601String(),
+      'max_volunteers': maxVolunteers,
     };
   }
 }

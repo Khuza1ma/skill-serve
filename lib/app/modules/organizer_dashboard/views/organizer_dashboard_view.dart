@@ -258,22 +258,22 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
             const SizedBox(height: 20),
             (sections.isEmpty)
                 ? const Center(
-                  child: Text(
-                    'No data available',
-                    style: TextStyle(color: AppColors.kFFFFFF),
-                  ),
-                )
+                    child: Text(
+                      'No data available',
+                      style: TextStyle(color: AppColors.kFFFFFF),
+                    ),
+                  )
                 : SizedBox(
-                  height: 250,
-                  child: PieChart(
-                    PieChartData(
-                      sections: sections,
-                      centerSpaceRadius: 40,
-                      sectionsSpace: 2,
-                      borderData: FlBorderData(show: false),
+                    height: 250,
+                    child: PieChart(
+                      PieChartData(
+                        sections: sections,
+                        centerSpaceRadius: 40,
+                        sectionsSpace: 2,
+                        borderData: FlBorderData(show: false),
+                      ),
                     ),
                   ),
-                ),
           ],
         ),
       ),
@@ -490,7 +490,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
                     Icon(statusIcon, color: statusColor, size: 14),
                     const SizedBox(width: 4),
                     Text(
-                      project.status,
+                      project.status ?? 'Open',
                       style: TextStyle(
                         color: statusColor,
                         fontSize: 12,
@@ -539,10 +539,9 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children:
-                project.requiredSkills
-                    .map((skill) => _buildSkillChip(skill))
-                    .toList(),
+            children: project.requiredSkills
+                .map((skill) => _buildSkillChip(skill))
+                .toList(),
           ),
         ],
       ),

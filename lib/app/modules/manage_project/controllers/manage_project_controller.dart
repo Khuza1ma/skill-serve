@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:skill_serve/app/data/models/project_model.dart';
-import 'package:skill_serve/app/data/config/logger.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:skill_serve/app/data/config/logger.dart';
+import 'package:skill_serve/app/data/models/project_model.dart';
 
 class ManageProjectController extends GetxController {
   final isLoading = false.obs;
@@ -88,6 +88,9 @@ class ManageProjectController extends GetxController {
             applicationDeadline: DateTime.now().add(const Duration(days: 7)),
             status: 'Open',
             createdAt: DateTime.now().subtract(const Duration(days: 5)),
+            endDate: DateTime.now(),
+            contactEmail: '',
+            maxVolunteers: 2,
           ),
           Project(
             projectId: 'PRJ-002',
@@ -102,6 +105,9 @@ class ManageProjectController extends GetxController {
             applicationDeadline: DateTime.now().add(const Duration(days: 5)),
             status: 'Open',
             createdAt: DateTime.now().subtract(const Duration(days: 3)),
+            endDate: DateTime.now(),
+            contactEmail: '',
+            maxVolunteers: 3,
           ),
           Project(
             projectId: 'PRJ-003',
@@ -116,6 +122,9 @@ class ManageProjectController extends GetxController {
             applicationDeadline: DateTime.now().add(const Duration(days: 3)),
             status: 'Open',
             createdAt: DateTime.now().subtract(const Duration(days: 4)),
+            endDate: DateTime.now(),
+            contactEmail: '',
+            maxVolunteers: 3,
           ),
         ];
       }
@@ -167,6 +176,9 @@ class ManageProjectController extends GetxController {
             DateFormat('yyyy-MM-dd').parse(applicationDeadlineController.text),
         status: selectedStatus.value,
         createdAt: DateTime.now(),
+        assignedVolunteerId: null,
+
+        endDate: DateTime.now(), contactEmail: '', maxVolunteers: 2,
       );
 
       // Add to projects list (in a real app, this would be an API call)
@@ -220,6 +232,10 @@ class ManageProjectController extends GetxController {
         status: selectedStatus.value,
         assignedVolunteerId: projects[index].assignedVolunteerId,
         createdAt: projects[index].createdAt,
+        updatedAt: DateTime.now(),
+        endDate: DateTime.now(),
+        contactEmail: projects[index].contactEmail,
+        maxVolunteers: projects[index].maxVolunteers,
       );
 
       // Update in projects list (in a real app, this would be an API call)

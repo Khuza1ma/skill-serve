@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 import '../../../data/models/project_model.dart';
 import '../../../utils/data_grid_utils.dart';
 
@@ -35,6 +36,9 @@ class ProjectsController extends GetxController {
           applicationDeadline: DateTime.now().add(const Duration(days: 30)),
           status: 'Available',
           createdAt: DateTime.now(),
+          endDate: DateTime.now(),
+          contactEmail: '',
+          maxVolunteers: 3,
         ),
         Project(
           projectId: 'PRJ002',
@@ -48,6 +52,9 @@ class ProjectsController extends GetxController {
           applicationDeadline: DateTime.now().add(const Duration(days: 45)),
           status: 'Available',
           createdAt: DateTime.now().subtract(const Duration(days: 5)),
+          endDate: DateTime.now(),
+          contactEmail: '',
+          maxVolunteers: 2,
         ),
         Project(
           projectId: 'PRJ003',
@@ -61,6 +68,9 @@ class ProjectsController extends GetxController {
           applicationDeadline: DateTime.now().add(const Duration(days: 60)),
           status: 'Available',
           createdAt: DateTime.now().subtract(const Duration(days: 10)),
+          endDate: DateTime.now(),
+          contactEmail: '',
+          maxVolunteers: 2,
         ),
         Project(
           projectId: 'PRJ004',
@@ -74,6 +84,9 @@ class ProjectsController extends GetxController {
           applicationDeadline: DateTime.now().add(const Duration(days: 40)),
           status: 'Available',
           createdAt: DateTime.now().subtract(const Duration(days: 3)),
+          endDate: DateTime.now(),
+          contactEmail: '',
+          maxVolunteers: 4,
         ),
         Project(
           projectId: 'PRJ005',
@@ -88,6 +101,9 @@ class ProjectsController extends GetxController {
           applicationDeadline: DateTime.now().add(const Duration(days: 50)),
           status: 'Available',
           createdAt: DateTime.now().subtract(const Duration(days: 7)),
+          endDate: DateTime.now(),
+          contactEmail: '',
+          maxVolunteers: 5,
         ),
       ];
       isLoading.value = false;

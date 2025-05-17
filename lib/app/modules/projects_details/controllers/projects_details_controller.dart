@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 import '../../../data/models/project_model.dart';
 import '../../../utils/data_grid_utils.dart';
 
@@ -35,6 +36,8 @@ class ProjectsDetailsController extends GetxController {
           applicationDeadline: DateTime.now().add(const Duration(days: 30)),
           status: 'Available',
           createdAt: DateTime.now(),
+          endDate: DateTime.now(),
+          maxVolunteers: 2,
         ),
         Project(
           projectId: 'PRJ002',
@@ -48,6 +51,8 @@ class ProjectsDetailsController extends GetxController {
           applicationDeadline: DateTime.now().add(const Duration(days: 45)),
           status: 'Available',
           createdAt: DateTime.now().subtract(const Duration(days: 5)),
+          endDate: DateTime.now(),
+          maxVolunteers: 3,
         ),
       ];
       isLoading.value = false;
