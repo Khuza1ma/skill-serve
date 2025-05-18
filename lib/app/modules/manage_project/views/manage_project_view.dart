@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:skill_serve/app/ui/components/app_snackbar.dart';
 import 'package:skill_serve/app/utils/data_grid_utils.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../constants/app_colors.dart';
-import '../../../data/config/logger.dart';
 import '../../../data/data_grid/manage_project_data_grid.dart';
 import '../../../data/models/project_model.dart';
+import '../../../routes/app_pages.dart';
 import '../../../ui/components/app_button.dart';
 import '../../../ui/components/app_modals.dart';
 import '../../../ui/components/app_text_form_field.dart';
+import '../../home/controllers/home_controller.dart';
 import '../controllers/manage_project_controller.dart';
 
 class ManageProjectView extends GetView<ManageProjectController> {
@@ -36,10 +38,7 @@ class ManageProjectView extends GetView<ManageProjectController> {
           isDesktop: isDesktop,
           onEdit: (Project project) =>
               _showEditProjectDialog(context, isDesktop, project),
-          onDelete: (Project project) =>
-              _showDeleteConfirmation(context, project),
-          onViewDetails: (Project project) =>
-              _navigateToProjectDetails(project),
+          onDelete: (Project project) => _showDeleteConfirmation(project),
         );
 
         return Column(
@@ -60,8 +59,11 @@ class ManageProjectView extends GetView<ManageProjectController> {
                   ),
                   AppButton(
                     buttonText: 'Add New Project',
-                    onPressed: () =>
-                        _showEditProjectDialog(context, isDesktop, null),
+                    onPressed: () {
+                      Get.offNamed(Routes.CREATE_PROJECT, id: 1);
+                      Get.find<HomeController>().selectedTab.value =
+                          SideBarTab.createProject;
+                    },
                     buttonSize: const Size(150, 40),
                     leading: Icon(
                       Icons.add,
@@ -174,16 +176,20 @@ class ManageProjectView extends GetView<ManageProjectController> {
           columnName: 'time_commitment', label: 'Time Commitment', width: 180),
       _buildColumn(columnName: 'start_date', label: 'Start Date', width: 160),
       _buildColumn(
-          columnName: 'application_deadline',
-          label: 'Application Deadline',
-          width: 180),
+        columnName: 'application_deadline',
+        label: 'Application Deadline',
+        width: 180,
+      ),
       _buildColumn(columnName: 'status', label: 'Status', width: 150),
       _buildColumn(
           columnName: 'total_applicants',
           label: 'Total Applicants',
           width: 150),
       _buildColumn(
-          columnName: 'assigned_volunteer', label: 'Assigned', width: 150),
+        columnName: 'assigned_volunteer',
+        label: 'Assigned Volunteer Id',
+        width: 200,
+      ),
       _buildColumn(columnName: 'created_at', label: 'Created At', width: 150),
       _buildColumn(columnName: 'actions', label: 'Actions', width: 150),
     ];
@@ -217,18 +223,8 @@ class ManageProjectView extends GetView<ManageProjectController> {
       BuildContext context, bool isDesktop, Project? project) {
     // If editing an existing project, populate the form fields
     if (project != null) {
-      controller.titleController.text = project.title ?? '';
-      controller.descriptionController.text = project.description ?? '';
-      controller.locationController.text = project.location ?? '';
-      controller.timeCommitmentController.text = project.timeCommitment ?? '';
-      controller.startDateController.text =
-          DateFormat('yyyy-MM-dd').format(project.startDate ?? DateTime.now());
-      controller.applicationDeadlineController.text = DateFormat('yyyy-MM-dd')
-          .format(project.applicationDeadline ?? DateTime.now());
-
-      // For skills, we need to handle the list
-      controller.skillController.text =
-          project.requiredSkills?.join(', ') ?? '';
+      controller.selectedStatus.value = project.status ?? 'Open';
+      controller.requiredSkills.value = project.requiredSkills ?? [];
     }
 
     final dialogWidth = isDesktop ? 800.0 : Get.width * 0.9;
@@ -236,139 +232,164 @@ class ManageProjectView extends GetView<ManageProjectController> {
     showCustomModal(
       title: project != null ? 'Edit Project' : 'Add New Project',
       alignment: Alignment.center,
-      showButtons: false,
+      buttonTitle: 'Update Project',
       child: Container(
         width: dialogWidth,
-        constraints: BoxConstraints(maxHeight: Get.height * 0.7),
+        constraints: BoxConstraints(maxHeight: Get.height * 0.6),
         child: SingleChildScrollView(
-          child: Form(
+          child: FormBuilder(
             key: controller.formKey,
+            initialValue: project != null
+                ? {
+                    'title': project.title,
+                    'description': project.description,
+                    'location': project.location,
+                    'timeCommitment': project.timeCommitment,
+                    'startDate': DateFormat('yyyy-MM-dd')
+                        .format(project.startDate ?? DateTime.now()),
+                    'applicationDeadline': DateFormat('yyyy-MM-dd')
+                        .format(project.applicationDeadline ?? DateTime.now()),
+                    'endDate': DateFormat('yyyy-MM-dd')
+                        .format(project.endDate ?? DateTime.now()),
+                    'category': project.category ?? 'General',
+                    'maxVolunteers': project.maxVolunteers?.toString() ?? '2',
+                    'contactEmail': project.contactEmail ?? '',
+                  }
+                : {},
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
+              spacing: 16,
               children: [
-                // Project Title
                 AppTextField(
                   name: 'title',
                   label: 'Project Title',
                   hintText: 'Enter project title',
-                  controller: controller.titleController,
                   isRequired: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a title';
-                    }
-                    return null;
-                  },
+                  validator: FormBuilderValidators.required(
+                    errorText: 'Please enter a title',
+                  ),
                 ),
-                const SizedBox(height: 16),
-
-                // Description
                 AppTextField(
                   name: 'description',
                   label: 'Description',
                   hintText: 'Enter project description',
-                  controller: controller.descriptionController,
                   isRequired: true,
                   maxLines: 5,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a description';
-                    }
-                    return null;
-                  },
+                  validator: FormBuilderValidators.required(
+                    errorText: 'Please enter a description',
+                  ),
                 ),
-                const SizedBox(height: 16),
-
-                // Location
                 AppTextField(
                   name: 'location',
                   label: 'Location',
                   hintText: 'Enter project location',
-                  controller: controller.locationController,
                   isRequired: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a location';
-                    }
-                    return null;
-                  },
+                  validator: FormBuilderValidators.required(
+                    errorText: 'Please enter a location',
+                  ),
                 ),
-                const SizedBox(height: 16),
-
-                // Required Skills
                 AppTextField(
-                  name: 'skills',
+                  name: 'skill',
                   label: 'Required Skills',
-                  hintText: 'Enter skills separated by commas',
-                  controller: controller.skillController,
-                  isRequired: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter at least one skill';
-                    }
-                    return null;
-                  },
+                  hintText: 'Enter a skill and press Add',
+                  suffix: IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      final skill = controller
+                          .formKey.currentState?.fields['skill']?.value;
+                      if (skill != null) {
+                        controller.addSkill(skill);
+                        controller.formKey.currentState?.fields['skill']
+                            ?.reset();
+                      }
+                    },
+                  ),
                 ),
-                const SizedBox(height: 16),
-
-                // Time Commitment
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.k262837.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Selected Skills:',
+                        style: TextStyle(
+                          color: AppColors.kFFFFFF.withOpacity(0.8),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Obx(
+                        () => controller.requiredSkills.isEmpty
+                            ? Text(
+                                'No skills added yet',
+                                style: TextStyle(
+                                  color: AppColors.kFFFFFF.withOpacity(0.5),
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              )
+                            : Wrap(
+                                spacing: 8.0,
+                                runSpacing: 8.0,
+                                children: controller.requiredSkills
+                                    .map(
+                                      (skill) => Chip(
+                                        label: Text(skill),
+                                        deleteIcon:
+                                            const Icon(Icons.close, size: 18),
+                                        onDeleted: () =>
+                                            controller.removeSkill(skill),
+                                        backgroundColor:
+                                            AppColors.k806dff.withOpacity(0.2),
+                                        labelStyle:
+                                            TextStyle(color: AppColors.kFFFFFF),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
                 AppTextField(
                   name: 'timeCommitment',
                   label: 'Time Commitment',
                   hintText: 'e.g., 10 hours per week',
-                  controller: controller.timeCommitmentController,
                   isRequired: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter time commitment';
-                    }
-                    return null;
-                  },
+                  validator: FormBuilderValidators.required(
+                    errorText: 'Please enter time commitment',
+                  ),
                 ),
-                const SizedBox(height: 16),
-
-                // Start Date
                 AppTextField(
                   name: 'startDate',
                   label: 'Start Date',
                   hintText: 'YYYY-MM-DD',
-                  controller: controller.startDateController,
                   isRequired: true,
                   readOnly: true,
-                  onTap: (_) => controller.selectDate(
-                      context, controller.startDateController),
+                  onTap: (_) => controller.selectDate(context, 'startDate'),
                   suffix: const Icon(Icons.calendar_today),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select a start date';
-                    }
-                    return null;
-                  },
+                  validator: FormBuilderValidators.required(
+                    errorText: 'Please select a start date',
+                  ),
                 ),
-                const SizedBox(height: 16),
-
-                // Application Deadline
                 AppTextField(
                   name: 'applicationDeadline',
                   label: 'Application Deadline',
                   hintText: 'YYYY-MM-DD',
-                  controller: controller.applicationDeadlineController,
                   isRequired: true,
                   readOnly: true,
-                  onTap: (_) => controller.selectDate(
-                      context, controller.applicationDeadlineController),
+                  onTap: (_) =>
+                      controller.selectDate(context, 'applicationDeadline'),
                   suffix: const Icon(Icons.calendar_today),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select an application deadline';
-                    }
-                    return null;
-                  },
+                  validator: FormBuilderValidators.required(
+                    errorText: 'Please select an application deadline',
+                  ),
                 ),
-                const SizedBox(height: 16),
-
-                // Status
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -381,123 +402,118 @@ class ManageProjectView extends GetView<ManageProjectController> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Obx(() => DropdownButtonFormField<String>(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: AppColors.kFFFFFF,
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
-                            ),
+                    Obx(
+                      () => DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: AppColors.kFFFFFF,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
                           ),
-                          value: controller.selectedStatus.value,
-                          items: controller.statusOptions
-                              .map((status) => DropdownMenuItem(
-                                    value: status,
-                                    child: Text(status),
-                                  ))
-                              .toList(),
-                          onChanged: (value) {
-                            if (value != null) {
-                              controller.selectedStatus.value = value;
-                            }
-                          },
-                        )),
-                  ],
-                ),
-                const SizedBox(height: 24),
-
-                // Action Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    AppButton(
-                      buttonText: 'Cancel',
-                      onPressed: () => Get.back(),
-                      buttonColor: AppColors.k262837,
-                      border: BorderSide(color: AppColors.k806dff),
-                      buttonSize: const Size(100, 40),
-                    ),
-                    const SizedBox(width: 16),
-                    AppButton(
-                      buttonText:
-                          project != null ? 'Update Project' : 'Create Project',
-                      onPressed: () {
-                        if (controller.formKey.currentState!.validate()) {
-                          if (project != null) {
-                            // Update existing project
-                            controller
-                                .updateProject(project.projectId ?? '')
-                                .then((_) {
-                              Get.back();
-                              Get.snackbar(
-                                'Success',
-                                'Project updated successfully',
-                                backgroundColor: Colors.green,
-                                colorText: Colors.white,
-                              );
-                            });
-                          } else {
-                            // Create new project
-                            controller.createProject().then((_) {
-                              Get.back();
-                              Get.snackbar(
-                                'Success',
-                                'Project created successfully',
-                                backgroundColor: Colors.green,
-                                colorText: Colors.white,
-                              );
-                            });
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        value: controller.selectedStatus.value,
+                        style: TextStyle(
+                          color: AppColors.k262837,
+                          fontSize: 16,
+                        ),
+                        items: controller.statusOptions
+                            .map((status) => DropdownMenuItem<String>(
+                                  value: status,
+                                  child: Text(
+                                    status,
+                                    style: TextStyle(
+                                      color: AppColors.k262837,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            controller.selectedStatus.value = value;
                           }
-                        }
-                      },
-                      buttonSize: const Size(150, 40),
+                        },
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
+
+                // Category
+                AppTextField(
+                  name: 'category',
+                  label: 'Category',
+                  hintText: 'Enter project category',
+                  isRequired: true,
+                  validator: FormBuilderValidators.required(
+                    errorText: 'Please enter a category',
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Max Volunteers
+                AppTextField(
+                  name: 'maxVolunteers',
+                  label: 'Max Volunteers',
+                  hintText: 'Enter maximum number of volunteers',
+                  isRequired: true,
+                  keyboardType: TextInputType.number,
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(
+                      errorText: 'Please enter max volunteers',
+                    ),
+                    FormBuilderValidators.numeric(
+                      errorText: 'Please enter a valid number',
+                    ),
+                  ]),
+                ),
+                const SizedBox(height: 16),
+
+                // Contact Email
+                AppTextField(
+                  name: 'contactEmail',
+                  label: 'Contact Email',
+                  hintText: 'Enter contact email',
+                  isRequired: true,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(
+                      errorText: 'Please enter contact email',
+                    ),
+                    FormBuilderValidators.email(
+                      errorText: 'Please enter a valid email',
+                    ),
+                  ]),
+                ),
               ],
             ),
           ),
         ),
       ),
-      onSubmit: () {},
+      onSubmit: () {
+        if (project != null) {
+          controller.updateProject(project.projectId ?? '');
+        }
+      },
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, Project project) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Delete Project'),
-        content: Text('Are you sure you want to delete "${project.title}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              controller.deleteProject(project.projectId ?? '').then((_) {
-                appSnackbar(
-                  title: 'Success',
-                  message: 'Project deleted successfully',
-                  snackBarState: SnackBarState.SUCCESS,
-                );
-              });
-            },
-            child: Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
+  void _showDeleteConfirmation(Project project) {
+    showCustomModal(
+      title: 'Delete Project',
+      content: 'Are you sure you want to delete "${project.title}"?',
+      buttonTitle: "Delete",
+      onSubmit: () async {
+        Get.back();
+        controller.deleteProject(project.projectId ?? '');
+      },
+      modalState: ModalState.PRIMARY,
+      alignment: Alignment.center,
     );
-  }
-
-  void _navigateToProjectDetails(Project project) {
-    // Navigate to project details page
-    logW('Navigating to project details: ${project.projectId}');
   }
 }

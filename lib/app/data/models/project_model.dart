@@ -10,13 +10,14 @@ class Project {
   final DateTime? endDate;
   final DateTime? applicationDeadline;
   final String? status;
-  final int? assignedVolunteerId;
+  final List<int>? assignedVolunteerId;
   final String? contactEmail;
   final int? maxVolunteers;
   final DateTime? createdAt;
   final String? projectId;
   final DateTime? updatedAt;
   final int? v;
+  final String? category;
 
   Project({
     this.title,
@@ -37,6 +38,7 @@ class Project {
     this.projectId,
     this.updatedAt,
     this.v,
+    this.category,
   });
 
   Project copyWith({
@@ -58,6 +60,7 @@ class Project {
     String? id,
     DateTime? updatedAt,
     int? v,
+    String? category,
   }) =>
       Project(
         title: title ?? this.title,
@@ -71,13 +74,15 @@ class Project {
         endDate: endDate ?? this.endDate,
         applicationDeadline: applicationDeadline ?? this.applicationDeadline,
         status: status ?? this.status,
-        assignedVolunteerId: assignedVolunteerId ?? this.assignedVolunteerId,
+        assignedVolunteerId:
+            assignedVolunteerId == null ? null : [assignedVolunteerId],
         contactEmail: contactEmail ?? this.contactEmail,
         maxVolunteers: maxVolunteers ?? this.maxVolunteers,
         createdAt: createdAt ?? this.createdAt,
         projectId: id ?? projectId,
         updatedAt: updatedAt ?? this.updatedAt,
         v: v ?? this.v,
+        category: category ?? this.category,
       );
 
   factory Project.fromJson(Map<String, dynamic> json) => Project(
@@ -100,8 +105,8 @@ class Project {
             : DateTime.parse(json["application_deadline"]),
         status: json["status"],
         assignedVolunteerId: json["assigned_volunteer_id"] == null
-            ? null
-            : int.parse(json["assigned_volunteer_id"]),
+            ? []
+            : List<int>.from(json["assigned_volunteer_id"]!.map((x) => x)),
         contactEmail: json["contact_email"],
         maxVolunteers: json["max_volunteers"],
         createdAt: json["created_at"] == null
@@ -112,6 +117,7 @@ class Project {
             ? null
             : DateTime.parse(json["updated_at"]),
         v: json["__v"],
+        category: json["category"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -125,6 +131,7 @@ class Project {
             : List<dynamic>.from(requiredSkills!.map((x) => x)),
         "time_commitment": timeCommitment,
         "start_date": startDate?.toIso8601String(),
+        "end_date": endDate?.toIso8601String(),
         "application_deadline": applicationDeadline?.toIso8601String(),
         "status": status,
         "assigned_volunteer_id": assignedVolunteerId,
@@ -134,5 +141,6 @@ class Project {
         "_id": projectId,
         "updated_at": updatedAt?.toIso8601String(),
         "__v": v,
+        "category": category,
       };
 }

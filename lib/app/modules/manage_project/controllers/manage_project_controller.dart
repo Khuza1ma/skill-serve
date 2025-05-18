@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:skill_serve/app/data/config/logger.dart';
 import 'package:skill_serve/app/data/models/project_model.dart';
 import 'package:skill_serve/app/data/remote/services/project_service.dart';
+
+import '../../../ui/components/app_snackbar.dart';
 
 class ManageProjectController extends GetxController {
   final isLoading = false.obs;
@@ -18,32 +21,26 @@ class ManageProjectController extends GetxController {
   // Selected project for editing
   Rx<Project?> selectedProject = Rx<Project?>(null);
 
-  // Status options
-  final statusOptions = ['Open', 'Closed', 'In Progress'];
-  final selectedStatus = 'Open'.obs;
-
   // Form key for edit project form
-  final formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormBuilderState>();
 
-  // Text editing controllers for form fields
-  final titleController = TextEditingController();
-  final descriptionController = TextEditingController();
-  final locationController = TextEditingController();
-  final timeCommitmentController = TextEditingController();
-  final startDateController = TextEditingController();
-  final applicationDeadlineController = TextEditingController();
-
-  // For skills input
-  final skillController = TextEditingController();
+  // Status options
+  final statusOptions = [
+    'Open',
+    'Closed',
+    'Assigned',
+    'Completed',
+    'Cancelled'
+  ];
+  final selectedStatus = 'Open'.obs;
 
   // For skills input
   final requiredSkills = <String>[].obs;
 
   // Add a skill to the list
-  void addSkill() {
-    if (skillController.text.trim().isNotEmpty) {
-      requiredSkills.add(skillController.text.trim());
-      skillController.clear();
+  void addSkill(String skill) {
+    if (skill.trim().isNotEmpty) {
+      requiredSkills.add(skill.trim());
     }
   }
 
@@ -60,22 +57,13 @@ class ManageProjectController extends GetxController {
 
   @override
   void onClose() {
-    // Dispose controllers to prevent memory leaks
-    titleController.dispose();
-    descriptionController.dispose();
-    locationController.dispose();
-    timeCommitmentController.dispose();
-    startDateController.dispose();
-    applicationDeadlineController.dispose();
-    skillController.dispose();
     super.onClose();
   }
 
   Future<void> fetchProjects() async {
     try {
       isLoading.value = true;
-      logI(
-          'Fetching projects - Page: ${currentPage.value}, PageSize: ${pageSize.value}');
+
       final result = await ProjectService.fetchProjects(
         page: currentPage.value,
         limit: pageSize.value,
@@ -92,8 +80,6 @@ class ManageProjectController extends GetxController {
           projects.value = projectsList;
           totalPages.value = pagination['pages'] as int? ?? 1;
           totalItems.value = pagination['total'] as int? ?? 0;
-          logI(
-              'Updated pagination - Total: $totalItems, Pages: $totalPages, Current Page: $currentPage');
         } else {
           logE('Invalid data structure received from service');
           Get.snackbar(
@@ -127,7 +113,6 @@ class ManageProjectController extends GetxController {
 
   void onPageChanged(int page) {
     if (page != currentPage.value) {
-      logI('Changing page from ${currentPage.value} to $page');
       currentPage.value = page;
       fetchProjects();
     }
@@ -135,15 +120,13 @@ class ManageProjectController extends GetxController {
 
   void onPageSizeChanged(int size) {
     if (size != pageSize.value) {
-      logI('Changing page size from ${pageSize.value} to $size');
       pageSize.value = size;
       currentPage.value = 1; // Reset to first page when changing page size
       fetchProjects();
     }
   }
 
-  Future<void> selectDate(
-      BuildContext context, TextEditingController controller) async {
+  Future<void> selectDate(BuildContext context, String fieldName) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -152,111 +135,66 @@ class ManageProjectController extends GetxController {
     );
 
     if (picked != null) {
-      controller.text = DateFormat('yyyy-MM-dd').format(picked);
-    }
-  }
-
-  // Create a new project
-  Future<void> createProject() async {
-    try {
-      isLoading.value = true;
-
-      // Parse skills from comma-separated string
-      final skills = skillController.text
-          .split(',')
-          .map((e) => e.trim())
-          .where((e) => e.isNotEmpty)
-          .toList();
-
-      // Create a new project
-      final newProject = Project(
-        title: titleController.text,
-        location: locationController.text,
-        description: descriptionController.text,
-        requiredSkills: skills,
-        timeCommitment: timeCommitmentController.text,
-        startDate: DateFormat('yyyy-MM-dd').parse(startDateController.text),
-        applicationDeadline:
-            DateFormat('yyyy-MM-dd').parse(applicationDeadlineController.text),
-        status: selectedStatus.value,
-        endDate: DateTime.now(),
-        contactEmail: '',
-        maxVolunteers: 2,
+      formKey.currentState?.fields[fieldName]?.didChange(
+        DateFormat('yyyy-MM-dd').format(picked),
       );
-
-      final createdProject = await ProjectService.createProject(newProject);
-      if (createdProject != null) {
-        // Refresh the projects list
-        await fetchProjects();
-        _clearForm();
-        Get.back();
-        Get.snackbar(
-          'Success',
-          'Project created successfully',
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
-      }
-    } catch (e) {
-      logE('Error creating project: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to create project: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false;
     }
   }
 
   // Update an existing project
   Future<void> updateProject(String projectId) async {
     try {
-      isLoading.value = true;
+      if (!formKey.currentState!.saveAndValidate()) {
+        return;
+      }
 
-      // Parse skills from comma-separated string
-      final skills = skillController.text
-          .split(',')
-          .map((e) => e.trim())
-          .where((e) => e.isNotEmpty)
-          .toList();
+      isLoading.value = true;
+      final formData = formKey.currentState!.value;
 
       // Create updated project
       final updatedProject = Project(
         projectId: projectId,
-        title: titleController.text,
-        location: locationController.text,
-        description: descriptionController.text,
-        requiredSkills: skills,
-        timeCommitment: timeCommitmentController.text,
-        startDate: DateFormat('yyyy-MM-dd').parse(startDateController.text),
+        title: formData['title'],
+        location: formData['location'],
+        description: formData['description'],
+        requiredSkills: requiredSkills,
+        timeCommitment: formData['timeCommitment'],
+        startDate: DateFormat('yyyy-MM-dd').parse(formData['startDate']),
         applicationDeadline:
-            DateFormat('yyyy-MM-dd').parse(applicationDeadlineController.text),
+            DateFormat('yyyy-MM-dd').parse(formData['applicationDeadline']),
         status: selectedStatus.value,
-        endDate: DateTime.now(),
-        contactEmail: '',
-        maxVolunteers: 2,
+        endDate: DateFormat('yyyy-MM-dd').parse(formData['endDate'] ??
+            DateFormat('yyyy-MM-dd').format(DateTime.now())),
+        contactEmail: formData['contactEmail'] ?? '',
+        maxVolunteers: int.tryParse(formData['maxVolunteers'] ?? '2') ?? 2,
+        category: formData['category'] ?? 'General',
       );
 
-      // TODO: Implement update project API call
-      // For now, just refresh the list
-      await fetchProjects();
-      _clearForm();
-      Get.back();
-      Get.snackbar(
-        'Success',
-        'Project updated successfully',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      final result =
+          await ProjectService.updateProject(projectId, updatedProject);
+      if (result != null) {
+        // Update the project locally in the projects list
+        final index = projects.indexWhere((p) => p.projectId == projectId);
+        if (index != -1) {
+          projects[index] = result;
+        }
+
+        _clearForm();
+        Get.back();
+        appSnackbar(
+          title: 'Success',
+          message: 'Project updated successfully',
+          snackBarState: SnackBarState.SUCCESS,
+        );
+      } else {
+        throw Exception('Failed to update project');
+      }
     } catch (e) {
       logE('Error updating project: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to update project: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+      appSnackbar(
+        title: 'Error',
+        message: 'Failed to update project: $e',
+        snackBarState: SnackBarState.DANGER,
       );
     } finally {
       isLoading.value = false;
@@ -267,22 +205,24 @@ class ManageProjectController extends GetxController {
   Future<void> deleteProject(String projectId) async {
     try {
       isLoading.value = true;
-      // TODO: Implement delete project API call
-      // For now, just refresh the list
-      await fetchProjects();
-      Get.snackbar(
-        'Success',
-        'Project deleted successfully',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      final result = await ProjectService.deleteProject(projectId);
+      if (result) {
+        projects.removeWhere((project) => project.projectId == projectId);
+        Get.back();
+        appSnackbar(
+          title: 'Success',
+          message: 'Project deleted successfully',
+          snackBarState: SnackBarState.SUCCESS,
+        );
+      } else {
+        throw Exception('Failed to delete project');
+      }
     } catch (e) {
       logE('Error deleting project: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to delete project: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+      appSnackbar(
+        title: 'Error',
+        message: 'Failed to delete project: $e',
+        snackBarState: SnackBarState.DANGER,
       );
     } finally {
       isLoading.value = false;
@@ -291,13 +231,8 @@ class ManageProjectController extends GetxController {
 
   // Clear form fields
   void _clearForm() {
-    titleController.clear();
-    descriptionController.clear();
-    locationController.clear();
-    timeCommitmentController.clear();
-    startDateController.clear();
-    applicationDeadlineController.clear();
-    skillController.clear();
+    formKey.currentState?.reset();
+    requiredSkills.clear();
     selectedStatus.value = 'Open';
     selectedProject.value = null;
   }

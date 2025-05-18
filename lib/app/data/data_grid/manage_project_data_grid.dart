@@ -11,7 +11,6 @@ class ManageProjectDataSource extends DataGridSource {
   final bool isDesktop;
   final Function(Project) onEdit;
   final Function(Project) onDelete;
-  final Function(Project) onViewDetails;
 
   ManageProjectDataSource({
     required this.projects,
@@ -19,7 +18,6 @@ class ManageProjectDataSource extends DataGridSource {
     required this.isDesktop,
     required this.onEdit,
     required this.onDelete,
-    required this.onViewDetails,
   });
 
   @override
@@ -48,10 +46,11 @@ class ManageProjectDataSource extends DataGridSource {
                 value: project.applicationDeadline),
             DataGridCell<String>(columnName: 'status', value: project.status),
             DataGridCell<int>(
-                columnName: 'total_applicants', value: 0), // Mock data
-            DataGridCell<bool>(
+                columnName: 'total_applicants',
+                value: project.assignedVolunteerId?.length), // Mock data
+            DataGridCell<List<int>>(
                 columnName: 'assigned_volunteer',
-                value: project.assignedVolunteerId != null),
+                value: project.assignedVolunteerId),
             DataGridCell<DateTime>(
                 columnName: 'created_at', value: project.createdAt),
             DataGridCell<Project>(columnName: 'actions', value: project),
@@ -86,26 +85,7 @@ class ManageProjectDataSource extends DataGridSource {
                   constraints: BoxConstraints.tight(Size(30, 30)),
                   padding: EdgeInsets.zero,
                 ),
-                IconButton(
-                  icon: Icon(Icons.visibility,
-                      color: AppColors.kc6c6c8, size: 20),
-                  onPressed: () => onViewDetails(project),
-                  tooltip: 'View Details',
-                  constraints: BoxConstraints.tight(Size(30, 30)),
-                  padding: EdgeInsets.zero,
-                ),
               ],
-            ),
-          );
-        } else if (cell.columnName == 'assigned_volunteer') {
-          final isAssigned = cell.value as bool;
-          return Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(
-              isAssigned ? Icons.check_circle : Icons.cancel,
-              color: isAssigned ? Colors.green : Colors.red,
-              size: 20,
             ),
           );
         } else {
@@ -119,7 +99,7 @@ class ManageProjectDataSource extends DataGridSource {
                       color: AppColors.kc6c6c8,
                     ),
                   )
-                : cell.value is List<String>
+                : cell.value is List<String> || cell.value is List<int>
                     ? Text(
                         cell.value.join(', '),
                         style: GoogleFonts.poppins(

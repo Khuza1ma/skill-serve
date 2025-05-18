@@ -111,7 +111,7 @@ class APIService {
   /// encryption keys in the backend matches with the one in frontend
   static Future<Response<Map<String, dynamic>?>?> put({
     required String path,
-    FormData? data,
+    Map<String, dynamic>? data,
     Map<String, dynamic>? params,
     bool encrypt = true,
     String? forcedBaseUrl,
@@ -153,6 +153,25 @@ class APIService {
         options: Options(headers: <String, dynamic>{
           'encrypt': encrypt,
         }),
+      );
+
+  /// DELETE rest API call
+  /// Used to delete a resource from the server
+  ///
+  /// Use [forcedBaseUrl] when you want to use a specific base URL other
+  /// than the configured one
+  ///
+  /// [params] are query parameters
+  ///
+  /// [path] is the part of the path after the base URL
+  static Future<Response<Map<String, dynamic>?>?> delete({
+    required String path,
+    Map<String, dynamic>? params,
+    String? forcedBaseUrl,
+  }) async =>
+      _dio.delete<Map<String, dynamic>?>(
+        (forcedBaseUrl ?? _baseUrl) + path,
+        queryParameters: params,
       );
 
   /// Upload file to the server. You will get the URL in the response if the

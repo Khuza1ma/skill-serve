@@ -18,7 +18,6 @@ class ProjectService {
       if (response?.isOk ?? false) {
         final Map<String, dynamic>? data = response?.data?['data'];
         if (data != null) {
-          logI('Project created: $data');
           return Project.fromJson(data);
         }
       }
@@ -35,7 +34,6 @@ class ProjectService {
     int limit = 10,
   }) async {
     try {
-      logI('Fetching projects with page: $page, limit: $limit');
       final Response<Map<String, dynamic>?>? response = await APIService.get(
         path: 'projects',
         params: {
@@ -48,16 +46,12 @@ class ProjectService {
         final Map<String, dynamic>? responseData = response?.data;
         if (responseData != null && responseData.containsKey('data')) {
           final Map<String, dynamic> data = responseData['data'];
-          logI('Raw response data: $data');
-
           // Check if projects and pagination exist in the response
           if (data.containsKey('projects') && data.containsKey('pagination')) {
             final projectsList = data['projects'];
             final pagination = data['pagination'];
 
             if (projectsList is List && pagination is Map<String, dynamic>) {
-              logI(
-                  'Projects count: ${projectsList.length}, Pagination: $pagination');
               return {
                 'projects': projectsList
                     .map((project) => Project.fromJson(project))
@@ -85,6 +79,45 @@ class ProjectService {
     } catch (e, st) {
       logE('Unexpected error in fetchProjects: $e\n$st');
       return null;
+    }
+  }
+
+  /// Update an existing project
+  static Future<Project?> updateProject(
+      String projectId, Project project) async {
+    try {
+      final Response<Map<String, dynamic>?>? response = await APIService.put(
+        data: project.toJson(),
+        path: 'projects/$projectId',
+      );
+
+      if (response?.isOk ?? false) {
+        final Map<String, dynamic>? data = response?.data?['data'];
+        if (data != null) {
+          return Project.fromJson(data);
+        }
+      }
+      return null;
+    } on DioException catch (e, st) {
+      letMeHandleAllErrors(e, st);
+      return null;
+    }
+  }
+
+  /// Delete a project
+  static Future<bool> deleteProject(String projectId) async {
+    try {
+      final Response<Map<String, dynamic>?>? response = await APIService.delete(
+        path: 'projects/$projectId',
+      );
+
+      if (response?.isOk ?? false) {
+        return true;
+      }
+      return false;
+    } on DioException catch (e, st) {
+      letMeHandleAllErrors(e, st);
+      return false;
     }
   }
 }

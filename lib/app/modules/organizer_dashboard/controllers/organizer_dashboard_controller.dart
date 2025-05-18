@@ -9,9 +9,14 @@ class OrganizerDashboardController extends GetxController {
   final RxList<Project> projects = <Project>[].obs;
   final Rx<OrganizerProjectStatusCounts> projectStatusCounts =
       OrganizerProjectStatusCounts(
+    totalProjects: 0,
     openProjects: 0,
+    assignedProjects: 0,
+    completedProjects: 0,
+    cancelledProjects: 0,
     closedProjects: 0,
     totalApplications: 0,
+    totalVolunteers: 0,
   ).obs;
 
   @override
@@ -45,10 +50,12 @@ class OrganizerDashboardController extends GetxController {
     }
   }
 
-  int get totalProjects =>
-      projectStatusCounts.value.openProjects +
-      projectStatusCounts.value.closedProjects;
+  int get totalProjects => projectStatusCounts.value.totalProjects;
   int get openProjects => projectStatusCounts.value.openProjects;
+  int get assignedProjects => projectStatusCounts.value.assignedProjects;
+  int get completedProjects => projectStatusCounts.value.completedProjects;
+  int get cancelledProjects => projectStatusCounts.value.cancelledProjects;
   int get closedProjects => projectStatusCounts.value.closedProjects;
   int get totalApplications => projectStatusCounts.value.totalApplications;
+  int get totalVolunteers => projectStatusCounts.value.totalVolunteers;
 }

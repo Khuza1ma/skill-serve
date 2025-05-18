@@ -2,9 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:skill_serve/app/utils/api_ext.dart';
 
 import '../../config/error_handling.dart';
-import '../../config/logger.dart';
-import '../../models/volunteer_dashboard_model.dart';
 import '../../models/organizer_dashboard_model.dart';
+import '../../models/volunteer_dashboard_model.dart';
 import '../api_service/init_api_service.dart';
 
 class DashboardService {
@@ -18,7 +17,6 @@ class DashboardService {
       if (response?.isOk ?? false) {
         final Map<String, dynamic>? data = response?.data?['data'];
         if (data != null) {
-          logI('Dashboard data: $data');
           return VolunteerDashboardResponse.fromMap(data);
         }
       }
@@ -39,7 +37,6 @@ class DashboardService {
       if (response?.isOk ?? false) {
         final Map<String, dynamic>? data = response?.data?['data'];
         if (data != null) {
-          logI('Organizer dashboard data: $data');
           return OrganizerDashboardResponse.fromMap(data);
         }
       }

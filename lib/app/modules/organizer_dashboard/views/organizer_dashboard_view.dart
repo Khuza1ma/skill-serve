@@ -6,7 +6,6 @@ import 'package:skill_serve/app/data/models/project_model.dart';
 import 'package:skill_serve/app/modules/home/controllers/home_controller.dart';
 
 import '../../../constants/app_colors.dart';
-import '../../../data/config/logger.dart';
 import '../../../data/local/user_provider.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/organizer_dashboard_controller.dart';
@@ -135,7 +134,22 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
                   AppColors.k1CBB8C,
                 ),
                 _buildStatItem(
-                  'Closed Projects',
+                  'Assigned',
+                  controller.assignedProjects.toString(),
+                  AppColors.kFF9800,
+                ),
+                _buildStatItem(
+                  'Completed',
+                  controller.completedProjects.toString(),
+                  AppColors.k3B7DDD,
+                ),
+                _buildStatItem(
+                  'Cancelled',
+                  controller.cancelledProjects.toString(),
+                  AppColors.kFF0000,
+                ),
+                _buildStatItem(
+                  'Closed',
                   controller.closedProjects.toString(),
                   AppColors.kFCB92C,
                 ),
@@ -143,6 +157,11 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
                   'Total Applications',
                   controller.totalApplications.toString(),
                   AppColors.k806dff,
+                ),
+                _buildStatItem(
+                  'Total Volunteers',
+                  controller.totalVolunteers.toString(),
+                  AppColors.k17A2B8,
                 ),
               ],
             ),
@@ -182,7 +201,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
   }
 
   Widget _buildProjectStatusChart() {
-    if (controller.openProjects == 0 && controller.closedProjects == 0) {
+    if (controller.totalProjects == 0) {
       return Card(
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -202,7 +221,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
               ),
               const SizedBox(height: 20),
               SizedBox(
-                height: 250,
+                height: 320,
                 child: const Center(
                   child: Text(
                     'No data available',
@@ -217,28 +236,66 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
     }
 
     final sections = <PieChartSectionData>[
-      PieChartSectionData(
-        value: controller.openProjects.toDouble(),
-        title: 'Open\n${controller.openProjects}',
-        color: AppColors.k1CBB8C,
-        radius: 100,
-        titleStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-          color: AppColors.kFFFFFF,
+      if (controller.openProjects > 0)
+        PieChartSectionData(
+          value: controller.openProjects.toDouble(),
+          title: 'Open\n${controller.openProjects}',
+          color: AppColors.k1CBB8C,
+          radius: 100,
+          titleStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: AppColors.kFFFFFF,
+          ),
         ),
-      ),
-      PieChartSectionData(
-        value: controller.closedProjects.toDouble(),
-        title: 'Closed\n${controller.closedProjects}',
-        color: AppColors.kFCB92C,
-        radius: 100,
-        titleStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-          color: AppColors.kFFFFFF,
+      if (controller.assignedProjects > 0)
+        PieChartSectionData(
+          value: controller.assignedProjects.toDouble(),
+          title: 'Assigned\n${controller.assignedProjects}',
+          color: AppColors.kFF9800,
+          radius: 100,
+          titleStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: AppColors.kFFFFFF,
+          ),
         ),
-      ),
+      if (controller.completedProjects > 0)
+        PieChartSectionData(
+          value: controller.completedProjects.toDouble(),
+          title: 'Completed\n${controller.completedProjects}',
+          color: AppColors.k3B7DDD,
+          radius: 100,
+          titleStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: AppColors.kFFFFFF,
+          ),
+        ),
+      if (controller.cancelledProjects > 0)
+        PieChartSectionData(
+          value: controller.cancelledProjects.toDouble(),
+          title: 'Cancelled\n${controller.cancelledProjects}',
+          color: AppColors.kFF0000,
+          radius: 100,
+          titleStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: AppColors.kFFFFFF,
+          ),
+        ),
+      if (controller.closedProjects > 0)
+        PieChartSectionData(
+          value: controller.closedProjects.toDouble(),
+          title: 'Closed\n${controller.closedProjects}',
+          color: AppColors.kFCB92C,
+          radius: 100,
+          titleStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: AppColors.kFFFFFF,
+          ),
+        ),
     ];
 
     return Card(
@@ -267,12 +324,12 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
                     ),
                   )
                 : SizedBox(
-                    height: 250,
+                    height: 332,
                     child: PieChart(
                       PieChartData(
                         sections: sections,
-                        centerSpaceRadius: 40,
-                        sectionsSpace: 2,
+                        centerSpaceRadius: 55,
+                        sectionsSpace: 3,
                         borderData: FlBorderData(show: false),
                       ),
                     ),
@@ -309,15 +366,27 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
             ),
             const SizedBox(height: 16),
             _buildProgressItem(
-              'Closed Projects',
-              controller.closedProjects,
-              AppColors.kFCB92C,
+              'Assigned Projects',
+              controller.assignedProjects,
+              AppColors.kFF9800,
             ),
             const SizedBox(height: 16),
             _buildProgressItem(
-              'Total Applications',
-              controller.totalApplications,
+              'Completed Projects',
+              controller.completedProjects,
               AppColors.k3B7DDD,
+            ),
+            const SizedBox(height: 16),
+            _buildProgressItem(
+              'Cancelled Projects',
+              controller.cancelledProjects,
+              AppColors.kFF0000,
+            ),
+            const SizedBox(height: 16),
+            _buildProgressItem(
+              'Closed Projects',
+              controller.closedProjects,
+              AppColors.kFCB92C,
             ),
             const SizedBox(height: 20),
             Container(
@@ -445,7 +514,9 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
   Widget _buildProjectItem(Project project) {
     Color statusColor;
     IconData statusIcon;
-
+    // 'Assigned',
+    // 'Completed',
+    // 'Cancelled'
     switch (project.status) {
       case 'Open':
         statusColor = AppColors.k1CBB8C;
@@ -454,6 +525,18 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
       case 'Closed':
         statusColor = AppColors.kFCB92C;
         statusIcon = Icons.lock;
+        break;
+      case 'Assigned':
+        statusColor = AppColors.kFF9800;
+        statusIcon = Icons.assignment_turned_in;
+        break;
+      case 'Completed':
+        statusColor = AppColors.k3B7DDD;
+        statusIcon = Icons.done_all;
+        break;
+      case 'Cancelled':
+        statusColor = AppColors.kFF0000;
+        statusIcon = Icons.cancel;
         break;
       default:
         statusColor = AppColors.k17A2B8;
@@ -572,7 +655,6 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
   }
 
   String _formatDate(DateTime? date) {
-    logWTF('Date: $date');
     if (date == null) return 'N/A';
     return DateFormat('MMM d, yyyy').format(date);
   }
