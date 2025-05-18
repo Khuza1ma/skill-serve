@@ -90,7 +90,9 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        UserProvider.currentUser?.currentUsername ?? '',
+                        UserProvider.currentUser?.currentUsername
+                                ?.capitalizeFirst ??
+                            '',
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -118,9 +120,8 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
                 ),
               ],
             ),
-            Row(
+            Wrap(
               spacing: 12,
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildStatItem(
                   'Applied Projects',

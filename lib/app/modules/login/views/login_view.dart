@@ -1,17 +1,16 @@
-import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:skill_serve/app/utils/num_ext.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:skill_serve/app/utils/num_ext.dart';
 
-import '../../../ui/components/app_text_form_field.dart';
+import '../../../constants/app_colors.dart';
 import '../../../constants/asset_constants.dart';
 import '../../../ui/components/app_button.dart';
+import '../../../ui/components/app_text_form_field.dart';
 import '../controllers/login_controller.dart';
-import '../../../constants/app_colors.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({super.key});

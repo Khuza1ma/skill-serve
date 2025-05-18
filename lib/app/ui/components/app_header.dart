@@ -89,7 +89,9 @@ class AppHeader extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          UserProvider.currentUser?.currentUsername ?? '',
+                          UserProvider.currentUser?.currentUsername
+                                  ?.capitalizeFirst ??
+                              '',
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,

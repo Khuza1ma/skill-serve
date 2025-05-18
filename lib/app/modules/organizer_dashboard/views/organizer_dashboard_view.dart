@@ -92,7 +92,9 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        UserProvider.currentUser?.currentUsername ?? '',
+                        UserProvider.currentUser?.currentUsername
+                                ?.capitalizeFirst ??
+                            '',
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
