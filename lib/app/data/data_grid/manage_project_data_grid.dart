@@ -46,9 +46,14 @@ class ManageProjectDataSource extends DataGridSource {
                 value: project.applicationDeadline),
             DataGridCell<String>(columnName: 'status', value: project.status),
             DataGridCell<int>(
-                columnName: 'total_applicants',
-                value: project.assignedVolunteerId?.length), // Mock data
-            DataGridCell<List<int>>(
+              columnName: 'total_applicants',
+              value: project.assignedVolunteerId?.length,
+            ),
+            DataGridCell<int>(
+              columnName: 'max_volunteer',
+              value: project.maxVolunteers,
+            ), // Mock data
+            DataGridCell<List<String>>(
                 columnName: 'assigned_volunteer',
                 value: project.assignedVolunteerId),
             DataGridCell<DateTime>(

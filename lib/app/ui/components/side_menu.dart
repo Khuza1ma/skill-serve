@@ -1,11 +1,11 @@
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:skill_serve/app/constants/asset_constants.dart';
+
+import '../../constants/app_colors.dart';
 import '../../data/local/user_provider.dart';
 import '../../modules/home/controllers/home_controller.dart';
-import '../../constants/app_colors.dart';
 import '../../routes/app_pages.dart';
 
 class SideBar extends StatelessWidget {
@@ -85,12 +85,6 @@ class SideBar extends StatelessWidget {
         icon: Icons.work_outline,
         label: 'Projects',
         tab: SideBarTab.projects,
-        route: Routes.PROJECTS,
-      ),
-      _buildMenuItem(
-        icon: Icons.info_outline,
-        label: 'Projects Details',
-        tab: SideBarTab.projectsDetails,
         route: Routes.PROJECTS_DETAILS,
       ),
       _buildMenuItem(

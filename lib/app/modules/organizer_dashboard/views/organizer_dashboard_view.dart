@@ -334,9 +334,47 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
                       ),
                     ),
                   ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildLegendItem('Open', AppColors.k1CBB8C),
+                const SizedBox(width: 16),
+                _buildLegendItem('Assigned', AppColors.kFF9800),
+                const SizedBox(width: 16),
+                _buildLegendItem('Completed', AppColors.k3B7DDD),
+                const SizedBox(width: 16),
+                _buildLegendItem('Cancelled', AppColors.kFF0000),
+                const SizedBox(width: 16),
+                _buildLegendItem('Closed', AppColors.kFCB92C),
+              ],
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLegendItem(String label, Color color) {
+    return Row(
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.kFFFFFF,
+            fontSize: 12,
+          ),
+        ),
+      ],
     );
   }
 

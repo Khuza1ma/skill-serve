@@ -1,12 +1,11 @@
 import 'package:get/get.dart';
+
 import '../../../data/config/logger.dart';
 import '../../../data/remote/services/user_service.dart';
-import '../../../routes/app_pages.dart';
 
 enum SideBarTab {
   dashboard,
   projects,
-  projectsDetails,
   appliedProjects,
   createProject,
   manageProject,

@@ -3,6 +3,7 @@ import 'package:skill_serve/app/utils/api_ext.dart';
 
 import '../../config/error_handling.dart';
 import '../../config/logger.dart';
+import '../../models/applied_project_model.dart';
 import '../../models/project_model.dart';
 import '../api_service/init_api_service.dart';
 
@@ -109,6 +110,97 @@ class ProjectService {
     try {
       final Response<Map<String, dynamic>?>? response = await APIService.delete(
         path: 'projects/$projectId',
+      );
+
+      if (response?.isOk ?? false) {
+        return true;
+      }
+      return false;
+    } on DioException catch (e, st) {
+      letMeHandleAllErrors(e, st);
+      return false;
+    }
+  }
+
+  /// Apply for a project
+  static Future<bool> applyProject(String projectId) async {
+    try {
+      final Response<Map<String, dynamic>?>? response = await APIService.post(
+        path: 'applications/$projectId',
+      );
+
+      if (response?.isOk ?? false) {
+        return true;
+      }
+      return false;
+    } on DioException catch (e, st) {
+      letMeHandleAllErrors(e, st);
+      return false;
+    }
+  }
+
+  /// Get applied projects for a volunteer
+  static Future<Map<String, dynamic>?> getAppliedProjects({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final Response<Map<String, dynamic>?>? response = await APIService.get(
+        path: 'applications/volunteer',
+        params: {
+          'page': page,
+          'limit': limit,
+        },
+      );
+
+      if (response?.isOk ?? false) {
+        final Map<String, dynamic>? responseData = response?.data;
+        if (responseData != null && responseData.containsKey('data')) {
+          final Map<String, dynamic> data = responseData['data'];
+          // Check if applications and pagination exist in the response
+          if (data.containsKey('applications') &&
+              data.containsKey('pagination')) {
+            final applicationsList = data['applications'];
+            final pagination = data['pagination'];
+
+            if (applicationsList is List &&
+                pagination is Map<String, dynamic>) {
+              return {
+                'applications': applicationsList
+                    .map((application) => AppliedProject.fromJson(application))
+                    .toList(),
+                'pagination': pagination,
+              };
+            } else {
+              logE(
+                  'Invalid data structure: applications is not a List or pagination is not a Map');
+              return null;
+            }
+          } else {
+            logE(
+                'Missing required fields in response: applications or pagination');
+            return null;
+          }
+        } else {
+          logE('Missing data field in response');
+          return null;
+        }
+      }
+      return null;
+    } on DioException catch (e, st) {
+      letMeHandleAllErrors(e, st);
+      return null;
+    } catch (e, st) {
+      logE('Unexpected error in getAppliedProjects: $e\n$st');
+      return null;
+    }
+  }
+
+  /// Withdraw from a project application
+  static Future<bool> withdrawProject(String applicationId) async {
+    try {
+      final Response<Map<String, dynamic>?>? response = await APIService.put(
+        path: 'applications/$applicationId/withdraw',
       );
 
       if (response?.isOk ?? false) {

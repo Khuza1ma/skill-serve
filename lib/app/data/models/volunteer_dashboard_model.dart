@@ -15,10 +15,10 @@ class ProjectStatusCounts {
 
   factory ProjectStatusCounts.fromMap(Map<String, dynamic> json) {
     return ProjectStatusCounts(
-      pending: json['Pending'] ?? 0,
-      approved: json['Approved'] ?? 0,
-      rejected: json['Rejected'] ?? 0,
-      totalAppliedProjects: json['totalAppliedProjects'] ?? 0,
+      pending: json['pending'] ?? 0,
+      approved: json['approved'] ?? 0,
+      rejected: json['rejected'] ?? 0,
+      totalAppliedProjects: json['total_applied_projects'] ?? 0,
     );
   }
 }

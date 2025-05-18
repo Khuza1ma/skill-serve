@@ -155,9 +155,9 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
       width: 180,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -172,7 +172,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
           const SizedBox(height: 4),
           Text(
             label,
-            style: TextStyle(fontSize: 16, color: color.withOpacity(0.8)),
+            style: TextStyle(fontSize: 16, color: color.withValues(alpha: 0.8)),
           ),
         ],
       ),
@@ -240,27 +240,72 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
               ),
             ),
             const SizedBox(height: 20),
-            (sections.isEmpty)
-                ? const Center(
-                  child: Text(
-                    'No data available',
-                    style: TextStyle(color: AppColors.kFFFFFF),
-                  ),
-                )
+            (controller.projectStatusCounts.value.totalAppliedProjects == 0)
+                ? SizedBox(
+                    height: 250,
+                    child: const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Text(
+                          'No data available',
+                          style: TextStyle(
+                            color: AppColors.kFFFFFF,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 : SizedBox(
-                  height: 250,
-                  child: PieChart(
-                    PieChartData(
-                      sections: sections,
-                      centerSpaceRadius: 40,
-                      sectionsSpace: 2,
-                      borderData: FlBorderData(show: false),
+                    height: 250,
+                    child: PieChart(
+                      PieChartData(
+                        sections: sections,
+                        centerSpaceRadius: 40,
+                        sectionsSpace: 2,
+                        borderData: FlBorderData(show: false),
+                        startDegreeOffset: -90,
+                        centerSpaceColor: AppColors.k262837,
+                      ),
                     ),
                   ),
-                ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildLegendItem('Approved', statusColors['Approved']!),
+                const SizedBox(width: 16),
+                _buildLegendItem('Pending', statusColors['Pending']!),
+                const SizedBox(width: 16),
+                _buildLegendItem('Rejected', statusColors['Rejected']!),
+              ],
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLegendItem(String label, Color color) {
+    return Row(
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(
+            color: AppColors.kFFFFFF,
+            fontSize: 12,
+          ),
+        ),
+      ],
     );
   }
 
@@ -304,7 +349,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.k806dff.withOpacity(0.1),
+                color: AppColors.k806dff.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -355,7 +400,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
             value: percentage / 100,
-            backgroundColor: color.withOpacity(0.2),
+            backgroundColor: color.withValues(alpha: 0.2),
             valueColor: AlwaysStoppedAnimation<Color>(color),
             minHeight: 8,
           ),
@@ -399,9 +444,25 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
             const SizedBox(height: 16),
             const Divider(color: AppColors.k1f1d2c),
             const SizedBox(height: 8),
-            ...controller.appliedProjects
-                .take(3)
-                .map((project) => _buildProjectItem(project)),
+            controller.appliedProjects.isEmpty
+                ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Text(
+                        'No projects applied yet',
+                        style: TextStyle(
+                          color: AppColors.kFFFFFF,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  )
+                : Column(
+                    children: controller.appliedProjects
+                        .take(3)
+                        .map((project) => _buildProjectItem(project))
+                        .toList(),
+                  ),
           ],
         ),
       ),
@@ -413,17 +474,21 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
     IconData statusIcon;
 
     switch (project.status) {
-      case 'Approved':
+      case 'accepted':
         statusColor = AppColors.k1CBB8C;
         statusIcon = Icons.check_circle;
         break;
-      case 'Pending':
+      case 'pending':
         statusColor = AppColors.kFCB92C;
         statusIcon = Icons.hourglass_empty;
         break;
-      case 'Rejected':
+      case 'rejected':
         statusColor = AppColors.kDC3545;
         statusIcon = Icons.cancel;
+        break;
+      case 'withdrawn':
+        statusColor = AppColors.k6C757D;
+        statusIcon = Icons.remove_circle;
         break;
       default:
         statusColor = AppColors.k6C757D;
@@ -438,7 +503,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.1),
+              color: statusColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(statusIcon, color: statusColor),
@@ -449,14 +514,14 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Project ID: ${project.projectId}',
+                  'Project ID: ${project.projectId?.projectId}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: AppColors.kFFFFFF,
                   ),
                 ),
                 Text(
-                  'Application ID: ${project.applicationId}',
+                  'Application ID: ${project.id}',
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.kc6c6c8,
@@ -471,11 +536,11 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  project.status,
+                  project.status ?? 'Pending',
                   style: TextStyle(
                     fontSize: 12,
                     color: statusColor,

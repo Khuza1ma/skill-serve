@@ -10,7 +10,7 @@ class Project {
   final DateTime? endDate;
   final DateTime? applicationDeadline;
   final String? status;
-  final List<int>? assignedVolunteerId;
+  final List<String>? assignedVolunteerId;
   final String? contactEmail;
   final int? maxVolunteers;
   final DateTime? createdAt;
@@ -53,7 +53,7 @@ class Project {
     DateTime? endDate,
     DateTime? applicationDeadline,
     String? status,
-    int? assignedVolunteerId,
+    List<String>? assignedVolunteerId,
     String? contactEmail,
     int? maxVolunteers,
     DateTime? createdAt,
@@ -74,8 +74,7 @@ class Project {
         endDate: endDate ?? this.endDate,
         applicationDeadline: applicationDeadline ?? this.applicationDeadline,
         status: status ?? this.status,
-        assignedVolunteerId:
-            assignedVolunteerId == null ? null : [assignedVolunteerId],
+        assignedVolunteerId: assignedVolunteerId ?? this.assignedVolunteerId,
         contactEmail: contactEmail ?? this.contactEmail,
         maxVolunteers: maxVolunteers ?? this.maxVolunteers,
         createdAt: createdAt ?? this.createdAt,
@@ -106,7 +105,7 @@ class Project {
         status: json["status"],
         assignedVolunteerId: json["assigned_volunteer_id"] == null
             ? []
-            : List<int>.from(json["assigned_volunteer_id"]!.map((x) => x)),
+            : List<String>.from(json["assigned_volunteer_id"]!.map((x) => x)),
         contactEmail: json["contact_email"],
         maxVolunteers: json["max_volunteers"],
         createdAt: json["created_at"] == null

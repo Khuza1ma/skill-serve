@@ -254,9 +254,9 @@ class CreateProjectView extends GetView<CreateProjectController> {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.k262837.withOpacity(0.5),
+                color: AppColors.k262837.withValues(alpha:  0.5),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                border: Border.all(color: Colors.grey.withValues(alpha:  0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -264,7 +264,7 @@ class CreateProjectView extends GetView<CreateProjectController> {
                   Text(
                     'Selected Skills:',
                     style: TextStyle(
-                      color: AppColors.kFFFFFF.withOpacity(0.8),
+                      color: AppColors.kFFFFFF.withValues(alpha:  0.8),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -273,7 +273,7 @@ class CreateProjectView extends GetView<CreateProjectController> {
                       ? Text(
                           'No skills added yet',
                           style: TextStyle(
-                            color: AppColors.kFFFFFF.withOpacity(0.5),
+                            color: AppColors.kFFFFFF.withValues(alpha:  0.5),
                             fontStyle: FontStyle.italic,
                           ),
                         )
@@ -288,7 +288,7 @@ class CreateProjectView extends GetView<CreateProjectController> {
                                     onDeleted: () =>
                                         controller.removeSkill(skill),
                                     backgroundColor:
-                                        AppColors.k806dff.withOpacity(0.2),
+                                        AppColors.k806dff.withValues(alpha:  0.2),
                                     labelStyle:
                                         TextStyle(color: AppColors.kFFFFFF),
                                   ))
@@ -461,9 +461,9 @@ class CreateProjectView extends GetView<CreateProjectController> {
           width: double.infinity,
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppColors.k262837.withOpacity(0.5),
+            color: AppColors.k262837.withValues(alpha:  0.5),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.withOpacity(0.3)),
+            border: Border.all(color: Colors.grey.withValues(alpha:  0.3)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,7 +471,7 @@ class CreateProjectView extends GetView<CreateProjectController> {
               Text(
                 'Selected Skills:',
                 style: TextStyle(
-                  color: AppColors.kFFFFFF.withOpacity(0.8),
+                  color: AppColors.kFFFFFF.withValues(alpha:  0.8),
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -480,7 +480,7 @@ class CreateProjectView extends GetView<CreateProjectController> {
                   ? Text(
                       'No skills added yet',
                       style: TextStyle(
-                        color: AppColors.kFFFFFF.withOpacity(0.5),
+                        color: AppColors.kFFFFFF.withValues(alpha:  0.5),
                         fontStyle: FontStyle.italic,
                       ),
                     )
@@ -493,7 +493,7 @@ class CreateProjectView extends GetView<CreateProjectController> {
                                 deleteIcon: const Icon(Icons.close, size: 18),
                                 onDeleted: () => controller.removeSkill(skill),
                                 backgroundColor:
-                                    AppColors.k806dff.withOpacity(0.2),
+                                    AppColors.k806dff.withValues(alpha:  0.2),
                                 labelStyle: TextStyle(color: AppColors.kFFFFFF),
                               ))
                           .toList(),

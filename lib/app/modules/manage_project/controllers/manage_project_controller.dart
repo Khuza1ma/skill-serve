@@ -55,11 +55,6 @@ class ManageProjectController extends GetxController {
     fetchProjects();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
   Future<void> fetchProjects() async {
     try {
       isLoading.value = true;

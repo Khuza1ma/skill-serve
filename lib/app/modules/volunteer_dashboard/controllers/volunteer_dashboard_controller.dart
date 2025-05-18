@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:skill_serve/app/data/config/logger.dart';
 
 import '../../../data/models/applied_project_model.dart';
 import '../../../data/models/volunteer_dashboard_model.dart';
@@ -8,13 +9,12 @@ import '../../../ui/components/app_snackbar.dart';
 class VolunteerDashboardController extends GetxController {
   final RxBool isLoading = true.obs;
   final RxList<AppliedProject> appliedProjects = <AppliedProject>[].obs;
-  final Rx<ProjectStatusCounts> projectStatusCounts =
-      ProjectStatusCounts(
-        pending: 0,
-        approved: 0,
-        rejected: 0,
-        totalAppliedProjects: 0,
-      ).obs;
+  final Rx<ProjectStatusCounts> projectStatusCounts = ProjectStatusCounts(
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+    totalAppliedProjects: 0,
+  ).obs;
 
   @override
   void onInit() {
@@ -36,7 +36,8 @@ class VolunteerDashboardController extends GetxController {
           snackBarState: SnackBarState.DANGER,
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      logE('$e,$st');
       appSnackbar(
         title: 'Error',
         message: 'An error occurred while loading dashboard data',

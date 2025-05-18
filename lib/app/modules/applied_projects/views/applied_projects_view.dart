@@ -6,6 +6,8 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../../constants/app_colors.dart';
 import '../../../data/config/logger.dart';
 import '../../../data/data_grid/applied_projects_data_grid.dart';
+import '../../../data/models/applied_project_model.dart';
+import '../../../ui/components/app_modals.dart';
 import '../../../utils/data_grid_utils.dart';
 import '../controllers/applied_projects_controller.dart';
 
@@ -23,7 +25,9 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
 
         final appliedProjectDataSource = AppliedProjectDataSource(
           appliedProjects: controller.appliedProjects,
-          controller: controller,
+          onWithdraw: (AppliedProject project) {
+            _showWithdrawConfirmation(project);
+          },
         );
 
         return Column(
@@ -57,15 +61,35 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
                           topLeft: Radius.circular(8),
                           topRight: Radius.circular(8),
                         ),
-                        child: SfDataGrid(
-                          shrinkWrapRows: true,
-                          headerGridLinesVisibility: GridLinesVisibility.none,
-                          gridLinesVisibility: GridLinesVisibility.horizontal,
-                          source: appliedProjectDataSource,
-                          columnWidthMode: ColumnWidthMode.fill,
-                          isScrollbarAlwaysShown: true,
-                          showHorizontalScrollbar: true,
-                          columns: _buildColumns(),
+                        child: Obx(
+                          () => controller.appliedProjects.isEmpty
+                              ? const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 20),
+                                    child: Text(
+                                      'No applied projects available',
+                                      style: TextStyle(
+                                        color: AppColors.kFFFFFF,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : SfDataGrid(
+                                  shrinkWrapRows: true,
+                                  headerGridLinesVisibility:
+                                      GridLinesVisibility.none,
+                                  onQueryRowHeight: (details) {
+                                    return 65;
+                                  },
+                                  gridLinesVisibility:
+                                      GridLinesVisibility.horizontal,
+                                  source: appliedProjectDataSource,
+                                  columnWidthMode: ColumnWidthMode.fill,
+                                  isScrollbarAlwaysShown: true,
+                                  showHorizontalScrollbar: true,
+                                  columns: _buildColumns(),
+                                ),
                         ),
                       ),
                     ),
@@ -134,6 +158,7 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
       _buildColumn(columnName: 'project_id', label: 'Project ID'),
       _buildColumn(columnName: 'status', label: 'Status'),
       _buildColumn(columnName: 'date_applied', label: 'Date Applied'),
+      _buildColumn(columnName: 'actions', label: 'Actions', width: 150),
     ];
   }
 
@@ -158,6 +183,23 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showWithdrawConfirmation(AppliedProject project) {
+    showCustomModal(
+      title: 'Withdraw Project',
+      content:
+          'Are you sure you want to withdraw your application \nfrom "${project.projectId?.title}"?',
+      buttonTitle: "Withdraw",
+      onSubmit: () async {
+        Get.back();
+        if (project.id != null) {
+          controller.withdrawProject(project.id!);
+        }
+      },
+      modalState: ModalState.PRIMARY,
+      alignment: Alignment.center,
     );
   }
 }

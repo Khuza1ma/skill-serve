@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:skill_serve/app/constants/app_colors.dart';
 import 'package:skill_serve/app/utils/num_ext.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/material.dart';
 
 ///App Button
 class AppButton extends StatelessWidget {
@@ -21,6 +21,7 @@ class AppButton extends StatelessWidget {
     this.margin,
     super.key,
     this.leading,
+    this.isDisabled = false,
     this.trailing,
     this.borderRadius,
   });
@@ -58,6 +59,9 @@ class AppButton extends StatelessWidget {
   /// Set [true] to show [CircularProgressIndicator], [false] to hide it
   final bool isLoading;
 
+  /// Set [true] to disable the button, [false] to enable it
+  final bool isDisabled;
+
   ///If [hasLeadingWidget] is true then this should assign to any widget
   final Widget? leading;
 
@@ -70,49 +74,53 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: margin ?? const EdgeInsets.all(0),
-        child: ElevatedButton(
-          onPressed: isLoading ? () {} : onPressed,
-          style: ElevatedButton.styleFrom(
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            splashFactory: NoSplash.splashFactory,
-            shape: RoundedRectangleBorder(
-              borderRadius: borderRadius ?? BorderRadius.circular(8),
-              side: border ?? BorderSide.none,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 200),
+          opacity: isDisabled ? 0.5 : 1,
+          child: ElevatedButton(
+            onPressed: isLoading || isDisabled ? () {} : onPressed,
+            style: ElevatedButton.styleFrom(
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              splashFactory: NoSplash.splashFactory,
+              shape: RoundedRectangleBorder(
+                borderRadius: borderRadius ?? BorderRadius.circular(8),
+                side: border ?? BorderSide.none,
+              ),
+              backgroundColor: buttonColor ?? AppColors.k806dff,
+              foregroundColor: textColor,
+              minimumSize: buttonSize ?? const Size(double.infinity, 46),
+              padding: padding,
             ),
-            backgroundColor: buttonColor ?? AppColors.k806dff,
-            foregroundColor: textColor,
-            minimumSize: buttonSize ?? const Size(double.infinity, 46),
-            padding: padding,
-          ),
-          child: isLoading
-              ? Container(
-                  width: 25,
-                  height: 25,
-                  alignment: Alignment.center,
-                  child: CircularProgressIndicator(
-                    color: textColor,
-                    strokeWidth: 3,
-                  ),
-                )
-              : FittedBox(
-                  child: Row(
-                    children: <Widget>[
-                      leading ?? const SizedBox.shrink(),
-                      if (leading != null) 8.horizontalSpace,
-                      Text(
-                        buttonText,
-                        style: GoogleFonts.ubuntu(
-                          fontSize: fontSize,
-                          fontWeight: fontWeight,
-                          color: AppColors.kFFFFFF,
+            child: isLoading
+                ? Container(
+                    width: 25,
+                    height: 25,
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(
+                      color: textColor,
+                      strokeWidth: 3,
+                    ),
+                  )
+                : FittedBox(
+                    child: Row(
+                      children: <Widget>[
+                        leading ?? const SizedBox.shrink(),
+                        if (leading != null) 8.horizontalSpace,
+                        Text(
+                          buttonText,
+                          style: GoogleFonts.ubuntu(
+                            fontSize: fontSize,
+                            fontWeight: fontWeight,
+                            color: AppColors.kFFFFFF,
+                          ),
                         ),
-                      ),
-                      if (trailing != null) 8.horizontalSpace,
-                      trailing ?? const SizedBox.shrink(),
-                    ],
+                        if (trailing != null) 8.horizontalSpace,
+                        trailing ?? const SizedBox.shrink(),
+                      ],
+                    ),
                   ),
-                ),
+          ),
         ),
       );
 }
