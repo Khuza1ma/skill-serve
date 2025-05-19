@@ -26,14 +26,12 @@ class AppliedProjectsController extends GetxController {
   }
 
   Future<void> loadAppliedProjects() async {
-    // Only prevent multiple loads if it's not the initial load
     if (isLoading.value && !_isInitialLoad) return;
 
     isLoading.value = true;
     try {
-
       final result = await ProjectService.getAppliedProjects(
-        page: currentPageIndex.value + 1, // API uses 1-based indexing
+        page: currentPageIndex.value + 1,
         limit: limit.value,
       );
 

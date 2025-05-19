@@ -5,6 +5,8 @@ import 'package:skill_serve/app/data/local/user_provider.dart';
 
 import '../../../constants/app_colors.dart';
 import '../../../data/models/applied_project_model.dart';
+import '../../../routes/app_pages.dart';
+import '../../home/controllers/home_controller.dart';
 import '../controllers/volunteer_dashboard_controller.dart';
 
 class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
@@ -250,7 +252,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
                         child: Text(
                           'No data available',
                           style: TextStyle(
-                            color: AppColors.kFFFFFF,
+                            color: AppColors.k6C757D,
                             fontSize: 16,
                           ),
                         ),
@@ -433,7 +435,9 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Get.toNamed('/applied-projects');
+                    Get.offNamed(Routes.APPLIED_PROJECTS, id: 1);
+                    Get.find<HomeController>().selectedTab.value =
+                        SideBarTab.appliedProjects;
                   },
                   child: const Text(
                     'View All',
@@ -452,7 +456,7 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
                       child: Text(
                         'No projects applied yet',
                         style: TextStyle(
-                          color: AppColors.kFFFFFF,
+                          color: AppColors.k6C757D,
                           fontSize: 16,
                         ),
                       ),

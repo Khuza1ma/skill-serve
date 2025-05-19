@@ -9,7 +9,7 @@ class Project {
   final DateTime? startDate;
   final DateTime? endDate;
   final DateTime? applicationDeadline;
-  final String? status;
+  String? status;
   final List<String>? assignedVolunteerId;
   final String? contactEmail;
   final int? maxVolunteers;

@@ -116,6 +116,12 @@ class SideBar extends StatelessWidget {
         tab: SideBarTab.manageProject,
         route: Routes.MANAGE_PROJECT,
       ),
+      _buildMenuItem(
+        icon: Icons.assignment_turned_in,
+        label: 'Volunteer Applications',
+        tab: SideBarTab.volunteerApplications,
+        route: Routes.ORGANIZER_APPLICATIONS,
+      ),
     ];
   }
 

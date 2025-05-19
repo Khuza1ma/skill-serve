@@ -20,7 +20,7 @@ InterceptorsWrapper addAuthToken() => InterceptorsWrapper(
 class APIService {
   static final Dio _dio = Dio();
 
-  static const String _baseUrl = 'http://192.168.1.3:5000/api/';
+  static const String _baseUrl = 'http://localhost:5000/api/';
 
   /// Initialize the API service
   static void initialize() {

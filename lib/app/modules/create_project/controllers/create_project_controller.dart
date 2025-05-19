@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:skill_serve/app/data/models/project_model.dart';
 import 'package:skill_serve/app/data/remote/services/project_service.dart';
+import 'package:skill_serve/app/modules/organizer_dashboard/controllers/organizer_dashboard_controller.dart';
 
 import '../../../data/config/logger.dart';
 import '../../../ui/components/app_snackbar.dart';
@@ -39,6 +40,14 @@ class CreateProjectController extends GetxController {
 
   Future<void> submitProject() async {
     if (formKey.currentState?.saveAndValidate() ?? false) {
+      if (requiredSkills.isEmpty) {
+        appSnackbar(
+          title: 'Error',
+          message: 'Please add at least one required skill.',
+          snackBarState: SnackBarState.WARNING,
+        );
+        return;
+      }
       try {
         isLoading.value = true;
         final formData = formKey.currentState!.value;
@@ -64,6 +73,7 @@ class CreateProjectController extends GetxController {
             message: 'Project created successfully!',
             snackBarState: SnackBarState.SUCCESS,
           );
+          Get.find<OrganizerDashboardController>().loadDashboardData();
           formKey.currentState?.reset();
           requiredSkills.clear();
         } else {

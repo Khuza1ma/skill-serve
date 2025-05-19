@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:skill_serve/app/utils/api_ext.dart';
 
+import '../../../ui/components/app_snackbar.dart';
 import '../../config/error_handling.dart';
 import '../../config/logger.dart';
 import '../../models/applied_project_model.dart';
@@ -135,6 +136,11 @@ class ProjectService {
       return false;
     } on DioException catch (e, st) {
       letMeHandleAllErrors(e, st);
+      appSnackbar(
+        title: 'Error',
+        message: e.response?.data['message'] ?? 'Failed to apply for project',
+        snackBarState: SnackBarState.DANGER,
+      );
       return false;
     }
   }
@@ -210,6 +216,57 @@ class ProjectService {
     } on DioException catch (e, st) {
       letMeHandleAllErrors(e, st);
       return false;
+    }
+  }
+
+  /// Get applications for organizer's projects
+  static Future<Map<String, dynamic>?> getOrganizerApplications({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final Response<Map<String, dynamic>?>? response = await APIService.get(
+        path: 'applications/organizer/applications',
+        params: {
+          'page': page,
+          'limit': limit,
+        },
+      );
+
+      if (response?.isOk ?? false) {
+        final Map<String, dynamic>? responseData = response?.data;
+        if (responseData != null && responseData.containsKey('data')) {
+          final Map<String, dynamic> data = responseData['data'];
+          if (data.containsKey('projects') && data.containsKey('pagination')) {
+            final projectsList = data['projects'];
+            final pagination = data['pagination'];
+
+            if (projectsList is List && pagination is Map<String, dynamic>) {
+              return {
+                'projects': projectsList,
+                'pagination': pagination,
+              };
+            } else {
+              logE(
+                  'Invalid data structure: projects is not a List or pagination is not a Map');
+              return null;
+            }
+          } else {
+            logE('Missing required fields in response: projects or pagination');
+            return null;
+          }
+        } else {
+          logE('Missing data field in response');
+          return null;
+        }
+      }
+      return null;
+    } on DioException catch (e, st) {
+      letMeHandleAllErrors(e, st);
+      return null;
+    } catch (e, st) {
+      logE('Unexpected error in getOrganizerApplications: $e\n$st');
+      return null;
     }
   }
 }

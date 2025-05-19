@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
@@ -254,9 +255,9 @@ class CreateProjectView extends GetView<CreateProjectController> {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.k262837.withValues(alpha:  0.5),
+                color: AppColors.k262837.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.withValues(alpha:  0.3)),
+                border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -264,7 +265,7 @@ class CreateProjectView extends GetView<CreateProjectController> {
                   Text(
                     'Selected Skills:',
                     style: TextStyle(
-                      color: AppColors.kFFFFFF.withValues(alpha:  0.8),
+                      color: AppColors.kFFFFFF.withValues(alpha: 0.8),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -273,7 +274,7 @@ class CreateProjectView extends GetView<CreateProjectController> {
                       ? Text(
                           'No skills added yet',
                           style: TextStyle(
-                            color: AppColors.kFFFFFF.withValues(alpha:  0.5),
+                            color: AppColors.kFFFFFF.withValues(alpha: 0.5),
                             fontStyle: FontStyle.italic,
                           ),
                         )
@@ -287,8 +288,8 @@ class CreateProjectView extends GetView<CreateProjectController> {
                                         const Icon(Icons.close, size: 18),
                                     onDeleted: () =>
                                         controller.removeSkill(skill),
-                                    backgroundColor:
-                                        AppColors.k806dff.withValues(alpha:  0.2),
+                                    backgroundColor: AppColors.k806dff
+                                        .withValues(alpha: 0.2),
                                     labelStyle:
                                         TextStyle(color: AppColors.kFFFFFF),
                                   ))
@@ -363,14 +364,19 @@ class CreateProjectView extends GetView<CreateProjectController> {
           hintText: 'Enter maximum number of volunteers',
           isRequired: true,
           keyboardType: TextInputType.number,
-          validator: FormBuilderValidators.compose([
-            FormBuilderValidators.required(
-              errorText: 'Please enter max volunteers',
-            ),
-            FormBuilderValidators.numeric(
-              errorText: 'Please enter a valid number',
-            ),
-          ]),
+          validator: FormBuilderValidators.compose(
+            [
+              FormBuilderValidators.required(
+                errorText: 'Please enter max volunteers',
+              ),
+              FormBuilderValidators.numeric(
+                errorText: 'Please enter a valid number',
+              ),
+            ],
+          ),
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+          ],
         ),
         const SizedBox(height: 16),
 
@@ -461,9 +467,9 @@ class CreateProjectView extends GetView<CreateProjectController> {
           width: double.infinity,
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppColors.k262837.withValues(alpha:  0.5),
+            color: AppColors.k262837.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.withValues(alpha:  0.3)),
+            border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,33 +477,37 @@ class CreateProjectView extends GetView<CreateProjectController> {
               Text(
                 'Selected Skills:',
                 style: TextStyle(
-                  color: AppColors.kFFFFFF.withValues(alpha:  0.8),
+                  color: AppColors.kFFFFFF.withValues(alpha: 0.8),
                   fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 8),
-              Obx(() => controller.requiredSkills.isEmpty
-                  ? Text(
-                      'No skills added yet',
-                      style: TextStyle(
-                        color: AppColors.kFFFFFF.withValues(alpha:  0.5),
-                        fontStyle: FontStyle.italic,
-                      ),
-                    )
-                  : Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      children: controller.requiredSkills
-                          .map((skill) => Chip(
+              Obx(
+                () => controller.requiredSkills.isEmpty
+                    ? Text(
+                        'No skills added yet',
+                        style: TextStyle(
+                          color: AppColors.k6C757D,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      )
+                    : Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children: controller.requiredSkills
+                            .map(
+                              (skill) => Chip(
                                 label: Text(skill),
                                 deleteIcon: const Icon(Icons.close, size: 18),
                                 onDeleted: () => controller.removeSkill(skill),
                                 backgroundColor:
-                                    AppColors.k806dff.withValues(alpha:  0.2),
+                                    AppColors.k806dff.withValues(alpha: 0.2),
                                 labelStyle: TextStyle(color: AppColors.kFFFFFF),
-                              ))
-                          .toList(),
-                    )),
+                              ),
+                            )
+                            .toList(),
+                      ),
+              ),
             ],
           ),
         ),

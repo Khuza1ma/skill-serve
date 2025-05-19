@@ -239,7 +239,7 @@ class LoginView extends GetView<LoginController> {
               24.verticalSpace,
               AppTextField(
                 prefix: const Icon(Icons.mail),
-                name: 'username',
+                name: 'signup_username',
                 label: 'Username',
                 hintText: 'Username',
                 validator: FormBuilderValidators.required(
@@ -251,7 +251,7 @@ class LoginView extends GetView<LoginController> {
               16.verticalSpace,
               AppTextField(
                 prefix: const Icon(Icons.mail),
-                name: 'email',
+                name: 'signup_email',
                 label: 'Email',
                 hintText: 'Email',
                 validator: FormBuilderValidators.email(
@@ -263,7 +263,7 @@ class LoginView extends GetView<LoginController> {
               16.verticalSpace,
               AppTextField(
                 prefix: const Icon(Icons.lock),
-                name: 'password',
+                name: 'signup_password',
                 label: 'Password',
                 hintText: 'Password',
                 isRequired: true,

@@ -93,12 +93,6 @@ class ProjectsDetailsController extends GetxController {
           snackBarState: SnackBarState.SUCCESS,
         );
         loadProjectDetails();
-      } else {
-        appSnackbar(
-          title: 'Error',
-          message: 'Failed to apply for the project',
-          snackBarState: SnackBarState.DANGER,
-        );
       }
     } catch (e) {
       logE('Error applying for project: $e');

@@ -227,7 +227,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
                 child: const Center(
                   child: Text(
                     'No data available',
-                    style: TextStyle(color: AppColors.kFFFFFF, fontSize: 16),
+                    style: TextStyle(color: AppColors.k6C757D, fontSize: 16),
                   ),
                 ),
               ),
@@ -322,7 +322,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
                 ? const Center(
                     child: Text(
                       'No data available',
-                      style: TextStyle(color: AppColors.kFFFFFF),
+                      style: TextStyle(color: AppColors.k6C757D),
                     ),
                   )
                 : SizedBox(
@@ -537,7 +537,7 @@ class OrganizerDashboardView extends GetView<OrganizerDashboardController> {
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text(
                     'No projects available',
-                    style: TextStyle(color: AppColors.kFFFFFF, fontSize: 16),
+                    style: TextStyle(color: AppColors.k6C757D, fontSize: 16),
                   ),
                 ),
               )

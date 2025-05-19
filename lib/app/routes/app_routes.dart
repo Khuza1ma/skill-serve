@@ -15,6 +15,7 @@ abstract class Routes {
   static const ORGANIZER_DASHBOARD = _Paths.ORGANIZER_DASHBOARD;
   static const CREATE_PROJECT = _Paths.CREATE_PROJECT;
   static const MANAGE_PROJECT = _Paths.MANAGE_PROJECT;
+  static const ORGANIZER_APPLICATIONS = _Paths.ORGANIZER_APPLICATIONS;
 }
 
 abstract class _Paths {
@@ -28,4 +29,5 @@ abstract class _Paths {
   static const ORGANIZER_DASHBOARD = '/organizer-dashboard';
   static const CREATE_PROJECT = '/create-project';
   static const MANAGE_PROJECT = '/manage-project';
+  static const ORGANIZER_APPLICATIONS = '/organizer-applications';
 }

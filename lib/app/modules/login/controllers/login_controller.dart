@@ -34,10 +34,6 @@ class LoginController extends GetxController {
           await Get.offAllNamed(Routes.HOME);
         } else {
           Get.focusScope?.unfocus();
-          appSnackbar(
-            message: 'Login failed',
-            snackBarState: SnackBarState.DANGER,
-          );
         }
       }
     } finally {
@@ -49,17 +45,25 @@ class LoginController extends GetxController {
     isLoading.value = true;
     try {
       if (formKey.currentState?.saveAndValidate() ?? false) {
-        final bool isRegistered = await UserService.signUp(
-          username: formKey.currentState?.value['username'],
-          password: formKey.currentState?.value['password'],
-          email: formKey.currentState?.value['email'],
-        );
-        if (isRegistered) {
-          appSnackbar(
-            message: 'Registration successful',
-            snackBarState: SnackBarState.SUCCESS,
+        if (formKey.currentState?.value['signup_password'] ==
+            formKey.currentState?.value['confirm_password']) {
+          final bool isRegistered = await UserService.signUp(
+            username: formKey.currentState?.value['signup_username'],
+            password: formKey.currentState?.value['signup_password'],
+            email: formKey.currentState?.value['signup_email'],
           );
-          await Get.offAllNamed(Routes.HOME);
+          if (isRegistered) {
+            appSnackbar(
+              message: 'Registration successful',
+              snackBarState: SnackBarState.SUCCESS,
+            );
+            await Get.offAllNamed(Routes.HOME);
+          }
+        } else {
+          appSnackbar(
+            message: 'Password and confirm password do not match',
+            snackBarState: SnackBarState.DANGER,
+          );
         }
       }
     } finally {

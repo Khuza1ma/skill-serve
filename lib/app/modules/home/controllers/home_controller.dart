@@ -9,6 +9,7 @@ enum SideBarTab {
   appliedProjects,
   createProject,
   manageProject,
+  volunteerApplications,
 }
 
 class HomeController extends GetxController {

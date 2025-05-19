@@ -52,32 +52,46 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Expanded(
-                      child: SfDataGridTheme(
-                        data: SfDataGridThemeData(
-                          headerColor: AppColors.k806dff,
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8),
-                            topRight: Radius.circular(8),
+                    controller.selectedProject.isEmpty
+                        ? Expanded(
+                            child: const Center(
+                              child: Text(
+                                'No projects available',
+                                style: TextStyle(
+                                  color: AppColors.k6C757D,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Expanded(
+                            child: SfDataGridTheme(
+                              data: SfDataGridThemeData(
+                                headerColor: AppColors.k806dff,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  topRight: Radius.circular(8),
+                                ),
+                                child: SfDataGrid(
+                                  shrinkWrapRows: true,
+                                  source: projectDetailsDataSource,
+                                  columnWidthMode: ColumnWidthMode.fill,
+                                  onQueryRowHeight: (details) {
+                                    return 65;
+                                  },
+                                  headerGridLinesVisibility:
+                                      GridLinesVisibility.none,
+                                  gridLinesVisibility:
+                                      GridLinesVisibility.horizontal,
+                                  isScrollbarAlwaysShown: true,
+                                  showHorizontalScrollbar: true,
+                                  columns: _buildColumns(),
+                                ),
+                              ),
+                            ),
                           ),
-                          child: SfDataGrid(
-                            shrinkWrapRows: true,
-                            source: projectDetailsDataSource,
-                            columnWidthMode: ColumnWidthMode.fill,
-                            onQueryRowHeight: (details) {
-                              return 65;
-                            },
-                            headerGridLinesVisibility: GridLinesVisibility.none,
-                            gridLinesVisibility: GridLinesVisibility.horizontal,
-                            isScrollbarAlwaysShown: true,
-                            showHorizontalScrollbar: true,
-                            columns: _buildColumns(),
-                          ),
-                        ),
-                      ),
-                    ),
                     _buildDataPager(context, projectDetailsDataSource),
                   ],
                 ).paddingOnly(top: 16, right: 16, left: 16),
@@ -91,62 +105,53 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
 
   Widget _buildDataPager(
       BuildContext context, ProjectDetailsDataSource dataSource) {
-    return SfDataPagerTheme(
-      data: SfDataPagerThemeData(
-        selectedItemColor: AppColors.kc6c6c8,
-        backgroundColor: AppColors.k000000,
-        itemColor: AppColors.k262837,
-        disabledItemColor: AppColors.k1f1d2c,
-        itemTextStyle: TextStyle(
-          color: AppColors.kFFFFFF,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        disabledItemTextStyle: TextStyle(
-          color: AppColors.kFFFFFF,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      child: Obx(() => controller.selectedProject.isEmpty
-          ? const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Text(
-                  'No projects available',
-                  style: TextStyle(
-                    color: AppColors.kFFFFFF,
-                    fontSize: 16,
-                  ),
+    return Obx(
+      () => controller.selectedProject.isEmpty
+          ? const SizedBox.shrink()
+          : SfDataPagerTheme(
+              data: SfDataPagerThemeData(
+                selectedItemColor: AppColors.kc6c6c8,
+                backgroundColor: AppColors.k000000,
+                itemColor: AppColors.k262837,
+                disabledItemColor: AppColors.k1f1d2c,
+                itemTextStyle: TextStyle(
+                  color: AppColors.kFFFFFF,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                disabledItemTextStyle: TextStyle(
+                  color: AppColors.kFFFFFF,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            )
-          : Container(
-              color: AppColors.k000000,
-              child: SfDataPager(
-                delegate: dataSource,
-                availableRowsPerPage: DataGridUtils.pageSizes,
-                pageCount: controller.pageCount,
-                onRowsPerPageChanged: (int? rowsPerPage) {
-                  if (rowsPerPage != null &&
-                      rowsPerPage != controller.limit.value) {
-                    controller.updateLimit(rowsPerPage);
-                  }
-                },
-                controller: controller.dataPagerController,
-                onPageNavigationStart: (int newPageIndex) {
-                  if (newPageIndex != controller.currentPageIndex.value) {
-                    controller.updateStartPageIndex(newPageIndex);
-                  }
-                },
-                onPageNavigationEnd: (int newPageIndex) {
-                  if (newPageIndex != controller.currentPageIndex.value) {
-                    controller.currentPageIndex.value = newPageIndex;
-                    controller.loadProjectDetails();
-                  }
-                },
+              child: Container(
+                color: AppColors.k000000,
+                child: SfDataPager(
+                  delegate: dataSource,
+                  availableRowsPerPage: DataGridUtils.pageSizes,
+                  pageCount: controller.pageCount,
+                  onRowsPerPageChanged: (int? rowsPerPage) {
+                    if (rowsPerPage != null &&
+                        rowsPerPage != controller.limit.value) {
+                      controller.updateLimit(rowsPerPage);
+                    }
+                  },
+                  controller: controller.dataPagerController,
+                  onPageNavigationStart: (int newPageIndex) {
+                    if (newPageIndex != controller.currentPageIndex.value) {
+                      controller.updateStartPageIndex(newPageIndex);
+                    }
+                  },
+                  onPageNavigationEnd: (int newPageIndex) {
+                    if (newPageIndex != controller.currentPageIndex.value) {
+                      controller.currentPageIndex.value = newPageIndex;
+                      controller.loadProjectDetails();
+                    }
+                  },
+                ),
               ),
-            )),
+            ),
     );
   }
 
