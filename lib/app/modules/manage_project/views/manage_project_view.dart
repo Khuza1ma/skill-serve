@@ -449,9 +449,6 @@ class ManageProjectView extends GetView<ManageProjectController> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-
-                // Category
                 AppTextField(
                   name: 'category',
                   label: 'Category',
@@ -461,41 +458,39 @@ class ManageProjectView extends GetView<ManageProjectController> {
                     errorText: 'Please enter a category',
                   ),
                 ),
-                const SizedBox(height: 16),
-
-                // Max Volunteers
                 AppTextField(
                   name: 'maxVolunteers',
                   label: 'Max Volunteers',
                   hintText: 'Enter maximum number of volunteers',
                   isRequired: true,
                   keyboardType: TextInputType.number,
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(
-                      errorText: 'Please enter max volunteers',
-                    ),
-                    FormBuilderValidators.numeric(
-                      errorText: 'Please enter a valid number',
-                    ),
-                  ]),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(
+                        errorText: 'Please enter max volunteers',
+                      ),
+                      FormBuilderValidators.numeric(
+                        errorText: 'Please enter a valid number',
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 16),
-
-                // Contact Email
                 AppTextField(
                   name: 'contactEmail',
                   label: 'Contact Email',
                   hintText: 'Enter contact email',
                   isRequired: true,
                   keyboardType: TextInputType.emailAddress,
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(
-                      errorText: 'Please enter contact email',
-                    ),
-                    FormBuilderValidators.email(
-                      errorText: 'Please enter a valid email',
-                    ),
-                  ]),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(
+                        errorText: 'Please enter contact email',
+                      ),
+                      FormBuilderValidators.email(
+                        errorText: 'Please enter a valid email',
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -519,7 +514,7 @@ class ManageProjectView extends GetView<ManageProjectController> {
         Get.back();
         controller.deleteProject(project.projectId ?? '');
       },
-      modalState: ModalState.PRIMARY,
+      modalState: ModalState.DANGER,
       alignment: Alignment.center,
     );
   }

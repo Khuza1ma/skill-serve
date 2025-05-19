@@ -25,7 +25,7 @@ class ProjectService {
       }
       return null;
     } on DioException catch (e, st) {
-      letMeHandleAllErrors(e, st);
+      letMeHandleAllErrors(e, st, showSnackBar: false);
       return null;
     }
   }
@@ -76,7 +76,7 @@ class ProjectService {
       }
       return null;
     } on DioException catch (e, st) {
-      letMeHandleAllErrors(e, st);
+      letMeHandleAllErrors(e, st, showSnackBar: false);
       return null;
     } catch (e, st) {
       logE('Unexpected error in fetchProjects: $e\n$st');
@@ -101,7 +101,7 @@ class ProjectService {
       }
       return null;
     } on DioException catch (e, st) {
-      letMeHandleAllErrors(e, st);
+      letMeHandleAllErrors(e, st, showSnackBar: false);
       return null;
     }
   }
@@ -135,7 +135,7 @@ class ProjectService {
       }
       return false;
     } on DioException catch (e, st) {
-      letMeHandleAllErrors(e, st);
+      letMeHandleAllErrors(e, st, showSnackBar: false);
       appSnackbar(
         title: 'Error',
         message: e.response?.data['message'] ?? 'Failed to apply for project',
@@ -194,7 +194,7 @@ class ProjectService {
       }
       return null;
     } on DioException catch (e, st) {
-      letMeHandleAllErrors(e, st);
+      letMeHandleAllErrors(e, st, showSnackBar: false);
       return null;
     } catch (e, st) {
       logE('Unexpected error in getAppliedProjects: $e\n$st');
@@ -214,7 +214,7 @@ class ProjectService {
       }
       return false;
     } on DioException catch (e, st) {
-      letMeHandleAllErrors(e, st);
+      letMeHandleAllErrors(e, st, showSnackBar: false);
       return false;
     }
   }
@@ -262,11 +262,39 @@ class ProjectService {
       }
       return null;
     } on DioException catch (e, st) {
-      letMeHandleAllErrors(e, st);
+      letMeHandleAllErrors(e, st, showSnackBar: false);
       return null;
     } catch (e, st) {
       logE('Unexpected error in getOrganizerApplications: $e\n$st');
       return null;
+    }
+  }
+
+  /// Withdraw from a project application
+  static Future<bool> manageApplication({
+    required String applicationId,
+    required String status,
+  }) async {
+    try {
+      final Response<Map<String, dynamic>?>? response = await APIService.put(
+        path: 'applications/$applicationId',
+        data: {
+          'status': status,
+        },
+      );
+
+      if (response?.isOk ?? false) {
+        return true;
+      }
+      return false;
+    } on DioException catch (e, st) {
+      letMeHandleAllErrors(e, st, showSnackBar: false);
+      appSnackbar(
+        title: 'Error',
+        message: e.response?.data['message'] ?? 'Failed to manage application',
+        snackBarState: SnackBarState.DANGER,
+      );
+      return false;
     }
   }
 }

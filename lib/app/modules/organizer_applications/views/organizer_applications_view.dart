@@ -7,6 +7,7 @@ import '../../../constants/app_colors.dart';
 import '../../../data/config/logger.dart';
 import '../../../data/data_grid/organizer_applications_data_grid.dart';
 import '../../../data/models/organizer_application_model.dart';
+import '../../../ui/components/app_modals.dart';
 import '../../../utils/data_grid_utils.dart';
 import '../controllers/organizer_applications_controller.dart';
 
@@ -79,10 +80,14 @@ class OrganizerApplicationsView
                                   source: OrganizerApplicationDataSource(
                                     applications: controller.applications(),
                                     onAccept: (Application application) {
-                                      controller.acceptApplication(application);
+                                      _showApplicationConfirmation(
+                                          application: application,
+                                          title: 'Accept');
                                     },
                                     onReject: (Application application) {
-                                      controller.rejectApplication(application);
+                                      _showApplicationConfirmation(
+                                          application: application,
+                                          title: 'Reject');
                                     },
                                   ),
                                   columnWidthMode: ColumnWidthMode.fill,
@@ -98,10 +103,12 @@ class OrganizerApplicationsView
                       OrganizerApplicationDataSource(
                         applications: controller.applications(),
                         onAccept: (Application application) {
-                          controller.acceptApplication(application);
+                          _showApplicationConfirmation(
+                              application: application, title: 'Accept');
                         },
                         onReject: (Application application) {
-                          controller.rejectApplication(application);
+                          _showApplicationConfirmation(
+                              application: application, title: 'Reject');
                         },
                       ),
                     ),
@@ -196,6 +203,29 @@ class OrganizerApplicationsView
           ),
         ),
       ),
+    );
+  }
+
+  void _showApplicationConfirmation({
+    required Application application,
+    required String title,
+  }) {
+    showCustomModal(
+      title: '$title Application',
+      content:
+          'Are you sure you want to ${title.toLowerCase()} this \napplication of "${application.volunteer.username.capitalizeFirst}"?',
+      buttonTitle: title,
+      onSubmit: () async {
+        Get.back();
+        if (application.applicationId.isNotEmpty) {
+          controller.manageApplication(
+            application: application,
+            status: title,
+          );
+        }
+      },
+      modalState: title == 'Accept' ? ModalState.SUCCESS : ModalState.DANGER,
+      alignment: Alignment.center,
     );
   }
 }

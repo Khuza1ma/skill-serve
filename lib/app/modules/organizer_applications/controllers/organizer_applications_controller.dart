@@ -1,4 +1,7 @@
 import 'package:get/get.dart';
+import 'package:skill_serve/app/data/config/logger.dart';
+import 'package:skill_serve/app/modules/organizer_dashboard/controllers/organizer_dashboard_controller.dart';
+import 'package:skill_serve/app/ui/components/app_snackbar.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../data/models/organizer_application_model.dart';
@@ -37,18 +40,32 @@ class OrganizerApplicationsController extends GetxController {
         pageCount.value = pagination['pages'] ?? 1;
       }
     } catch (e) {
-      // Handle error
+      logE(e);
     } finally {
       isLoading.value = false;
     }
   }
 
-  void acceptApplication(Application application) {
-    // TODO: Implement accept application logic
-  }
-
-  void rejectApplication(Application application) {
-    // TODO: Implement reject application logic
+  Future<void> manageApplication({
+    required Application application,
+    required String status,
+  }) async {
+    try {
+      bool result = await ProjectService.manageApplication(
+        applicationId: application.applicationId,
+        status: status.toLowerCase() == 'accept' ? 'accepted' : 'rejected',
+      );
+      if (result) {
+        appSnackbar(
+          message: 'Application $status successfully',
+          snackBarState: SnackBarState.SUCCESS,
+        );
+        fetchApplications();
+        Get.find<OrganizerDashboardController>().loadDashboardData();
+      }
+    } catch (e) {
+      logE(e);
+    }
   }
 
   void setStartPageIndex(int index) {

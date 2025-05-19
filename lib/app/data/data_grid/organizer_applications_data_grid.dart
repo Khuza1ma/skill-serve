@@ -25,10 +25,11 @@ class OrganizerApplicationDataSource extends DataGridSource {
   void _buildDataGridRows() {
     _dataGridRows = _applications.expand((project) {
       return project.applications.map((application) {
+        final index =
+            _applications.indexWhere((p) => p.projectId == project.projectId);
         return DataGridRow(cells: [
           DataGridCell<String>(
-              columnName: 'sr_no',
-              value: (_dataGridRows.length + 1).toString()),
+              columnName: 'sr_no', value: (index + 1).toString()),
           DataGridCell<String>(
               columnName: 'application_id', value: application.applicationId),
           DataGridCell<String>(
@@ -59,27 +60,34 @@ class OrganizerApplicationDataSource extends DataGridSource {
       cells: row.getCells().map<Widget>((cell) {
         if (cell.columnName == 'actions') {
           final application = cell.value as Application;
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () => _onAccept(application),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Accept'),
+          return AnimatedOpacity(
+            duration: const Duration(milliseconds: 300),
+            opacity: application.status != 'pending' ? 0.5 : 1,
+            child: IgnorePointer(
+              ignoring: application.status != 'pending',
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _onAccept(application),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Accept'),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () => _onReject(application),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Reject'),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () => _onReject(application),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Reject'),
-              ),
-            ],
+            ),
           );
         }
         return Container(
