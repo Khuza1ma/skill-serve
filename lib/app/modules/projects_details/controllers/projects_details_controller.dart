@@ -32,7 +32,7 @@ class ProjectsDetailsController extends GetxController {
     isLoading.value = true;
     try {
       final result = await ProjectService.fetchProjects(
-        page: currentPageIndex.value + 1, // API uses 1-based indexing
+        skip: currentPageIndex.value + 1, // API uses 1-based indexing
         limit: limit.value,
       );
 

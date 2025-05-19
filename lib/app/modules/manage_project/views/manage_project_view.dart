@@ -103,7 +103,7 @@ class ManageProjectView extends GetView<ManageProjectController> {
                             gridLinesVisibility: GridLinesVisibility.horizontal,
                             isScrollbarAlwaysShown: true,
                             showHorizontalScrollbar: true,
-                            rowsPerPage: controller.pageSize.value,
+                            rowsPerPage: controller.limit.value,
                             columns: _buildColumns(),
                           ),
                         ),
@@ -146,16 +146,24 @@ class ManageProjectView extends GetView<ManageProjectController> {
               child: SfDataPager(
                 delegate: dataSource,
                 availableRowsPerPage: DataGridUtils.pageSizes,
-                pageCount: controller.totalPages.value.toDouble(),
-                onPageNavigationStart: (int pageIndex) {
-                  if (pageIndex + 1 != controller.currentPage.value) {
-                    controller.onPageChanged(pageIndex + 1);
+                pageCount: controller.totalPages.value,
+                onRowsPerPageChanged: (int? rowsPerPage) {
+                  if (rowsPerPage != null) {
+                    controller.onPageSizeChanged(rowsPerPage);
                   }
                 },
-                onRowsPerPageChanged: (int? rowsPerPage) {
-                  if (rowsPerPage != null &&
-                      rowsPerPage != controller.pageSize.value) {
-                    controller.onPageSizeChanged(rowsPerPage);
+                controller: controller.dataPagerController,
+                onPageNavigationStart: (int newPageIndex) {
+                  controller.startPageIndex.value = newPageIndex;
+                },
+                onPageNavigationEnd: (int newPageIndex) {
+                  if (controller.currentPageIndex.value != newPageIndex &&
+                      controller.startPageIndex.value != newPageIndex) {
+                    controller.currentPageIndex.value = newPageIndex;
+                    controller.fetchProjects(
+                      skip: newPageIndex * controller.limit.value,
+                      limit: controller.limit.value,
+                    );
                   }
                 },
               ),

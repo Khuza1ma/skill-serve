@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:skill_serve/app/data/config/logger.dart';
 import 'package:skill_serve/app/data/models/project_model.dart';
 import 'package:skill_serve/app/data/remote/services/project_service.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:skill_serve/app/utils/data_grid_utils.dart';
 
 import '../../../ui/components/app_snackbar.dart';
 
@@ -13,10 +15,11 @@ class ManageProjectController extends GetxController {
   RxList<Project> projects = <Project>[].obs;
 
   // Pagination
-  final currentPage = 1.obs;
-  final totalPages = 1.obs;
-  final totalItems = 0.obs;
-  final pageSize = 10.obs;
+  RxInt currentPageIndex = 0.obs;
+  RxInt startPageIndex = (-1).obs;
+  RxInt limit = DataGridUtils.pageSizes.first.obs;
+  RxDouble totalPages = 1.0.obs;
+  DataPagerController dataPagerController = DataPagerController();
 
   // Selected project for editing
   Rx<Project?> selectedProject = Rx<Project?>(null);
@@ -52,16 +55,16 @@ class ManageProjectController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchProjects();
+    fetchProjects(skip: 0, limit: limit.value);
   }
 
-  Future<void> fetchProjects() async {
+  Future<void> fetchProjects({int? skip, int? limit}) async {
     try {
       isLoading.value = true;
 
       final result = await ProjectService.fetchProjects(
-        page: currentPage.value,
-        limit: pageSize.value,
+        skip: skip,
+        limit: limit,
       );
 
       if (result != null &&
@@ -72,9 +75,12 @@ class ManageProjectController extends GetxController {
 
         if (projectsList is List<Project> &&
             pagination is Map<String, dynamic>) {
+          if (skip == 0) {
+            currentPageIndex.value = 0;
+            projects.clear();
+          }
           projects.value = projectsList;
-          totalPages.value = pagination['pages'] as int? ?? 1;
-          totalItems.value = pagination['total'] as int? ?? 0;
+          totalPages.value = (pagination['pages'] as int? ?? 1).toDouble();
         } else {
           logE('Invalid data structure received from service');
           Get.snackbar(
@@ -107,17 +113,17 @@ class ManageProjectController extends GetxController {
   }
 
   void onPageChanged(int page) {
-    if (page != currentPage.value) {
-      currentPage.value = page;
-      fetchProjects();
+    if (page != currentPageIndex.value) {
+      currentPageIndex.value = page;
+      fetchProjects(skip: page * limit.value, limit: limit.value);
     }
   }
 
   void onPageSizeChanged(int size) {
-    if (size != pageSize.value) {
-      pageSize.value = size;
-      currentPage.value = 1; // Reset to first page when changing page size
-      fetchProjects();
+    if (size != limit.value) {
+      limit.value = size;
+      currentPageIndex.value = 0;
+      fetchProjects(skip: 0, limit: size);
     }
   }
 

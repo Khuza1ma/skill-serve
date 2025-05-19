@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:get/get.dart';
 
-import '../../constants/app_colors.dart';
 import '../models/project_model.dart';
+import '../../modules/manage_project/controllers/manage_project_controller.dart';
 
 class ManageProjectDataSource extends DataGridSource {
   final List<Project> projects;
@@ -11,6 +11,8 @@ class ManageProjectDataSource extends DataGridSource {
   final bool isDesktop;
   final Function(Project) onEdit;
   final Function(Project) onDelete;
+  final ManageProjectController controller =
+      Get.find<ManageProjectController>();
 
   ManageProjectDataSource({
     required this.projects,
@@ -21,113 +23,102 @@ class ManageProjectDataSource extends DataGridSource {
   });
 
   @override
-  List<DataGridRow> get rows => projects.asMap().entries.map((entry) {
-        final index = entry.key;
-        final project = entry.value;
-
-        return DataGridRow(
-          cells: [
-            DataGridCell<int>(columnName: 'sr_no', value: index + 1),
-            DataGridCell<String>(
-                columnName: 'project_id', value: project.projectId),
-            DataGridCell<String>(columnName: 'title', value: project.title),
-            DataGridCell<String>(
-                columnName: 'description', value: project.description),
-            DataGridCell<String>(
-                columnName: 'location', value: project.location),
-            DataGridCell<List<String>>(
-                columnName: 'required_skills', value: project.requiredSkills),
-            DataGridCell<String>(
-                columnName: 'time_commitment', value: project.timeCommitment),
-            DataGridCell<DateTime>(
-                columnName: 'start_date', value: project.startDate),
-            DataGridCell<DateTime>(
+  List<DataGridRow> get rows => projects
+      .asMap()
+      .map(
+        (index, project) => MapEntry(
+          index,
+          DataGridRow(
+            cells: [
+              DataGridCell<int>(
+                columnName: 'sr_no',
+                value: (controller.currentPageIndex.value *
+                        controller.limit.value) +
+                    index +
+                    1,
+              ),
+              DataGridCell<String>(
+                  columnName: 'project_id', value: project.projectId ?? ''),
+              DataGridCell<String>(
+                  columnName: 'title', value: project.title ?? ''),
+              DataGridCell<String>(
+                  columnName: 'description', value: project.description ?? ''),
+              DataGridCell<String>(
+                  columnName: 'location', value: project.location ?? ''),
+              DataGridCell<String>(
+                columnName: 'required_skills',
+                value: project.requiredSkills?.join(', ') ?? '',
+              ),
+              DataGridCell<String>(
+                columnName: 'time_commitment',
+                value: project.timeCommitment ?? '',
+              ),
+              DataGridCell<String>(
+                columnName: 'start_date',
+                value: project.startDate?.toString() ?? '',
+              ),
+              DataGridCell<String>(
                 columnName: 'application_deadline',
-                value: project.applicationDeadline),
-            DataGridCell<String>(columnName: 'status', value: project.status),
-            DataGridCell<int>(
-              columnName: 'total_applicants',
-              value: project.assignedVolunteerId?.length,
-            ),
-            DataGridCell<int>(
-              columnName: 'max_volunteer',
-              value: project.maxVolunteers,
-            ), // Mock data
-            DataGridCell<List<String>>(
+                value: project.applicationDeadline?.toString() ?? '',
+              ),
+              DataGridCell<String>(
+                  columnName: 'status', value: project.status ?? ''),
+              DataGridCell<int>(
+                columnName: 'total_applicants',
+                value: project.assignedVolunteerId?.length ?? 0,
+              ),
+              DataGridCell<int>(
+                columnName: 'max_volunteer',
+                value: project.maxVolunteers ?? 0,
+              ),
+              DataGridCell<String>(
                 columnName: 'assigned_volunteer',
-                value: project.assignedVolunteerId),
-            DataGridCell<DateTime>(
-                columnName: 'created_at', value: project.createdAt),
-            DataGridCell<Project>(columnName: 'actions', value: project),
-          ],
-        );
-      }).toList();
+                value: project.assignedVolunteerId?.join(', ') ?? '',
+              ),
+              DataGridCell<String>(
+                columnName: 'created_at',
+                value: project.createdAt?.toString() ?? '',
+              ),
+              DataGridCell<Widget>(
+                columnName: 'actions',
+                value: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () => onEdit(project),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () => onDelete(project),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      )
+      .values
+      .toList();
 
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
     return DataGridRowAdapter(
-      color: AppColors.k1f1d2c,
-      cells: row.getCells().map((DataGridCell cell) {
-        if (cell.columnName == 'actions') {
-          final project = cell.value as Project;
+      cells: row.getCells().map(
+        (DataGridCell cell) {
           return Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.edit, color: AppColors.k806dff, size: 20),
-                  onPressed: () => onEdit(project),
-                  tooltip: 'Edit',
-                  constraints: BoxConstraints.tight(Size(30, 30)),
-                  padding: EdgeInsets.zero,
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red, size: 20),
-                  onPressed: () => onDelete(project),
-                  tooltip: 'Delete',
-                  constraints: BoxConstraints.tight(Size(30, 30)),
-                  padding: EdgeInsets.zero,
-                ),
-              ],
-            ),
+            child: cell.value is Widget
+                ? cell.value
+                : Text(
+                    cell.value.toString(),
+                    style: const TextStyle(color: Colors.white),
+                  ),
           );
-        } else {
-          return Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(8.0),
-            child: cell.value is DateTime
-                ? Text(
-                    _formatDateTime(cell.value),
-                    style: GoogleFonts.poppins(
-                      color: AppColors.kc6c6c8,
-                    ),
-                  )
-                : cell.value is List<String> || cell.value is List<int>
-                    ? Text(
-                        cell.value.join(', '),
-                        style: GoogleFonts.poppins(
-                          color: AppColors.kc6c6c8,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                      )
-                    : Text(
-                        cell.value.toString(),
-                        style: GoogleFonts.poppins(
-                          color: AppColors.kc6c6c8,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                      ),
-          );
-        }
-      }).toList(),
+        },
+      ).toList(),
     );
-  }
-
-  String _formatDateTime(DateTime dateTime) {
-    return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
   }
 }
