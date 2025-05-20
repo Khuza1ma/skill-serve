@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -14,20 +15,20 @@ class ManageProjectController extends GetxController {
   final isLoading = false.obs;
   RxList<Project> projects = <Project>[].obs;
 
-  // Pagination
+  /// Pagination
   RxInt currentPageIndex = 0.obs;
   RxInt startPageIndex = (-1).obs;
   RxInt limit = DataGridUtils.pageSizes.first.obs;
   RxDouble totalPages = 1.0.obs;
   DataPagerController dataPagerController = DataPagerController();
 
-  // Selected project for editing
+  /// Selected project for editing
   Rx<Project?> selectedProject = Rx<Project?>(null);
 
-  // Form key for edit project form
+  /// Form key for edit project form
   final formKey = GlobalKey<FormBuilderState>();
 
-  // Status options
+  /// Status options
   final statusOptions = [
     'Open',
     'Closed',
@@ -37,17 +38,15 @@ class ManageProjectController extends GetxController {
   ];
   final selectedStatus = 'Open'.obs;
 
-  // For skills input
+  /// For skills input
   final requiredSkills = <String>[].obs;
 
-  // Add a skill to the list
   void addSkill(String skill) {
     if (skill.trim().isNotEmpty) {
       requiredSkills.add(skill.trim());
     }
   }
 
-  // Remove a skill from the list
   void removeSkill(String skill) {
     requiredSkills.remove(skill);
   }
@@ -60,8 +59,9 @@ class ManageProjectController extends GetxController {
 
   Future<void> fetchProjects({int? skip, int? limit}) async {
     try {
-      isLoading.value = true;
-
+      // isLoading.value = true;
+      EasyLoading.show();
+      await Future.delayed(const Duration(milliseconds: 5000));
       final result = await ProjectService.fetchProjects(
         skip: skip,
         limit: limit,
@@ -109,6 +109,7 @@ class ManageProjectController extends GetxController {
       );
     } finally {
       isLoading.value = false;
+      EasyLoading.dismiss();
     }
   }
 
@@ -142,7 +143,6 @@ class ManageProjectController extends GetxController {
     }
   }
 
-  // Update an existing project
   Future<void> updateProject(String projectId) async {
     try {
       if (!formKey.currentState!.saveAndValidate()) {
@@ -152,7 +152,6 @@ class ManageProjectController extends GetxController {
       isLoading.value = true;
       final formData = formKey.currentState!.value;
 
-      // Create updated project
       final updatedProject = Project(
         projectId: projectId,
         title: formData['title'],
@@ -174,7 +173,6 @@ class ManageProjectController extends GetxController {
       final result =
           await ProjectService.updateProject(projectId, updatedProject);
       if (result != null) {
-        // Update the project locally in the projects list
         final index = projects.indexWhere((p) => p.projectId == projectId);
         if (index != -1) {
           projects[index] = result;
@@ -202,7 +200,6 @@ class ManageProjectController extends GetxController {
     }
   }
 
-  // Delete a project
   Future<void> deleteProject(String projectId) async {
     try {
       isLoading.value = true;
@@ -230,7 +227,6 @@ class ManageProjectController extends GetxController {
     }
   }
 
-  // Clear form fields
   void _clearForm() {
     formKey.currentState?.reset();
     requiredSkills.clear();

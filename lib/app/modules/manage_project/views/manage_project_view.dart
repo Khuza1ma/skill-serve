@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:skill_serve/app/data/config/logger.dart';
 import 'package:skill_serve/app/utils/data_grid_utils.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -134,7 +135,7 @@ class ManageProjectView extends GetView<ManageProjectController> {
           fontWeight: FontWeight.w500,
         ),
         disabledItemTextStyle: TextStyle(
-          color: AppColors.kFFFFFF,
+          color: AppColors.ka1a5b7,
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
@@ -155,10 +156,14 @@ class ManageProjectView extends GetView<ManageProjectController> {
                 controller: controller.dataPagerController,
                 onPageNavigationStart: (int newPageIndex) {
                   controller.startPageIndex.value = newPageIndex;
+                  controller.dataPagerController.selectedPageIndex =
+                      newPageIndex;
                 },
                 onPageNavigationEnd: (int newPageIndex) {
                   if (controller.currentPageIndex.value != newPageIndex &&
                       controller.startPageIndex.value != newPageIndex) {
+                    controller.dataPagerController.selectedPageIndex =
+                        newPageIndex;
                     controller.currentPageIndex.value = newPageIndex;
                     controller.fetchProjects(
                       skip: newPageIndex * controller.limit.value,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:get/get.dart';
 
+import '../../constants/app_colors.dart';
 import '../models/project_model.dart';
 import '../../modules/manage_project/controllers/manage_project_controller.dart';
 
@@ -85,11 +87,11 @@ class ManageProjectDataSource extends DataGridSource {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.edit),
+                      icon: const Icon(Icons.edit, color: AppColors.k806dff),
                       onPressed: () => onEdit(project),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.delete),
+                      icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () => onDelete(project),
                     ),
                   ],
@@ -114,7 +116,10 @@ class ManageProjectDataSource extends DataGridSource {
                 ? cell.value
                 : Text(
                     cell.value.toString(),
-                    style: const TextStyle(color: Colors.white),
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.poppins(
+                      color: AppColors.kc6c6c8,
+                    ),
                   ),
           );
         },

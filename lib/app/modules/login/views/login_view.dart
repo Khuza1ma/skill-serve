@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:get/get.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:skill_serve/app/utils/num_ext.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
-import '../../../constants/app_colors.dart';
+import '../../../ui/components/app_text_form_field.dart';
+import 'package:skill_serve/app/utils/num_ext.dart';
 import '../../../constants/asset_constants.dart';
 import '../../../ui/components/app_button.dart';
-import '../../../ui/components/app_text_form_field.dart';
 import '../controllers/login_controller.dart';
+import '../../../constants/app_colors.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({super.key});
@@ -174,9 +174,15 @@ class LoginView extends GetView<LoginController> {
           isRequired: true,
           obscureText: controller.hidePassword(),
           keyboardType: TextInputType.visiblePassword,
-          validator: FormBuilderValidators.required(
-            errorText: 'Please enter your password',
-          ),
+          validator: FormBuilderValidators.compose([
+            FormBuilderValidators.required(
+              errorText: 'Please enter your password',
+            ),
+            FormBuilderValidators.minLength(
+              6,
+              errorText: 'Password must be at least 6 characters long',
+            ),
+          ]),
           suffix: IconButton.filledTonal(
             style: ButtonStyle(
               shape: WidgetStateProperty.all(
@@ -269,9 +275,15 @@ class LoginView extends GetView<LoginController> {
                 isRequired: true,
                 obscureText: controller.hidePassword(),
                 keyboardType: TextInputType.visiblePassword,
-                validator: FormBuilderValidators.required(
-                  errorText: 'Please enter your password',
-                ),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(
+                    errorText: 'Please enter your password',
+                  ),
+                  FormBuilderValidators.minLength(
+                    6,
+                    errorText: 'Password must be at least 6 characters long',
+                  ),
+                ]),
                 suffix: IconButton.filledTonal(
                   style: ButtonStyle(
                     shape: WidgetStateProperty.all(const RoundedRectangleBorder(
@@ -303,7 +315,7 @@ class LoginView extends GetView<LoginController> {
                 obscureText: controller.hidePassword(),
                 keyboardType: TextInputType.visiblePassword,
                 validator: FormBuilderValidators.required(
-                  errorText: 'Please enter your password',
+                  errorText: 'Please enter your confirm password',
                 ),
                 suffix: IconButton.filledTonal(
                   style: ButtonStyle(

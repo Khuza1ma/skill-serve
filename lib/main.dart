@@ -1,8 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 import 'app/constants/app_colors.dart';
 import 'app/data/config/initialize_app.dart';
@@ -11,6 +13,13 @@ import 'app/routes/app_pages.dart';
 
 Future<void> main() async {
   await initializeCoreApp();
+  EasyLoading.instance.indicatorWidget = Lottie.asset(
+    'assets/lottie/loader.json',
+    repeat: true,
+    height: 100,
+    width: 100,
+    fit: BoxFit.contain,
+  );
   runApp(MyApp());
 }
 
@@ -28,7 +37,7 @@ class MyApp extends StatelessWidget {
           PointerDeviceKind.unknown,
         },
       ),
-      title: 'Flutter Admin Panel',
+      title: 'Skill Serve',
       theme: ThemeData(
         scaffoldBackgroundColor: AppColors.k1f1d2c,
         progressIndicatorTheme: const ProgressIndicatorThemeData(
@@ -43,6 +52,7 @@ class MyApp extends StatelessWidget {
       initialRoute: UserProvider.initialRoute,
       getPages: AppPages.routes,
       defaultTransition: Transition.fadeIn,
+      builder: EasyLoading.init(),
     );
   }
 }

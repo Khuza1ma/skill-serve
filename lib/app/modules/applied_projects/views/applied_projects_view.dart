@@ -203,7 +203,7 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
           controller.withdrawProject(project.id!);
         }
       },
-      modalState: ModalState.PRIMARY,
+      modalState: ModalState.WARNING,
       alignment: Alignment.center,
     );
   }
