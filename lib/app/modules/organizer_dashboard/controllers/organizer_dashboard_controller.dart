@@ -1,3 +1,4 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:skill_serve/app/data/models/organizer_dashboard_model.dart';
 import 'package:skill_serve/app/data/models/project_model.dart';
@@ -5,7 +6,6 @@ import 'package:skill_serve/app/data/remote/services/dashboard_service.dart';
 import 'package:skill_serve/app/ui/components/app_snackbar.dart';
 
 class OrganizerDashboardController extends GetxController {
-  final RxBool isLoading = true.obs;
   final RxList<Project> projects = <Project>[].obs;
   final Rx<OrganizerProjectStatusCounts> projectStatusCounts =
       OrganizerProjectStatusCounts(
@@ -26,7 +26,10 @@ class OrganizerDashboardController extends GetxController {
   }
 
   Future<void> loadDashboardData() async {
-    isLoading.value = true;
+    EasyLoading.show(
+      status: 'Loading...',
+      maskType: EasyLoadingMaskType.black,
+    );
     try {
       final dashboardData = await DashboardService.getOrganizerDashboard();
       if (dashboardData != null) {
@@ -46,7 +49,7 @@ class OrganizerDashboardController extends GetxController {
         snackBarState: SnackBarState.DANGER,
       );
     } finally {
-      isLoading.value = false;
+      EasyLoading.dismiss();
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:skill_serve/app/data/config/logger.dart';
 import 'package:skill_serve/app/modules/organizer_dashboard/controllers/organizer_dashboard_controller.dart';
@@ -8,7 +9,6 @@ import '../../../data/models/organizer_application_model.dart';
 import '../../../data/remote/services/project_service.dart';
 
 class OrganizerApplicationsController extends GetxController {
-  final isLoading = false.obs;
   final applications = <OrganizerApplication>[].obs;
   final currentPageIndex = 0.obs;
   final startPageIndex = 0.obs;
@@ -24,7 +24,10 @@ class OrganizerApplicationsController extends GetxController {
 
   Future<void> fetchApplications() async {
     try {
-      isLoading.value = true;
+      EasyLoading.show(
+        status: 'Loading...',
+        maskType: EasyLoadingMaskType.black,
+      );
       final result = await ProjectService.getOrganizerApplications(
         page: currentPageIndex.value + 1,
         limit: limit.value,
@@ -42,7 +45,7 @@ class OrganizerApplicationsController extends GetxController {
     } catch (e) {
       logE(e);
     } finally {
-      isLoading.value = false;
+      EasyLoading.dismiss();
     }
   }
 
@@ -51,6 +54,10 @@ class OrganizerApplicationsController extends GetxController {
     required String status,
   }) async {
     try {
+      // EasyLoading.show(
+      //   status: '$status+ing...',
+      //   maskType: EasyLoadingMaskType.black,
+      // );
       bool result = await ProjectService.manageApplication(
         applicationId: application.applicationId,
         status: status.toLowerCase() == 'accept' ? 'accepted' : 'rejected',
@@ -65,6 +72,7 @@ class OrganizerApplicationsController extends GetxController {
       }
     } catch (e) {
       logE(e);
+      EasyLoading.dismiss();
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:skill_serve/app/data/config/logger.dart';
 
@@ -7,7 +8,6 @@ import '../../../data/remote/services/dashboard_service.dart';
 import '../../../ui/components/app_snackbar.dart';
 
 class VolunteerDashboardController extends GetxController {
-  final RxBool isLoading = true.obs;
   final RxList<AppliedProject> appliedProjects = <AppliedProject>[].obs;
   final Rx<ProjectStatusCounts> projectStatusCounts = ProjectStatusCounts(
     pending: 0,
@@ -23,7 +23,10 @@ class VolunteerDashboardController extends GetxController {
   }
 
   Future<void> loadDashboardData() async {
-    isLoading.value = true;
+    EasyLoading.show(
+      status: 'Loading...',
+      maskType: EasyLoadingMaskType.black,
+    );
     try {
       final dashboardData = await DashboardService.getVolunteerDashboard();
       if (dashboardData != null) {
@@ -44,7 +47,7 @@ class VolunteerDashboardController extends GetxController {
         snackBarState: SnackBarState.DANGER,
       );
     } finally {
-      isLoading.value = false;
+      EasyLoading.dismiss();
     }
   }
 

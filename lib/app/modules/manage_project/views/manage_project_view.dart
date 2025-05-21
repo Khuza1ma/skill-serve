@@ -3,7 +3,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:skill_serve/app/data/config/logger.dart';
 import 'package:skill_serve/app/utils/data_grid_utils.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -27,12 +26,6 @@ class ManageProjectView extends GetView<ManageProjectController> {
     final isDesktop = screenWidth > 1024;
     return Obx(
       () {
-        if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
         final projectDataSource = ManageProjectDataSource(
           projects: controller.projects,
           context: context,
@@ -84,31 +77,48 @@ class ManageProjectView extends GetView<ManageProjectController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: SfDataGridTheme(
-                        data: SfDataGridThemeData(
-                          headerColor: AppColors.k806dff,
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8),
-                            topRight: Radius.circular(8),
-                          ),
-                          child: SfDataGrid(
-                            source: projectDataSource,
-                            onQueryRowHeight: (details) {
-                              return 65;
-                            },
-                            columnWidthMode: ColumnWidthMode.fitByColumnName,
-                            headerGridLinesVisibility: GridLinesVisibility.none,
-                            gridLinesVisibility: GridLinesVisibility.horizontal,
-                            isScrollbarAlwaysShown: true,
-                            showHorizontalScrollbar: true,
-                            rowsPerPage: controller.limit.value,
-                            columns: _buildColumns(),
-                          ),
-                        ),
-                      ),
+                    Obx(
+                      () => controller.projects.isEmpty
+                          ? Expanded(
+                              child: const Center(
+                                child: Text(
+                                  'No projects available',
+                                  style: TextStyle(
+                                    color: AppColors.k6C757D,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Expanded(
+                              child: SfDataGridTheme(
+                                data: SfDataGridThemeData(
+                                  headerColor: AppColors.k806dff,
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(8),
+                                    topRight: Radius.circular(8),
+                                  ),
+                                  child: SfDataGrid(
+                                    source: projectDataSource,
+                                    onQueryRowHeight: (details) {
+                                      return 65;
+                                    },
+                                    columnWidthMode:
+                                        ColumnWidthMode.fitByColumnName,
+                                    headerGridLinesVisibility:
+                                        GridLinesVisibility.none,
+                                    gridLinesVisibility:
+                                        GridLinesVisibility.horizontal,
+                                    isScrollbarAlwaysShown: true,
+                                    showHorizontalScrollbar: true,
+                                    rowsPerPage: controller.limit.value,
+                                    columns: _buildColumns(),
+                                  ),
+                                ),
+                              ),
+                            ),
                     ),
                     _buildDataPager(context, projectDataSource),
                   ],

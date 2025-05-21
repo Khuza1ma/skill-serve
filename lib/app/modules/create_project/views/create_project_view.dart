@@ -14,7 +14,6 @@ class CreateProjectView extends GetView<CreateProjectController> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the screen width to make responsive adjustments
     final screenWidth = MediaQuery.of(context).size.width;
     final isDesktop = screenWidth > 1024;
     final isTablet = screenWidth > 768 && screenWidth <= 1024;

@@ -1,3 +1,4 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -81,7 +82,10 @@ class AppliedProjectsController extends GetxController {
 
   Future<void> withdrawProject(String applicationId) async {
     try {
-      isLoading.value = true;
+      EasyLoading.show(
+        status: 'Withdrawing...',
+        maskType: EasyLoadingMaskType.black,
+      );
       final success = await ProjectService.withdrawProject(applicationId);
 
       if (success) {
@@ -107,7 +111,7 @@ class AppliedProjectsController extends GetxController {
         snackBarState: SnackBarState.DANGER,
       );
     } finally {
-      isLoading.value = false;
+      EasyLoading.dismiss();
     }
   }
 }

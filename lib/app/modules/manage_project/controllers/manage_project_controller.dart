@@ -12,7 +12,6 @@ import 'package:skill_serve/app/utils/data_grid_utils.dart';
 import '../../../ui/components/app_snackbar.dart';
 
 class ManageProjectController extends GetxController {
-  final isLoading = false.obs;
   RxList<Project> projects = <Project>[].obs;
 
   /// Pagination
@@ -59,9 +58,10 @@ class ManageProjectController extends GetxController {
 
   Future<void> fetchProjects({int? skip, int? limit}) async {
     try {
-      // isLoading.value = true;
-      EasyLoading.show();
-      await Future.delayed(const Duration(milliseconds: 5000));
+      EasyLoading.show(
+        status: 'Loading...',
+        maskType: EasyLoadingMaskType.black,
+      );
       final result = await ProjectService.fetchProjects(
         skip: skip,
         limit: limit,
@@ -108,7 +108,6 @@ class ManageProjectController extends GetxController {
         colorText: Colors.white,
       );
     } finally {
-      isLoading.value = false;
       EasyLoading.dismiss();
     }
   }
@@ -148,8 +147,10 @@ class ManageProjectController extends GetxController {
       if (!formKey.currentState!.saveAndValidate()) {
         return;
       }
-
-      isLoading.value = true;
+      EasyLoading.show(
+        status: 'Updating...',
+        maskType: EasyLoadingMaskType.black,
+      );
       final formData = formKey.currentState!.value;
 
       final updatedProject = Project(
@@ -196,13 +197,16 @@ class ManageProjectController extends GetxController {
         snackBarState: SnackBarState.DANGER,
       );
     } finally {
-      isLoading.value = false;
+      EasyLoading.dismiss();
     }
   }
 
   Future<void> deleteProject(String projectId) async {
     try {
-      isLoading.value = true;
+      EasyLoading.show(
+        status: 'Deleting...',
+        maskType: EasyLoadingMaskType.black,
+      );
       final result = await ProjectService.deleteProject(projectId);
       if (result) {
         projects.removeWhere((project) => project.projectId == projectId);
@@ -223,7 +227,7 @@ class ManageProjectController extends GetxController {
         snackBarState: SnackBarState.DANGER,
       );
     } finally {
-      isLoading.value = false;
+      EasyLoading.dismiss();
     }
   }
 

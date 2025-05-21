@@ -16,7 +16,6 @@ Future<void> main() async {
   EasyLoading.instance.indicatorWidget = Lottie.asset(
     'assets/lottie/loader.json',
     repeat: true,
-    height: 100,
     width: 100,
     fit: BoxFit.contain,
   );

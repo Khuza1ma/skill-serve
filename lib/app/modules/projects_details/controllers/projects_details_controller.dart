@@ -1,3 +1,4 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:skill_serve/app/data/config/logger.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -26,13 +27,12 @@ class ProjectsDetailsController extends GetxController {
   }
 
   Future<void> loadProjectDetails() async {
-    // Only prevent multiple loads if it's not the initial load
     if (isLoading.value && !_isInitialLoad) return;
 
     isLoading.value = true;
     try {
       final result = await ProjectService.fetchProjects(
-        skip: currentPageIndex.value + 1, // API uses 1-based indexing
+        skip: currentPageIndex.value + 1,
         limit: limit.value,
       );
 
@@ -42,8 +42,6 @@ class ProjectsDetailsController extends GetxController {
 
         selectedProject.value = projects;
         totalItems.value = pagination['total'] ?? 0;
-
-        // Verify the data
       } else {
         appSnackbar(
           title: 'Error',
@@ -83,7 +81,10 @@ class ProjectsDetailsController extends GetxController {
 
   Future<void> applyProject(String projectId) async {
     try {
-      isLoading.value = true;
+      EasyLoading.show(
+        status: 'Applying...',
+        maskType: EasyLoadingMaskType.black,
+      );
       final success = await ProjectService.applyProject(projectId);
 
       if (success) {
@@ -102,7 +103,7 @@ class ProjectsDetailsController extends GetxController {
         snackBarState: SnackBarState.DANGER,
       );
     } finally {
-      isLoading.value = false;
+      EasyLoading.dismiss();
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -50,6 +51,10 @@ class CreateProjectController extends GetxController {
       }
       try {
         isLoading.value = true;
+        EasyLoading.show(
+          status: 'Creating project...',
+          maskType: EasyLoadingMaskType.black,
+        );
         final formData = formKey.currentState!.value;
 
         final project = Project(
@@ -92,6 +97,7 @@ class CreateProjectController extends GetxController {
         logE('Error creating project: $e $st');
       } finally {
         isLoading.value = false;
+        EasyLoading.dismiss();
       }
     }
   }

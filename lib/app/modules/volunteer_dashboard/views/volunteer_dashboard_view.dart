@@ -16,10 +16,6 @@ class VolunteerDashboardView extends GetView<VolunteerDashboardController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
