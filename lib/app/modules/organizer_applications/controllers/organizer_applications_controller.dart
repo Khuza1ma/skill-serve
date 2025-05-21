@@ -4,25 +4,34 @@ import 'package:skill_serve/app/data/config/logger.dart';
 import 'package:skill_serve/app/modules/organizer_dashboard/controllers/organizer_dashboard_controller.dart';
 import 'package:skill_serve/app/ui/components/app_snackbar.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:skill_serve/app/utils/data_grid_utils.dart';
 
 import '../../../data/models/organizer_application_model.dart';
 import '../../../data/remote/services/project_service.dart';
 
 class OrganizerApplicationsController extends GetxController {
-  final applications = <OrganizerApplication>[].obs;
-  final currentPageIndex = 0.obs;
-  final startPageIndex = 0.obs;
-  final pageCount = 1.obs;
-  final limit = 10.obs;
-  final dataPagerController = DataPagerController();
+  DataPagerController dataPagerController = DataPagerController();
+  RxInt limit = DataGridUtils.pageSizes.first.obs;
+  RxInt currentPageIndex = 0.obs;
+  RxInt startPageIndex = (-1).obs;
+  final RxList<OrganizerApplication> applications =
+      <OrganizerApplication>[].obs;
+  final RxBool isLoading = true.obs;
+  final RxInt totalItems = 0.obs;
+  bool _isInitialLoad = true;
 
   @override
   void onInit() {
     super.onInit();
-    fetchApplications();
+    // Ensure initial limit is set correctly
+    limit.value = DataGridUtils.pageSizes.first;
+    loadApplications();
   }
 
-  Future<void> fetchApplications() async {
+  Future<void> loadApplications() async {
+    if (isLoading.value && !_isInitialLoad) return;
+
+    isLoading.value = true;
     try {
       EasyLoading.show(
         status: 'Loading...',
@@ -40,13 +49,47 @@ class OrganizerApplicationsController extends GetxController {
         applications.value = projects;
 
         final pagination = result['pagination'] as Map<String, dynamic>;
-        pageCount.value = pagination['pages'] ?? 1;
+        totalItems.value = pagination['total'] ?? 0;
+      } else {
+        appSnackbar(
+          title: 'Error',
+          message: 'Failed to load applications',
+          snackBarState: SnackBarState.DANGER,
+        );
       }
     } catch (e) {
-      logE(e);
+      logE('Error loading applications: $e');
+      appSnackbar(
+        title: 'Error',
+        message: 'An error occurred while loading applications',
+        snackBarState: SnackBarState.DANGER,
+      );
     } finally {
+      isLoading.value = false;
+      _isInitialLoad = false;
       EasyLoading.dismiss();
     }
+  }
+
+  void onPageSizeChanged(int? size) {
+    if (size != null && size != limit.value) {
+      limit.value = size;
+      currentPageIndex.value = 0;
+      loadApplications();
+    }
+  }
+
+  void onPageChanged(int page) {
+    if (page != currentPageIndex.value) {
+      currentPageIndex.value = page;
+      loadApplications();
+    }
+  }
+
+  double get pageCount {
+    if (totalItems.value == 0) return 1;
+    final count = (totalItems.value / limit.value).ceil().toDouble();
+    return count;
   }
 
   Future<void> manageApplication({
@@ -54,10 +97,10 @@ class OrganizerApplicationsController extends GetxController {
     required String status,
   }) async {
     try {
-      // EasyLoading.show(
-      //   status: '$status+ing...',
-      //   maskType: EasyLoadingMaskType.black,
-      // );
+      EasyLoading.show(
+        status: '$status+ing...',
+        maskType: EasyLoadingMaskType.black,
+      );
       bool result = await ProjectService.manageApplication(
         applicationId: application.applicationId,
         status: status.toLowerCase() == 'accept' ? 'accepted' : 'rejected',
@@ -67,23 +110,18 @@ class OrganizerApplicationsController extends GetxController {
           message: 'Application $status successfully',
           snackBarState: SnackBarState.SUCCESS,
         );
-        fetchApplications();
+        loadApplications();
         Get.find<OrganizerDashboardController>().loadDashboardData();
       }
     } catch (e) {
-      logE(e);
+      logE('Error managing application: $e');
+      appSnackbar(
+        title: 'Error',
+        message: 'An error occurred while managing the application',
+        snackBarState: SnackBarState.DANGER,
+      );
+    } finally {
       EasyLoading.dismiss();
-    }
-  }
-
-  void setStartPageIndex(int index) {
-    startPageIndex.value = index;
-  }
-
-  void setLimit(int? newLimit) {
-    if (newLimit != null) {
-      limit.value = newLimit;
-      fetchApplications();
     }
   }
 }

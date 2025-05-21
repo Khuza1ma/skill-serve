@@ -1,15 +1,14 @@
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../constants/app_colors.dart';
-import '../../../data/config/logger.dart';
 import '../../../data/data_grid/organizer_applications_data_grid.dart';
+import '../controllers/organizer_applications_controller.dart';
 import '../../../data/models/organizer_application_model.dart';
 import '../../../ui/components/app_modals.dart';
 import '../../../utils/data_grid_utils.dart';
-import '../controllers/organizer_applications_controller.dart';
+import '../../../constants/app_colors.dart';
 
 class OrganizerApplicationsView
     extends GetView<OrganizerApplicationsController> {
@@ -54,41 +53,44 @@ class OrganizerApplicationsView
                                 ),
                               ),
                             )
-                          : SfDataGridTheme(
-                              data: SfDataGridThemeData(
-                                headerColor: AppColors.k806dff,
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(8),
-                                  topRight: Radius.circular(8),
+                          : Expanded(
+                              child: SfDataGridTheme(
+                                data: SfDataGridThemeData(
+                                  headerColor: AppColors.k806dff,
                                 ),
-                                child: SfDataGrid(
-                                  shrinkWrapRows: true,
-                                  headerGridLinesVisibility:
-                                      GridLinesVisibility.none,
-                                  onQueryRowHeight: (details) {
-                                    return 65;
-                                  },
-                                  gridLinesVisibility:
-                                      GridLinesVisibility.horizontal,
-                                  source: OrganizerApplicationDataSource(
-                                    applications: controller.applications(),
-                                    onAccept: (Application application) {
-                                      _showApplicationConfirmation(
-                                          application: application,
-                                          title: 'Accept');
-                                    },
-                                    onReject: (Application application) {
-                                      _showApplicationConfirmation(
-                                          application: application,
-                                          title: 'Reject');
-                                    },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(8),
+                                    topRight: Radius.circular(8),
                                   ),
-                                  columnWidthMode: ColumnWidthMode.fill,
-                                  isScrollbarAlwaysShown: true,
-                                  showHorizontalScrollbar: true,
-                                  columns: _buildColumns(),
+                                  child: SfDataGrid(
+                                    shrinkWrapRows: true,
+                                    headerGridLinesVisibility:
+                                        GridLinesVisibility.none,
+                                    onQueryRowHeight: (details) {
+                                      return 65;
+                                    },
+                                    gridLinesVisibility:
+                                        GridLinesVisibility.horizontal,
+                                    source: OrganizerApplicationDataSource(
+                                      applications: controller.applications,
+                                      onAccept: (Application application) {
+                                        _showApplicationConfirmation(
+                                            application: application,
+                                            title: 'Accept');
+                                      },
+                                      onReject: (Application application) {
+                                        _showApplicationConfirmation(
+                                            application: application,
+                                            title: 'Reject');
+                                      },
+                                    ),
+                                    columnWidthMode: ColumnWidthMode.fill,
+                                    isScrollbarAlwaysShown: true,
+                                    showHorizontalScrollbar: true,
+                                    rowsPerPage: controller.limit.value,
+                                    columns: _buildColumns(),
+                                  ),
                                 ),
                               ),
                             ),
@@ -96,7 +98,7 @@ class OrganizerApplicationsView
                     _buildDataPager(
                       context,
                       OrganizerApplicationDataSource(
-                        applications: controller.applications(),
+                        applications: controller.applications,
                         onAccept: (Application application) {
                           _showApplicationConfirmation(
                               application: application, title: 'Accept');
@@ -143,19 +145,25 @@ class OrganizerApplicationsView
               child: SfDataPager(
                 delegate: dataSource,
                 availableRowsPerPage: DataGridUtils.pageSizes,
-                pageCount: controller.pageCount.value.toDouble(),
+                pageCount: controller.pageCount,
                 onRowsPerPageChanged: (int? rowsPerPage) {
-                  logW('rowsPerPage: $rowsPerPage');
-                  controller.setLimit(rowsPerPage);
+                  if (rowsPerPage != null) {
+                    controller.onPageSizeChanged(rowsPerPage);
+                  }
                 },
                 controller: controller.dataPagerController,
                 onPageNavigationStart: (int newPageIndex) {
-                  controller.setStartPageIndex(newPageIndex);
+                  controller.startPageIndex.value = newPageIndex;
+                  controller.dataPagerController.selectedPageIndex =
+                      newPageIndex;
                 },
                 onPageNavigationEnd: (int newPageIndex) {
-                  if (controller.currentPageIndex() != newPageIndex &&
-                      controller.startPageIndex() != newPageIndex) {
+                  if (controller.currentPageIndex.value != newPageIndex &&
+                      controller.startPageIndex.value != newPageIndex) {
+                    controller.dataPagerController.selectedPageIndex =
+                        newPageIndex;
                     controller.currentPageIndex.value = newPageIndex;
+                    controller.loadApplications();
                   }
                 },
               ),
