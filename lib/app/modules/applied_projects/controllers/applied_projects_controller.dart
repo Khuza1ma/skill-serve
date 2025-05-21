@@ -30,6 +30,10 @@ class AppliedProjectsController extends GetxController {
     if (isLoading.value && !_isInitialLoad) return;
 
     isLoading.value = true;
+    EasyLoading.show(
+      status: 'Loading...',
+      maskType: EasyLoadingMaskType.black,
+    );
     try {
       final result = await ProjectService.getAppliedProjects(
         page: currentPageIndex.value + 1,
@@ -59,19 +63,23 @@ class AppliedProjectsController extends GetxController {
     } finally {
       isLoading.value = false;
       _isInitialLoad = false;
+      EasyLoading.dismiss();
     }
   }
 
-  void updateLimit(int? newLimit) {
-    if (newLimit != null && newLimit != limit.value) {
-      limit.value = newLimit;
+  void onPageSizeChanged(int? size) {
+    if (size != null && size != limit.value) {
+      limit.value = size;
       currentPageIndex.value = 0;
       loadAppliedProjects();
     }
   }
 
-  void updateStartPageIndex(int index) {
-    startPageIndex.value = index;
+  void onPageChanged(int page) {
+    if (page != currentPageIndex.value) {
+      currentPageIndex.value = page;
+      loadAppliedProjects();
+    }
   }
 
   double get pageCount {

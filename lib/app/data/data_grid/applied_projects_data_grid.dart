@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skill_serve/app/ui/components/app_button.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:get/get.dart';
 
 import '../../constants/app_colors.dart';
 import '../../data/models/applied_project_model.dart';
+import '../../modules/applied_projects/controllers/applied_projects_controller.dart';
 
 class AppliedProjectDataSource extends DataGridSource {
   final List<AppliedProject> appliedProjects;
   final Function(AppliedProject) onWithdraw;
+  final AppliedProjectsController controller =
+      Get.find<AppliedProjectsController>();
 
   AppliedProjectDataSource({
     required this.appliedProjects,
@@ -23,7 +27,13 @@ class AppliedProjectDataSource extends DataGridSource {
           index,
           DataGridRow(
             cells: [
-              DataGridCell<int>(columnName: 'sr_no', value: index + 1),
+              DataGridCell<int>(
+                columnName: 'sr_no',
+                value: (controller.currentPageIndex.value *
+                        controller.limit.value) +
+                    index +
+                    1,
+              ),
               DataGridCell<String>(
                   columnName: 'application_id', value: project.id),
               DataGridCell<String>(

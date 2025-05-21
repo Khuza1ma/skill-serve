@@ -17,12 +17,6 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
   Widget build(BuildContext context) {
     return Obx(
       () {
-        if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
         final projectDetailsDataSource = ProjectDetailsDataSource(
           projects: controller.selectedProject,
           onApply: (Project project) {
@@ -87,6 +81,7 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
                                       GridLinesVisibility.horizontal,
                                   isScrollbarAlwaysShown: true,
                                   showHorizontalScrollbar: true,
+                                  rowsPerPage: controller.limit.value,
                                   columns: _buildColumns(),
                                 ),
                               ),
@@ -105,51 +100,51 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
 
   Widget _buildDataPager(
       BuildContext context, ProjectDetailsDataSource dataSource) {
-    return Obx(
-      () => controller.selectedProject.isEmpty
+    return SfDataPagerTheme(
+      data: SfDataPagerThemeData(
+        selectedItemColor: AppColors.kc6c6c8,
+        backgroundColor: AppColors.k000000,
+        itemColor: AppColors.k262837,
+        disabledItemColor: AppColors.k1f1d2c,
+        itemTextStyle: TextStyle(
+          color: AppColors.kFFFFFF,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+        disabledItemTextStyle: TextStyle(
+          color: AppColors.kFFFFFF,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      child: controller.selectedProject.isEmpty
           ? const SizedBox.shrink()
-          : SfDataPagerTheme(
-              data: SfDataPagerThemeData(
-                selectedItemColor: AppColors.kc6c6c8,
-                backgroundColor: AppColors.k000000,
-                itemColor: AppColors.k262837,
-                disabledItemColor: AppColors.k1f1d2c,
-                itemTextStyle: TextStyle(
-                  color: AppColors.kFFFFFF,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-                disabledItemTextStyle: TextStyle(
-                  color: AppColors.kFFFFFF,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              child: Container(
-                color: AppColors.k000000,
-                child: SfDataPager(
-                  delegate: dataSource,
-                  availableRowsPerPage: DataGridUtils.pageSizes,
-                  pageCount: controller.pageCount,
-                  onRowsPerPageChanged: (int? rowsPerPage) {
-                    if (rowsPerPage != null &&
-                        rowsPerPage != controller.limit.value) {
-                      controller.updateLimit(rowsPerPage);
-                    }
-                  },
-                  controller: controller.dataPagerController,
-                  onPageNavigationStart: (int newPageIndex) {
-                    if (newPageIndex != controller.currentPageIndex.value) {
-                      controller.updateStartPageIndex(newPageIndex);
-                    }
-                  },
-                  onPageNavigationEnd: (int newPageIndex) {
-                    if (newPageIndex != controller.currentPageIndex.value) {
-                      controller.currentPageIndex.value = newPageIndex;
-                      controller.loadProjectDetails();
-                    }
-                  },
-                ),
+          : Container(
+              color: AppColors.k000000,
+              child: SfDataPager(
+                delegate: dataSource,
+                availableRowsPerPage: DataGridUtils.pageSizes,
+                pageCount: controller.pageCount,
+                onRowsPerPageChanged: (int? rowsPerPage) {
+                  if (rowsPerPage != null) {
+                    controller.onPageSizeChanged(rowsPerPage);
+                  }
+                },
+                controller: controller.dataPagerController,
+                onPageNavigationStart: (int newPageIndex) {
+                  controller.startPageIndex.value = newPageIndex;
+                  controller.dataPagerController.selectedPageIndex =
+                      newPageIndex;
+                },
+                onPageNavigationEnd: (int newPageIndex) {
+                  if (controller.currentPageIndex.value != newPageIndex &&
+                      controller.startPageIndex.value != newPageIndex) {
+                    controller.dataPagerController.selectedPageIndex =
+                        newPageIndex;
+                    controller.currentPageIndex.value = newPageIndex;
+                    controller.loadProjectDetails();
+                  }
+                },
               ),
             ),
     );

@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skill_serve/app/data/local/user_provider.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:get/get.dart';
 
 import '../../constants/app_colors.dart';
 import '../../data/models/project_model.dart';
 import '../../ui/components/app_button.dart';
+import '../../modules/projects_details/controllers/projects_details_controller.dart';
 
 class ProjectDetailsDataSource extends DataGridSource {
   final List<Project> projects;
   final Function(Project) onApply;
+  final ProjectsDetailsController controller =
+      Get.find<ProjectsDetailsController>();
 
   ProjectDetailsDataSource({
     required this.projects,
@@ -23,7 +27,13 @@ class ProjectDetailsDataSource extends DataGridSource {
 
         return DataGridRow(
           cells: [
-            DataGridCell<int>(columnName: 'sr_no', value: index + 1),
+            DataGridCell<int>(
+              columnName: 'sr_no',
+              value:
+                  (controller.currentPageIndex.value * controller.limit.value) +
+                      index +
+                      1,
+            ),
             DataGridCell<String>(
                 columnName: 'project_id', value: project.projectId),
             DataGridCell<String>(columnName: 'title', value: project.title),

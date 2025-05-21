@@ -4,7 +4,6 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../constants/app_colors.dart';
-import '../../../data/config/logger.dart';
 import '../../../data/data_grid/applied_projects_data_grid.dart';
 import '../../../data/models/applied_project_model.dart';
 import '../../../ui/components/app_modals.dart';
@@ -17,11 +16,6 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
   Widget build(BuildContext context) {
     return Obx(
       () {
-        if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -57,35 +51,38 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
                                 ),
                               ),
                             )
-                          : SfDataGridTheme(
-                              data: SfDataGridThemeData(
-                                headerColor: AppColors.k806dff,
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(8),
-                                  topRight: Radius.circular(8),
+                          : Expanded(
+                              child: SfDataGridTheme(
+                                data: SfDataGridThemeData(
+                                  headerColor: AppColors.k806dff,
                                 ),
-                                child: SfDataGrid(
-                                  shrinkWrapRows: true,
-                                  headerGridLinesVisibility:
-                                      GridLinesVisibility.none,
-                                  onQueryRowHeight: (details) {
-                                    return 65;
-                                  },
-                                  gridLinesVisibility:
-                                      GridLinesVisibility.horizontal,
-                                  source: AppliedProjectDataSource(
-                                    appliedProjects:
-                                        controller.appliedProjects(),
-                                    onWithdraw: (AppliedProject project) {
-                                      _showWithdrawConfirmation(project);
-                                    },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(8),
+                                    topRight: Radius.circular(8),
                                   ),
-                                  columnWidthMode: ColumnWidthMode.fill,
-                                  isScrollbarAlwaysShown: true,
-                                  showHorizontalScrollbar: true,
-                                  columns: _buildColumns(),
+                                  child: SfDataGrid(
+                                    shrinkWrapRows: true,
+                                    headerGridLinesVisibility:
+                                        GridLinesVisibility.none,
+                                    onQueryRowHeight: (details) {
+                                      return 65;
+                                    },
+                                    gridLinesVisibility:
+                                        GridLinesVisibility.horizontal,
+                                    source: AppliedProjectDataSource(
+                                      appliedProjects:
+                                          controller.appliedProjects,
+                                      onWithdraw: (AppliedProject project) {
+                                        _showWithdrawConfirmation(project);
+                                      },
+                                    ),
+                                    columnWidthMode: ColumnWidthMode.fill,
+                                    isScrollbarAlwaysShown: true,
+                                    showHorizontalScrollbar: true,
+                                    rowsPerPage: controller.limit.value,
+                                    columns: _buildColumns(),
+                                  ),
                                 ),
                               ),
                             ),
@@ -93,7 +90,7 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
                     _buildDataPager(
                       context,
                       AppliedProjectDataSource(
-                        appliedProjects: controller.appliedProjects(),
+                        appliedProjects: controller.appliedProjects,
                         onWithdraw: (AppliedProject project) {
                           _showWithdrawConfirmation(project);
                         },
@@ -137,17 +134,23 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
                 availableRowsPerPage: DataGridUtils.pageSizes,
                 pageCount: controller.pageCount,
                 onRowsPerPageChanged: (int? rowsPerPage) {
-                  logW('rowsPerPage: $rowsPerPage');
-                  controller.limit(rowsPerPage);
+                  if (rowsPerPage != null) {
+                    controller.onPageSizeChanged(rowsPerPage);
+                  }
                 },
                 controller: controller.dataPagerController,
                 onPageNavigationStart: (int newPageIndex) {
-                  controller.startPageIndex(newPageIndex);
+                  controller.startPageIndex.value = newPageIndex;
+                  controller.dataPagerController.selectedPageIndex =
+                      newPageIndex;
                 },
                 onPageNavigationEnd: (int newPageIndex) {
-                  if (controller.currentPageIndex() != newPageIndex &&
-                      controller.startPageIndex() != newPageIndex) {
+                  if (controller.currentPageIndex.value != newPageIndex &&
+                      controller.startPageIndex.value != newPageIndex) {
+                    controller.dataPagerController.selectedPageIndex =
+                        newPageIndex;
                     controller.currentPageIndex.value = newPageIndex;
+                    controller.loadAppliedProjects();
                   }
                 },
               ),
