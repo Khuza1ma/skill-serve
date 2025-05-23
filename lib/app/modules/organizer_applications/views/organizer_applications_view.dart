@@ -1,17 +1,19 @@
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../constants/app_colors.dart';
-import '../../../data/data_grid/applied_projects_data_grid.dart';
-import '../../../data/models/applied_project_model.dart';
+import '../../../data/data_grid/organizer_applications_data_grid.dart';
+import '../controllers/organizer_applications_controller.dart';
+import '../../../data/models/organizer_application_model.dart';
 import '../../../ui/components/app_modals.dart';
 import '../../../utils/data_grid_utils.dart';
-import '../controllers/applied_projects_controller.dart';
+import '../../../constants/app_colors.dart';
 
-class AppliedProjectsView extends GetView<AppliedProjectsController> {
-  const AppliedProjectsView({super.key});
+class OrganizerApplicationsView
+    extends GetView<OrganizerApplicationsController> {
+  const OrganizerApplicationsView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -30,7 +32,7 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Applied Projects',
+                      'Organizer Applications',
                       style: TextStyle(
                         color: AppColors.kFFFFFF,
                         fontSize: 24,
@@ -39,11 +41,11 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
                     ),
                     const SizedBox(height: 20),
                     Obx(
-                      () => controller.appliedProjects.isEmpty
+                      () => controller.applications.isEmpty
                           ? Expanded(
                               child: const Center(
                                 child: Text(
-                                  'No applied projects available',
+                                  'No applications available',
                                   style: TextStyle(
                                     color: AppColors.k6C757D,
                                     fontSize: 16,
@@ -70,11 +72,17 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
                                     },
                                     gridLinesVisibility:
                                         GridLinesVisibility.horizontal,
-                                    source: AppliedProjectDataSource(
-                                      appliedProjects:
-                                          controller.appliedProjects,
-                                      onWithdraw: (AppliedProject project) {
-                                        _showWithdrawConfirmation(project);
+                                    source: OrganizerApplicationDataSource(
+                                      applications: controller.applications,
+                                      onAccept: (Application application) {
+                                        _showApplicationConfirmation(
+                                            application: application,
+                                            title: 'Accept');
+                                      },
+                                      onReject: (Application application) {
+                                        _showApplicationConfirmation(
+                                            application: application,
+                                            title: 'Reject');
                                       },
                                     ),
                                     columnWidthMode: ColumnWidthMode.fill,
@@ -89,10 +97,15 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
                     ),
                     _buildDataPager(
                       context,
-                      AppliedProjectDataSource(
-                        appliedProjects: controller.appliedProjects,
-                        onWithdraw: (AppliedProject project) {
-                          _showWithdrawConfirmation(project);
+                      OrganizerApplicationDataSource(
+                        applications: controller.applications,
+                        onAccept: (Application application) {
+                          _showApplicationConfirmation(
+                              application: application, title: 'Accept');
+                        },
+                        onReject: (Application application) {
+                          _showApplicationConfirmation(
+                              application: application, title: 'Reject');
                         },
                       ),
                     ),
@@ -107,7 +120,7 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
   }
 
   Widget _buildDataPager(
-      BuildContext context, AppliedProjectDataSource dataSource) {
+      BuildContext context, OrganizerApplicationDataSource dataSource) {
     return SfDataPagerTheme(
       data: SfDataPagerThemeData(
         selectedItemColor: AppColors.kc6c6c8,
@@ -125,7 +138,7 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
           fontWeight: FontWeight.w500,
         ),
       ),
-      child: controller.appliedProjects.isEmpty
+      child: controller.applications.isEmpty
           ? const SizedBox.shrink()
           : Container(
               color: AppColors.k000000,
@@ -150,7 +163,7 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
                     controller.dataPagerController.selectedPageIndex =
                         newPageIndex;
                     controller.currentPageIndex.value = newPageIndex;
-                    controller.loadAppliedProjects();
+                    controller.loadApplications();
                   }
                 },
               ),
@@ -162,11 +175,13 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
     return [
       _buildColumn(columnName: 'sr_no', label: 'Sr. No.', width: 90),
       _buildColumn(columnName: 'application_id', label: 'Application ID'),
-      _buildColumn(columnName: 'volunteer_id', label: 'Volunteer ID'),
       _buildColumn(columnName: 'project_id', label: 'Project ID'),
+      _buildColumn(columnName: 'project_title', label: 'Project Title'),
+      _buildColumn(columnName: 'volunteer_name', label: 'Volunteer Name'),
+      _buildColumn(columnName: 'volunteer_email', label: 'Volunteer Email'),
       _buildColumn(columnName: 'status', label: 'Status'),
       _buildColumn(columnName: 'date_applied', label: 'Date Applied'),
-      _buildColumn(columnName: 'actions', label: 'Actions', width: 150),
+      _buildColumn(columnName: 'actions', label: 'Actions', width: 200),
     ];
   }
 
@@ -194,19 +209,25 @@ class AppliedProjectsView extends GetView<AppliedProjectsController> {
     );
   }
 
-  void _showWithdrawConfirmation(AppliedProject project) {
+  void _showApplicationConfirmation({
+    required Application application,
+    required String title,
+  }) {
     showCustomModal(
-      title: 'Withdraw Project',
+      title: '$title Application',
       content:
-          'Are you sure you want to withdraw your application \nfrom "${project.projectId?.title}"?',
-      buttonTitle: "Withdraw",
+          'Are you sure you want to ${title.toLowerCase()} this \napplication of "${application.volunteer.username.capitalizeFirst}"?',
+      buttonTitle: title,
       onSubmit: () async {
         Get.back();
-        if (project.id != null) {
-          controller.withdrawProject(project.id!);
+        if (application.applicationId.isNotEmpty) {
+          controller.manageApplication(
+            application: application,
+            status: title,
+          );
         }
       },
-      modalState: ModalState.WARNING,
+      modalState: title == 'Accept' ? ModalState.SUCCESS : ModalState.DANGER,
       alignment: Alignment.center,
     );
   }

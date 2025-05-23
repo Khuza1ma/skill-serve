@@ -1,72 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:skill_serve/app/data/models/project_model.dart';
+import 'package:skill_serve/app/data/remote/services/project_service.dart';
+import 'package:skill_serve/app/modules/organizer_dashboard/controllers/organizer_dashboard_controller.dart';
+
+import '../../../data/config/logger.dart';
+import '../../../ui/components/app_snackbar.dart';
 
 class CreateProjectController extends GetxController {
-  // Form key to validate the form
-  final formKey = GlobalKey<FormState>();
-
-  // Text editing controllers for form fields
-  final titleController = TextEditingController();
-  final descriptionController = TextEditingController();
-  final locationController = TextEditingController();
-  final timeCommitmentController = TextEditingController();
-
-  // For skills input
-  final skillController = TextEditingController();
+  final formKey = GlobalKey<FormBuilderState>();
+  final isLoading = false.obs;
   final requiredSkills = <String>[].obs;
 
-  // Date fields
-  final startDateController = TextEditingController();
-  final applicationDeadlineController = TextEditingController();
-
-  // Status options
-  final statusOptions = ['Open', 'Closed'];
-  final selectedStatus = 'Open'.obs;
-
-  // Loading state
-  final isLoading = false.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    // Dispose all controllers
-    titleController.dispose();
-    descriptionController.dispose();
-    locationController.dispose();
-    timeCommitmentController.dispose();
-    skillController.dispose();
-    startDateController.dispose();
-    applicationDeadlineController.dispose();
-    super.onClose();
-  }
-
-  // Add a skill to the list
-  void addSkill() {
-    if (skillController.text.trim().isNotEmpty) {
-      requiredSkills.add(skillController.text.trim());
-      skillController.clear();
+  void addSkill(String skill) {
+    if (skill.trim().isNotEmpty) {
+      requiredSkills.add(skill.trim());
     }
   }
 
-  // Remove a skill from the list
   void removeSkill(String skill) {
     requiredSkills.remove(skill);
   }
 
-  // Select date helper method
-  Future<void> selectDate(
-      BuildContext context, TextEditingController controller) async {
+  Future<void> selectDate(BuildContext context, String fieldName) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -75,55 +34,70 @@ class CreateProjectController extends GetxController {
     );
 
     if (picked != null) {
-      controller.text = DateFormat('yyyy-MM-dd').format(picked);
+      final formattedDate = DateFormat('yyyy-MM-dd').format(picked);
+      formKey.currentState?.fields[fieldName]?.didChange(formattedDate);
     }
   }
 
-  // Submit the form
   Future<void> submitProject() async {
-    if (formKey.currentState!.validate()) {
+    if (formKey.currentState?.saveAndValidate() ?? false) {
+      if (requiredSkills.isEmpty) {
+        appSnackbar(
+          title: 'Error',
+          message: 'Please add at least one required skill.',
+          snackBarState: SnackBarState.WARNING,
+        );
+        return;
+      }
       try {
         isLoading.value = true;
-
-        // In a real app, you would generate a unique ID or get it from the backend
-        final projectId = DateTime.now().millisecondsSinceEpoch.toString();
-        final organizerId =
-            'current-user-id'; // This would come from auth service
+        EasyLoading.show(
+          status: 'Creating project...',
+          maskType: EasyLoadingMaskType.black,
+        );
+        final formData = formKey.currentState!.value;
 
         final project = Project(
-          projectId: projectId,
-          title: titleController.text,
-          organizerName: 'Current User', // This would come from user profile
-          location: locationController.text,
-          description: descriptionController.text,
+          projectId: '',
+          title: formData['title'],
+          location: formData['location'],
+          description: formData['description'],
           requiredSkills: requiredSkills,
-          timeCommitment: timeCommitmentController.text,
-          startDate: DateTime.parse(startDateController.text),
-          applicationDeadline:
-              DateTime.parse(applicationDeadlineController.text),
-          status: selectedStatus.value,
-          createdAt: DateTime.now(),
+          timeCommitment: formData['timeCommitment'],
+          startDate: DateTime.parse(formData['startDate']),
+          endDate: DateTime.parse(formData['endDate']),
+          applicationDeadline: DateTime.parse(formData['applicationDeadline']),
+          maxVolunteers: int.parse(formData['maxVolunteers']),
         );
 
-        // Here you would save the project to your backend
-        // await projectService.createProject(project);
+        Project? projectResponse = await ProjectService.createProject(project);
 
-        Get.snackbar(
-          'Success',
-          'Project created successfully',
-          snackPosition: SnackPosition.BOTTOM,
+        if (projectResponse != null) {
+          appSnackbar(
+            title: 'Success',
+            message: 'Project created successfully!',
+            snackBarState: SnackBarState.SUCCESS,
+          );
+          Get.find<OrganizerDashboardController>().loadDashboardData();
+          formKey.currentState?.reset();
+          requiredSkills.clear();
+        } else {
+          appSnackbar(
+            title: 'Error',
+            message: 'Failed to create project. Please try again.',
+            snackBarState: SnackBarState.DANGER,
+          );
+        }
+      } catch (e, st) {
+        appSnackbar(
+          title: 'Error',
+          message: 'Failed to create project: $e',
+          snackBarState: SnackBarState.DANGER,
         );
-
-        // Navigate back or to project details
-        Get.back();
-      } catch (e) {
-        Get.snackbar(
-          'Error',
-          'Failed to create project: ${e.toString()}',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        logE('Error creating project: $e $st');
       } finally {
         isLoading.value = false;
+        EasyLoading.dismiss();
       }
     }
   }

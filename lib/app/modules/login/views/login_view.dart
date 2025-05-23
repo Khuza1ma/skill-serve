@@ -1,13 +1,12 @@
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:skill_serve/app/utils/num_ext.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../../../ui/components/app_text_form_field.dart';
+import 'package:skill_serve/app/utils/num_ext.dart';
 import '../../../constants/asset_constants.dart';
 import '../../../ui/components/app_button.dart';
 import '../controllers/login_controller.dart';
@@ -175,9 +174,15 @@ class LoginView extends GetView<LoginController> {
           isRequired: true,
           obscureText: controller.hidePassword(),
           keyboardType: TextInputType.visiblePassword,
-          validator: FormBuilderValidators.required(
-            errorText: 'Please enter your password',
-          ),
+          validator: FormBuilderValidators.compose([
+            FormBuilderValidators.required(
+              errorText: 'Please enter your password',
+            ),
+            FormBuilderValidators.minLength(
+              6,
+              errorText: 'Password must be at least 6 characters long',
+            ),
+          ]),
           suffix: IconButton.filledTonal(
             style: ButtonStyle(
               shape: WidgetStateProperty.all(
@@ -240,7 +245,7 @@ class LoginView extends GetView<LoginController> {
               24.verticalSpace,
               AppTextField(
                 prefix: const Icon(Icons.mail),
-                name: 'username',
+                name: 'signup_username',
                 label: 'Username',
                 hintText: 'Username',
                 validator: FormBuilderValidators.required(
@@ -252,7 +257,7 @@ class LoginView extends GetView<LoginController> {
               16.verticalSpace,
               AppTextField(
                 prefix: const Icon(Icons.mail),
-                name: 'email',
+                name: 'signup_email',
                 label: 'Email',
                 hintText: 'Email',
                 validator: FormBuilderValidators.email(
@@ -264,15 +269,21 @@ class LoginView extends GetView<LoginController> {
               16.verticalSpace,
               AppTextField(
                 prefix: const Icon(Icons.lock),
-                name: 'password',
+                name: 'signup_password',
                 label: 'Password',
                 hintText: 'Password',
                 isRequired: true,
                 obscureText: controller.hidePassword(),
                 keyboardType: TextInputType.visiblePassword,
-                validator: FormBuilderValidators.required(
-                  errorText: 'Please enter your password',
-                ),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(
+                    errorText: 'Please enter your password',
+                  ),
+                  FormBuilderValidators.minLength(
+                    6,
+                    errorText: 'Password must be at least 6 characters long',
+                  ),
+                ]),
                 suffix: IconButton.filledTonal(
                   style: ButtonStyle(
                     shape: WidgetStateProperty.all(const RoundedRectangleBorder(
@@ -304,7 +315,7 @@ class LoginView extends GetView<LoginController> {
                 obscureText: controller.hidePassword(),
                 keyboardType: TextInputType.visiblePassword,
                 validator: FormBuilderValidators.required(
-                  errorText: 'Please enter your password',
+                  errorText: 'Please enter your confirm password',
                 ),
                 suffix: IconButton.filledTonal(
                   style: ButtonStyle(

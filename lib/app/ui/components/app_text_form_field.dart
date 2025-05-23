@@ -186,7 +186,7 @@ class AppTextField extends StatelessWidget {
   TextSelectionTheme _buildTextField() {
     final Color cursorColor = this.cursorColor ?? AppColors.k806dff;
     final Color selectionColor = this.cursorColor?.withValues(alpha: 0.3) ??
-        AppColors.k806dff.withValues(alpha: 0.1);
+        AppColors.k806dff.withValues(alpha: 0.3);
 
     return TextSelectionTheme(
       data: TextSelectionThemeData(

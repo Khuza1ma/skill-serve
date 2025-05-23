@@ -1,19 +1,21 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:skill_serve/app/data/config/logger.dart';
+import 'package:skill_serve/app/modules/organizer_dashboard/controllers/organizer_dashboard_controller.dart';
+import 'package:skill_serve/app/ui/components/app_snackbar.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:skill_serve/app/utils/data_grid_utils.dart';
 
-import '../../../data/models/project_model.dart';
+import '../../../data/models/organizer_application_model.dart';
 import '../../../data/remote/services/project_service.dart';
-import '../../../ui/components/app_snackbar.dart';
-import '../../../utils/data_grid_utils.dart';
 
-class ProjectsDetailsController extends GetxController {
+class OrganizerApplicationsController extends GetxController {
   DataPagerController dataPagerController = DataPagerController();
   RxInt limit = DataGridUtils.pageSizes.first.obs;
   RxInt currentPageIndex = 0.obs;
   RxInt startPageIndex = (-1).obs;
-  final RxList<Project> selectedProject = <Project>[].obs;
+  final RxList<OrganizerApplication> applications =
+      <OrganizerApplication>[].obs;
   final RxBool isLoading = true.obs;
   final RxInt totalItems = 0.obs;
   bool _isInitialLoad = true;
@@ -23,41 +25,43 @@ class ProjectsDetailsController extends GetxController {
     super.onInit();
     // Ensure initial limit is set correctly
     limit.value = DataGridUtils.pageSizes.first;
-    loadProjectDetails();
+    loadApplications();
   }
 
-  Future<void> loadProjectDetails() async {
+  Future<void> loadApplications() async {
     if (isLoading.value && !_isInitialLoad) return;
 
     isLoading.value = true;
-    EasyLoading.show(
-      status: 'Loading...',
-      maskType: EasyLoadingMaskType.black,
-    );
     try {
-      final result = await ProjectService.fetchProjects(
-        skip: currentPageIndex.value * limit.value,
+      EasyLoading.show(
+        status: 'Loading...',
+        maskType: EasyLoadingMaskType.black,
+      );
+      final result = await ProjectService.getOrganizerApplications(
+        page: currentPageIndex.value + 1,
         limit: limit.value,
       );
 
       if (result != null) {
-        final projects = result['projects'] as List<Project>;
-        final pagination = result['pagination'] as Map<String, dynamic>;
+        final projects = (result['projects'] as List)
+            .map((e) => OrganizerApplication.fromJson(e))
+            .toList();
+        applications.value = projects;
 
-        selectedProject.value = projects;
+        final pagination = result['pagination'] as Map<String, dynamic>;
         totalItems.value = pagination['total'] ?? 0;
       } else {
         appSnackbar(
           title: 'Error',
-          message: 'Failed to load project details',
+          message: 'Failed to load applications',
           snackBarState: SnackBarState.DANGER,
         );
       }
     } catch (e) {
-      logE('Error loading project details: $e');
+      logE('Error loading applications: $e');
       appSnackbar(
         title: 'Error',
-        message: 'An error occurred while loading project details',
+        message: 'An error occurred while loading applications',
         snackBarState: SnackBarState.DANGER,
       );
     } finally {
@@ -71,14 +75,14 @@ class ProjectsDetailsController extends GetxController {
     if (size != null && size != limit.value) {
       limit.value = size;
       currentPageIndex.value = 0;
-      loadProjectDetails();
+      loadApplications();
     }
   }
 
   void onPageChanged(int page) {
     if (page != currentPageIndex.value) {
       currentPageIndex.value = page;
-      loadProjectDetails();
+      loadApplications();
     }
   }
 
@@ -88,27 +92,32 @@ class ProjectsDetailsController extends GetxController {
     return count;
   }
 
-  Future<void> applyProject(String projectId) async {
+  Future<void> manageApplication({
+    required Application application,
+    required String status,
+  }) async {
     try {
       EasyLoading.show(
-        status: 'Applying...',
+        status: '$status+ing...',
         maskType: EasyLoadingMaskType.black,
       );
-      final success = await ProjectService.applyProject(projectId);
-
-      if (success) {
+      bool result = await ProjectService.manageApplication(
+        applicationId: application.applicationId,
+        status: status.toLowerCase() == 'accept' ? 'accepted' : 'rejected',
+      );
+      if (result) {
         appSnackbar(
-          title: 'Success',
-          message: 'Successfully applied for the project',
+          message: 'Application $status successfully',
           snackBarState: SnackBarState.SUCCESS,
         );
-        loadProjectDetails();
+        loadApplications();
+        Get.find<OrganizerDashboardController>().loadDashboardData();
       }
     } catch (e) {
-      logE('Error applying for project: $e');
+      logE('Error managing application: $e');
       appSnackbar(
         title: 'Error',
-        message: 'An error occurred while applying for the project',
+        message: 'An error occurred while managing the application',
         snackBarState: SnackBarState.DANGER,
       );
     } finally {

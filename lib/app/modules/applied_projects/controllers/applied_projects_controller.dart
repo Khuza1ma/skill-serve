@@ -1,6 +1,11 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
+import '../../../data/config/logger.dart';
 import '../../../data/models/applied_project_model.dart';
+import '../../../data/remote/services/project_service.dart';
+import '../../../ui/components/app_snackbar.dart';
 import '../../../utils/data_grid_utils.dart';
 
 class AppliedProjectsController extends GetxController {
@@ -10,67 +15,111 @@ class AppliedProjectsController extends GetxController {
   RxInt startPageIndex = (-1).obs;
   final RxList<AppliedProject> appliedProjects = <AppliedProject>[].obs;
   final RxBool isLoading = true.obs;
+  final RxInt totalItems = 0.obs;
+  bool _isInitialLoad = true;
 
   @override
   void onInit() {
     super.onInit();
+    // Ensure initial limit is set correctly
+    limit.value = DataGridUtils.pageSizes.first;
     loadAppliedProjects();
   }
 
-  void loadAppliedProjects() {
+  Future<void> loadAppliedProjects() async {
+    if (isLoading.value && !_isInitialLoad) return;
+
     isLoading.value = true;
-    
-    // Simulate API call with a delay
-    Future.delayed(const Duration(milliseconds: 800), () {
-      appliedProjects.value = [
-        AppliedProject(
-          applicationId: 'APP001',
-          volunteerId: 'VOL001',
-          projectId: 'PRJ001',
-          status: 'Pending',
-          dateApplied: '2023-10-15',
-        ),
-        AppliedProject(
-          applicationId: 'APP002',
-          volunteerId: 'VOL002',
-          projectId: 'PRJ002',
-          status: 'Approved',
-          dateApplied: '2023-10-16',
-        ),
-        AppliedProject(
-          applicationId: 'APP003',
-          volunteerId: 'VOL003',
-          projectId: 'PRJ003',
-          status: 'Rejected',
-          dateApplied: '2023-10-17',
-        ),
-        AppliedProject(
-          applicationId: 'APP004',
-          volunteerId: 'VOL001',
-          projectId: 'PRJ004',
-          status: 'Pending',
-          dateApplied: '2023-10-18',
-        ),
-        AppliedProject(
-          applicationId: 'APP005',
-          volunteerId: 'VOL004',
-          projectId: 'PRJ001',
-          status: 'Approved',
-          dateApplied: '2023-10-19',
-        ),
-        AppliedProject(
-          applicationId: 'APP006',
-          volunteerId: 'VOL005',
-          projectId: 'PRJ005',
-          status: 'Pending',
-          dateApplied: '2023-10-20',
-        ),
-      ];
+    EasyLoading.show(
+      status: 'Loading...',
+      maskType: EasyLoadingMaskType.black,
+    );
+    try {
+      final result = await ProjectService.getAppliedProjects(
+        page: currentPageIndex.value + 1,
+        limit: limit.value,
+      );
+
+      if (result != null) {
+        final applications = result['applications'] as List<AppliedProject>;
+        final pagination = result['pagination'] as Map<String, dynamic>;
+
+        appliedProjects.value = applications;
+        totalItems.value = pagination['total'] ?? 0;
+      } else {
+        appSnackbar(
+          title: 'Error',
+          message: 'Failed to load applied projects',
+          snackBarState: SnackBarState.DANGER,
+        );
+      }
+    } catch (e) {
+      logE('Error loading applied projects: $e');
+      appSnackbar(
+        title: 'Error',
+        message: 'An error occurred while loading applied projects',
+        snackBarState: SnackBarState.DANGER,
+      );
+    } finally {
       isLoading.value = false;
-    });
+      _isInitialLoad = false;
+      EasyLoading.dismiss();
+    }
   }
-  
+
+  void onPageSizeChanged(int? size) {
+    if (size != null && size != limit.value) {
+      limit.value = size;
+      currentPageIndex.value = 0;
+      loadAppliedProjects();
+    }
+  }
+
+  void onPageChanged(int page) {
+    if (page != currentPageIndex.value) {
+      currentPageIndex.value = page;
+      loadAppliedProjects();
+    }
+  }
+
   double get pageCount {
-    return (appliedProjects.length / limit.value).ceil().toDouble();
+    if (totalItems.value == 0) return 1;
+    final count = (totalItems.value / limit.value).ceil().toDouble();
+    return count;
+  }
+
+  Future<void> withdrawProject(String applicationId) async {
+    try {
+      EasyLoading.show(
+        status: 'Withdrawing...',
+        maskType: EasyLoadingMaskType.black,
+      );
+      final success = await ProjectService.withdrawProject(applicationId);
+
+      if (success) {
+        appSnackbar(
+          title: 'Success',
+          message: 'Successfully withdrew from the project',
+          snackBarState: SnackBarState.SUCCESS,
+        );
+        // Refresh the applied projects list
+        loadAppliedProjects();
+      } else {
+        appSnackbar(
+          title: 'Error',
+          message: 'Failed to withdraw from the project',
+          snackBarState: SnackBarState.DANGER,
+        );
+      }
+    } catch (e) {
+      logE('Error withdrawing from project: $e');
+      appSnackbar(
+        title: 'Error',
+        message: 'An error occurred while withdrawing from the project',
+        snackBarState: SnackBarState.DANGER,
+      );
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 }

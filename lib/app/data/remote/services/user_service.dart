@@ -43,6 +43,10 @@ class UserService {
         st,
         showSnackBar: false,
       );
+      appSnackbar(
+        message: e.response?.data['message'] ?? '',
+        snackBarState: SnackBarState.DANGER,
+      );
     }
     return user;
   }
@@ -117,5 +121,4 @@ class UserService {
       return false;
     }
   }
-
 }

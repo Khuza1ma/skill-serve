@@ -1,19 +1,15 @@
-import 'package:http_parser/http_parser.dart' as http_parser;
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:flutter/foundation.dart';
-import 'package:path/path.dart' as path;
 import 'package:dio/dio.dart';
-import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../../local/user_provider.dart';
-import '../../config/logger.dart';
 
 /// DIO interceptor to add the authentication token
 InterceptorsWrapper addAuthToken() => InterceptorsWrapper(
       onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
         if (UserProvider.authToken != null) {
           options.headers.addAll(<String, dynamic>{
-            'Authorization': 'Token ${UserProvider.authToken}',
+            'Authorization': 'Bearer ${UserProvider.authToken}',
           });
         }
         handler.next(options);
@@ -115,7 +111,7 @@ class APIService {
   /// encryption keys in the backend matches with the one in frontend
   static Future<Response<Map<String, dynamic>?>?> put({
     required String path,
-    FormData? data,
+    Map<String, dynamic>? data,
     Map<String, dynamic>? params,
     bool encrypt = true,
     String? forcedBaseUrl,
@@ -157,6 +153,25 @@ class APIService {
         options: Options(headers: <String, dynamic>{
           'encrypt': encrypt,
         }),
+      );
+
+  /// DELETE rest API call
+  /// Used to delete a resource from the server
+  ///
+  /// Use [forcedBaseUrl] when you want to use a specific base URL other
+  /// than the configured one
+  ///
+  /// [params] are query parameters
+  ///
+  /// [path] is the part of the path after the base URL
+  static Future<Response<Map<String, dynamic>?>?> delete({
+    required String path,
+    Map<String, dynamic>? params,
+    String? forcedBaseUrl,
+  }) async =>
+      _dio.delete<Map<String, dynamic>?>(
+        (forcedBaseUrl ?? _baseUrl) + path,
+        queryParameters: params,
       );
 
   /// Upload file to the server. You will get the URL in the response if the

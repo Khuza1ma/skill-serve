@@ -10,10 +10,10 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/manage_project/bindings/manage_project_binding.dart';
 import '../modules/manage_project/views/manage_project_view.dart';
+import '../modules/organizer_applications/bindings/organizer_applications_binding.dart';
+import '../modules/organizer_applications/views/organizer_applications_view.dart';
 import '../modules/organizer_dashboard/bindings/organizer_dashboard_binding.dart';
 import '../modules/organizer_dashboard/views/organizer_dashboard_view.dart';
-import '../modules/projects/bindings/projects_binding.dart';
-import '../modules/projects/views/projects_view.dart';
 import '../modules/projects_details/bindings/projects_details_binding.dart';
 import '../modules/projects_details/views/projects_details_view.dart';
 import '../modules/volunteer_dashboard/bindings/volunteer_dashboard_binding.dart';
@@ -36,11 +36,6 @@ class AppPages {
       name: _Paths.VOLUNTEER_DASHBOARD,
       page: () => const VolunteerDashboardView(),
       binding: VolunteerDashboardBinding(),
-    ),
-    GetPage(
-      name: _Paths.PROJECTS,
-      page: () => const ProjectsView(),
-      binding: ProjectsBinding(),
     ),
     GetPage(
       name: _Paths.PROJECTS_DETAILS,
@@ -71,6 +66,11 @@ class AppPages {
       name: _Paths.MANAGE_PROJECT,
       page: () => const ManageProjectView(),
       binding: ManageProjectBinding(),
+    ),
+    GetPage(
+      name: _Paths.ORGANIZER_APPLICATIONS,
+      page: () => const OrganizerApplicationsView(),
+      binding: OrganizerApplicationsBinding(),
     ),
   ];
 }

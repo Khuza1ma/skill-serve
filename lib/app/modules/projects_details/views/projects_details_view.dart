@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 import '../../../constants/app_colors.dart';
-import '../../../data/config/logger.dart';
 import '../../../data/data_grid/project_details_data_grid.dart';
+import '../../../data/models/project_model.dart';
+import '../../../ui/components/app_modals.dart';
 import '../../../utils/data_grid_utils.dart';
 import '../controllers/projects_details_controller.dart';
 
@@ -15,14 +17,11 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
   Widget build(BuildContext context) {
     return Obx(
       () {
-        if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
         final projectDetailsDataSource = ProjectDetailsDataSource(
-          project: controller.selectedProject,
+          projects: controller.selectedProject,
+          onApply: (Project project) {
+            _showApplyConfirmation(project);
+          },
         );
 
         return Column(
@@ -47,27 +46,47 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    SfDataGridTheme(
-                      data: SfDataGridThemeData(
-                        headerColor: AppColors.k806dff,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8),
-                        ),
-                        child: SfDataGrid(
-                          shrinkWrapRows: true,
-                          source: projectDetailsDataSource,
-                          columnWidthMode: ColumnWidthMode.fill,
-                          headerGridLinesVisibility: GridLinesVisibility.none,
-                          gridLinesVisibility: GridLinesVisibility.horizontal,
-                          isScrollbarAlwaysShown: true,
-                          showHorizontalScrollbar: true,
-                          columns: _buildColumns(),
-                        ),
-                      ),
-                    ),
+                    controller.selectedProject.isEmpty
+                        ? Expanded(
+                            child: const Center(
+                              child: Text(
+                                'No projects available',
+                                style: TextStyle(
+                                  color: AppColors.k6C757D,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Expanded(
+                            child: SfDataGridTheme(
+                              data: SfDataGridThemeData(
+                                headerColor: AppColors.k806dff,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  topRight: Radius.circular(8),
+                                ),
+                                child: SfDataGrid(
+                                  shrinkWrapRows: true,
+                                  source: projectDetailsDataSource,
+                                  columnWidthMode: ColumnWidthMode.fill,
+                                  onQueryRowHeight: (details) {
+                                    return 65;
+                                  },
+                                  headerGridLinesVisibility:
+                                      GridLinesVisibility.none,
+                                  gridLinesVisibility:
+                                      GridLinesVisibility.horizontal,
+                                  isScrollbarAlwaysShown: true,
+                                  showHorizontalScrollbar: true,
+                                  rowsPerPage: controller.limit.value,
+                                  columns: _buildColumns(),
+                                ),
+                              ),
+                            ),
+                          ),
                     _buildDataPager(context, projectDetailsDataSource),
                   ],
                 ).paddingOnly(top: 16, right: 16, left: 16),
@@ -107,17 +126,23 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
                 availableRowsPerPage: DataGridUtils.pageSizes,
                 pageCount: controller.pageCount,
                 onRowsPerPageChanged: (int? rowsPerPage) {
-                  logW('rowsPerPage: $rowsPerPage');
-                  controller.limit(rowsPerPage);
+                  if (rowsPerPage != null) {
+                    controller.onPageSizeChanged(rowsPerPage);
+                  }
                 },
                 controller: controller.dataPagerController,
                 onPageNavigationStart: (int newPageIndex) {
-                  controller.startPageIndex(newPageIndex);
+                  controller.startPageIndex.value = newPageIndex;
+                  controller.dataPagerController.selectedPageIndex =
+                      newPageIndex;
                 },
                 onPageNavigationEnd: (int newPageIndex) {
-                  if (controller.currentPageIndex() != newPageIndex &&
-                      controller.startPageIndex() != newPageIndex) {
+                  if (controller.currentPageIndex.value != newPageIndex &&
+                      controller.startPageIndex.value != newPageIndex) {
+                    controller.dataPagerController.selectedPageIndex =
+                        newPageIndex;
                     controller.currentPageIndex.value = newPageIndex;
+                    controller.loadProjectDetails();
                   }
                 },
               ),
@@ -127,21 +152,39 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
 
   List<GridColumn> _buildColumns() {
     return [
-      _buildColumn(columnName: 'sr_no', label: 'Sr. No.', width: 90),
-      _buildColumn(columnName: 'project_id', label: 'Project ID'),
-      _buildColumn(columnName: 'title', label: 'Title'),
-      _buildColumn(columnName: 'organizer_name', label: 'Organizer'),
-      _buildColumn(columnName: 'location', label: 'Location'),
-      _buildColumn(columnName: 'description', label: 'Description'),
-      _buildColumn(columnName: 'required_skills', label: 'Required Skills'),
-      _buildColumn(columnName: 'time_commitment', label: 'Time Commitment'),
-      _buildColumn(columnName: 'start_date', label: 'Start Date'),
+      _buildColumn(columnName: 'sr_no', label: 'Sr. No.', width: 100),
+      _buildColumn(columnName: 'project_id', label: 'Project ID', width: 150),
+      _buildColumn(columnName: 'title', label: 'Title', width: 180),
+      _buildColumn(columnName: 'description', label: 'Description', width: 280),
+      _buildColumn(columnName: 'location', label: 'Location', width: 180),
       _buildColumn(
-          columnName: 'application_deadline', label: 'Application Deadline'),
-      _buildColumn(columnName: 'status', label: 'Status'),
+          columnName: 'required_skills', label: 'Required Skills', width: 210),
       _buildColumn(
-          columnName: 'assigned_volunteer_id', label: 'Assigned Volunteer ID'),
-      _buildColumn(columnName: 'created_at', label: 'Created At'),
+          columnName: 'time_commitment', label: 'Time Commitment', width: 180),
+      _buildColumn(columnName: 'start_date', label: 'Start Date', width: 160),
+      _buildColumn(
+        columnName: 'application_deadline',
+        label: 'Application Deadline',
+        width: 180,
+      ),
+      _buildColumn(columnName: 'status', label: 'Status', width: 150),
+      _buildColumn(
+        columnName: 'total_applicants',
+        label: 'Total Applicants',
+        width: 150,
+      ),
+      _buildColumn(
+        columnName: 'max_volunteer',
+        label: 'Max Volunteers',
+        width: 150,
+      ),
+      _buildColumn(
+        columnName: 'assigned_volunteer',
+        label: 'Assigned Volunteer Id',
+        width: 200,
+      ),
+      _buildColumn(columnName: 'created_at', label: 'Created At', width: 150),
+      _buildColumn(columnName: 'actions', label: 'Actions', width: 150),
     ];
   }
 
@@ -151,7 +194,7 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
     double? width,
   }) {
     return GridColumn(
-      columnWidthMode: ColumnWidthMode.fill,
+      columnWidthMode: ColumnWidthMode.fitByColumnName,
       width: width ?? double.nan,
       columnName: columnName,
       label: Container(
@@ -166,6 +209,20 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showApplyConfirmation(Project project) {
+    showCustomModal(
+      title: 'Apply Project',
+      content: 'Are you sure you want to apply to "${project.title}"?',
+      buttonTitle: "Apply",
+      onSubmit: () async {
+        Get.back();
+        controller.applyProject(project.projectId ?? '');
+      },
+      modalState: ModalState.PRIMARY,
+      alignment: Alignment.center,
     );
   }
 }
