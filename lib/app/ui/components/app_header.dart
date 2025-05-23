@@ -66,7 +66,7 @@ class AppHeader extends StatelessWidget {
                           icon: const Icon(
                             Icons.close,
                             size: 18,
-                          ),flutter clean
+                          ),
                           constraints: const BoxConstraints(),
                           padding: EdgeInsets.zero,
                           onPressed: () {
