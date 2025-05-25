@@ -23,7 +23,6 @@ class OrganizerApplicationsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Ensure initial limit is set correctly
     limit.value = DataGridUtils.pageSizes.first;
     loadApplications();
   }

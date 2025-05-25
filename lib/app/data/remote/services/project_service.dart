@@ -34,14 +34,12 @@ class ProjectService {
   static Future<Map<String, dynamic>?> fetchProjects({
     int? skip,
     int? limit,
+    int? page,
   }) async {
     try {
       final Response<Map<String, dynamic>?>? response = await APIService.get(
         path: 'projects',
-        params: {
-          'skip': skip,
-          'limit': limit,
-        },
+        params: {'skip': skip, 'limit': limit, 'page': page},
       );
 
       if (response?.isOk ?? false) {

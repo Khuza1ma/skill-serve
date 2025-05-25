@@ -1,12 +1,13 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:get/get.dart';
 
-import '../../../data/config/logger.dart';
-import '../../../data/models/applied_project_model.dart';
+import '../../volunteer_dashboard/controllers/volunteer_dashboard_controller.dart';
 import '../../../data/remote/services/project_service.dart';
+import '../../../data/models/applied_project_model.dart';
 import '../../../ui/components/app_snackbar.dart';
 import '../../../utils/data_grid_utils.dart';
+import '../../../data/config/logger.dart';
 
 class AppliedProjectsController extends GetxController {
   DataPagerController dataPagerController = DataPagerController();
@@ -103,6 +104,7 @@ class AppliedProjectsController extends GetxController {
           snackBarState: SnackBarState.SUCCESS,
         );
         // Refresh the applied projects list
+        Get.find<VolunteerDashboardController>().loadDashboardData();
         loadAppliedProjects();
       } else {
         appSnackbar(

@@ -7,6 +7,7 @@ import '../../../data/models/project_model.dart';
 import '../../../data/remote/services/project_service.dart';
 import '../../../ui/components/app_snackbar.dart';
 import '../../../utils/data_grid_utils.dart';
+import '../../volunteer_dashboard/controllers/volunteer_dashboard_controller.dart';
 
 class ProjectsDetailsController extends GetxController {
   DataPagerController dataPagerController = DataPagerController();
@@ -38,6 +39,7 @@ class ProjectsDetailsController extends GetxController {
       final result = await ProjectService.fetchProjects(
         skip: currentPageIndex.value * limit.value,
         limit: limit.value,
+        page: currentPageIndex.value + 1,
       );
 
       if (result != null) {
@@ -97,6 +99,7 @@ class ProjectsDetailsController extends GetxController {
       final success = await ProjectService.applyProject(projectId);
 
       if (success) {
+        Get.find<VolunteerDashboardController>().loadDashboardData();
         appSnackbar(
           title: 'Success',
           message: 'Successfully applied for the project',

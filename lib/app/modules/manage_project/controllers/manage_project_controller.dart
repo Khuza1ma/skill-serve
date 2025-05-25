@@ -65,6 +65,7 @@ class ManageProjectController extends GetxController {
       final result = await ProjectService.fetchProjects(
         skip: skip,
         limit: limit,
+        page: currentPageIndex.value + 1,
       );
 
       if (result != null &&
