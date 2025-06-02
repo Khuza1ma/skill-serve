@@ -51,7 +51,7 @@ class AppliedProjectsController extends GetxController {
         appSnackbar(
           title: 'Error',
           message: 'Failed to load applied projects',
-          snackBarState: SnackBarState.DANGER,
+          snackBarState: SnackBarState.danger,
         );
       }
     } catch (e) {
@@ -59,7 +59,7 @@ class AppliedProjectsController extends GetxController {
       appSnackbar(
         title: 'Error',
         message: 'An error occurred while loading applied projects',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
     } finally {
       isLoading.value = false;
@@ -101,7 +101,7 @@ class AppliedProjectsController extends GetxController {
         appSnackbar(
           title: 'Success',
           message: 'Successfully withdrew from the project',
-          snackBarState: SnackBarState.SUCCESS,
+          snackBarState: SnackBarState.success,
         );
         // Refresh the applied projects list
         Get.find<VolunteerDashboardController>().loadDashboardData();
@@ -110,7 +110,7 @@ class AppliedProjectsController extends GetxController {
         appSnackbar(
           title: 'Error',
           message: 'Failed to withdraw from the project',
-          snackBarState: SnackBarState.DANGER,
+          snackBarState: SnackBarState.danger,
         );
       }
     } catch (e) {
@@ -118,7 +118,7 @@ class AppliedProjectsController extends GetxController {
       appSnackbar(
         title: 'Error',
         message: 'An error occurred while withdrawing from the project',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
     } finally {
       EasyLoading.dismiss();

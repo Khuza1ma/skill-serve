@@ -52,7 +52,7 @@ class ProjectsDetailsController extends GetxController {
         appSnackbar(
           title: 'Error',
           message: 'Failed to load project details',
-          snackBarState: SnackBarState.DANGER,
+          snackBarState: SnackBarState.danger,
         );
       }
     } catch (e) {
@@ -60,7 +60,7 @@ class ProjectsDetailsController extends GetxController {
       appSnackbar(
         title: 'Error',
         message: 'An error occurred while loading project details',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
     } finally {
       isLoading.value = false;
@@ -103,7 +103,7 @@ class ProjectsDetailsController extends GetxController {
         appSnackbar(
           title: 'Success',
           message: 'Successfully applied for the project',
-          snackBarState: SnackBarState.SUCCESS,
+          snackBarState: SnackBarState.success,
         );
         loadProjectDetails();
       }
@@ -112,7 +112,7 @@ class ProjectsDetailsController extends GetxController {
       appSnackbar(
         title: 'Error',
         message: 'An error occurred while applying for the project',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
     } finally {
       EasyLoading.dismiss();

@@ -140,7 +140,7 @@ class AppHeader extends StatelessWidget {
                   Get.back();
                   Get.offAllNamed(Routes.LOGIN);
                 },
-                modalState: ModalState.DANGER,
+                modalState: ModalState.danger,
                 alignment: Alignment.center,
               );
             }

@@ -11,7 +11,7 @@ void showCustomModal({
   Function? onCancel,
   Widget? child,
   String? buttonTitle,
-  ModalState modalState = ModalState.PRIMARY,
+  ModalState modalState = ModalState.primary,
   AlignmentGeometry? alignment,
   final bool showButtons = true,
 }) {
@@ -99,21 +99,21 @@ void showCustomModal({
   );
 }
 
-enum ModalState { PRIMARY, SECONDARY, SUCCESS, DANGER, WARNING, INFO }
+enum ModalState { primary, secondary, success, danger, warning, info }
 
 Color getModalStateColor(ModalState? snackBarState) {
   switch (snackBarState) {
-    case ModalState.PRIMARY:
+    case ModalState.primary:
       return AppColors.k806dff;
-    case ModalState.SECONDARY:
+    case ModalState.secondary:
       return AppColors.k6C757D;
-    case ModalState.SUCCESS:
+    case ModalState.success:
       return AppColors.k1CBB8C;
-    case ModalState.DANGER:
+    case ModalState.danger:
       return AppColors.kDC3545;
-    case ModalState.WARNING:
+    case ModalState.warning:
       return AppColors.kFCB92C;
-    case ModalState.INFO:
+    case ModalState.info:
       return AppColors.k17A2B8;
     default:
       return Colors.white;

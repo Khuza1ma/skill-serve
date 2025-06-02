@@ -45,7 +45,7 @@ class CreateProjectController extends GetxController {
         appSnackbar(
           title: 'Error',
           message: 'Please add at least one required skill.',
-          snackBarState: SnackBarState.WARNING,
+          snackBarState: SnackBarState.warning,
         );
         return;
       }
@@ -76,7 +76,7 @@ class CreateProjectController extends GetxController {
           appSnackbar(
             title: 'Success',
             message: 'Project created successfully!',
-            snackBarState: SnackBarState.SUCCESS,
+            snackBarState: SnackBarState.success,
           );
           Get.find<OrganizerDashboardController>().loadDashboardData();
           formKey.currentState?.reset();
@@ -85,14 +85,14 @@ class CreateProjectController extends GetxController {
           appSnackbar(
             title: 'Error',
             message: 'Failed to create project. Please try again.',
-            snackBarState: SnackBarState.DANGER,
+            snackBarState: SnackBarState.danger,
           );
         }
       } catch (e, st) {
         appSnackbar(
           title: 'Error',
           message: 'Failed to create project: $e',
-          snackBarState: SnackBarState.DANGER,
+          snackBarState: SnackBarState.danger,
         );
         logE('Error creating project: $e $st');
       } finally {

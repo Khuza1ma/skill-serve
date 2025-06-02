@@ -39,14 +39,14 @@ class OrganizerDashboardController extends GetxController {
         appSnackbar(
           title: 'Error',
           message: 'Failed to load dashboard data',
-          snackBarState: SnackBarState.DANGER,
+          snackBarState: SnackBarState.danger,
         );
       }
     } catch (e) {
       appSnackbar(
         title: 'Error',
         message: 'An error occurred while loading dashboard data',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
     } finally {
       EasyLoading.dismiss();

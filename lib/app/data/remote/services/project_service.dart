@@ -137,7 +137,7 @@ class ProjectService {
       appSnackbar(
         title: 'Error',
         message: e.response?.data['message'] ?? 'Failed to apply for project',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
       return false;
     }
@@ -290,7 +290,7 @@ class ProjectService {
       appSnackbar(
         title: 'Error',
         message: e.response?.data['message'] ?? 'Failed to manage application',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
       return false;
     }

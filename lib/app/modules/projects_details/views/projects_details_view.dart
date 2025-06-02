@@ -221,7 +221,7 @@ class ProjectsDetailsView extends GetView<ProjectsDetailsController> {
         Get.back();
         controller.applyProject(project.projectId ?? '');
       },
-      modalState: ModalState.PRIMARY,
+      modalState: ModalState.primary,
       alignment: Alignment.center,
     );
   }

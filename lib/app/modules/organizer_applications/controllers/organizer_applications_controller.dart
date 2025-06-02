@@ -53,7 +53,7 @@ class OrganizerApplicationsController extends GetxController {
         appSnackbar(
           title: 'Error',
           message: 'Failed to load applications',
-          snackBarState: SnackBarState.DANGER,
+          snackBarState: SnackBarState.danger,
         );
       }
     } catch (e) {
@@ -61,7 +61,7 @@ class OrganizerApplicationsController extends GetxController {
       appSnackbar(
         title: 'Error',
         message: 'An error occurred while loading applications',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
     } finally {
       isLoading.value = false;
@@ -107,7 +107,7 @@ class OrganizerApplicationsController extends GetxController {
       if (result) {
         appSnackbar(
           message: 'Application $status successfully',
-          snackBarState: SnackBarState.SUCCESS,
+          snackBarState: SnackBarState.success,
         );
         loadApplications();
         Get.find<OrganizerDashboardController>().loadDashboardData();
@@ -117,7 +117,7 @@ class OrganizerApplicationsController extends GetxController {
       appSnackbar(
         title: 'Error',
         message: 'An error occurred while managing the application',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
     } finally {
       EasyLoading.dismiss();

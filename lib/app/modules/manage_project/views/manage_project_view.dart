@@ -537,7 +537,7 @@ class ManageProjectView extends GetView<ManageProjectController> {
         Get.back();
         controller.deleteProject(project.projectId ?? '');
       },
-      modalState: ModalState.DANGER,
+      modalState: ModalState.danger,
       alignment: Alignment.center,
     );
   }

@@ -29,7 +29,7 @@ class LoginController extends GetxController {
           logWTF(user);
           appSnackbar(
             message: 'Login successful',
-            snackBarState: SnackBarState.SUCCESS,
+            snackBarState: SnackBarState.success,
           );
           await Get.offAllNamed(Routes.HOME);
         } else {
@@ -55,14 +55,14 @@ class LoginController extends GetxController {
           if (isRegistered) {
             appSnackbar(
               message: 'Registration successful',
-              snackBarState: SnackBarState.SUCCESS,
+              snackBarState: SnackBarState.success,
             );
             await Get.offAllNamed(Routes.HOME);
           }
         } else {
           appSnackbar(
             message: 'Password and confirm password do not match',
-            snackBarState: SnackBarState.DANGER,
+            snackBarState: SnackBarState.danger,
           );
         }
       }

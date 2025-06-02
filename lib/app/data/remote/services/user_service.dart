@@ -45,7 +45,7 @@ class UserService {
       );
       appSnackbar(
         message: e.response?.data['message'] ?? '',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
     }
     return user;
@@ -93,7 +93,7 @@ class UserService {
       appSnackbar(
         title: 'Registration failed',
         message: '${e.response?.data['message']}',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
       return false;
     }
@@ -116,7 +116,7 @@ class UserService {
       appSnackbar(
         title: 'Logout failed',
         message: '${e.response?.data['message']}',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
       return false;
     }

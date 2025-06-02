@@ -185,7 +185,7 @@ class ManageProjectController extends GetxController {
         appSnackbar(
           title: 'Success',
           message: 'Project updated successfully',
-          snackBarState: SnackBarState.SUCCESS,
+          snackBarState: SnackBarState.success,
         );
       } else {
         throw Exception('Failed to update project');
@@ -195,7 +195,7 @@ class ManageProjectController extends GetxController {
       appSnackbar(
         title: 'Error',
         message: 'Failed to update project: $e',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
     } finally {
       EasyLoading.dismiss();
@@ -215,7 +215,7 @@ class ManageProjectController extends GetxController {
         appSnackbar(
           title: 'Success',
           message: 'Project deleted successfully',
-          snackBarState: SnackBarState.SUCCESS,
+          snackBarState: SnackBarState.success,
         );
       } else {
         throw Exception('Failed to delete project');
@@ -225,7 +225,7 @@ class ManageProjectController extends GetxController {
       appSnackbar(
         title: 'Error',
         message: 'Failed to delete project: $e',
-        snackBarState: SnackBarState.DANGER,
+        snackBarState: SnackBarState.danger,
       );
     } finally {
       EasyLoading.dismiss();

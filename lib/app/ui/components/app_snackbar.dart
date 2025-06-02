@@ -36,21 +36,21 @@ void appSnackbar({
   });
 }
 
-enum SnackBarState { PRIMARY, SECONDARY, SUCCESS, DANGER, WARNING, INFO }
+enum SnackBarState { primary, secondary, success, danger, warning, info }
 
 Color getSnackBarColor(SnackBarState? snackBarState) {
   switch (snackBarState) {
-    case SnackBarState.PRIMARY:
+    case SnackBarState.primary:
       return AppColors.k3B7DDD;
-    case SnackBarState.SECONDARY:
+    case SnackBarState.secondary:
       return AppColors.k6C757D;
-    case SnackBarState.SUCCESS:
+    case SnackBarState.success:
       return AppColors.k1CBB8C;
-    case SnackBarState.DANGER:
+    case SnackBarState.danger:
       return AppColors.kDC3545;
-    case SnackBarState.WARNING:
+    case SnackBarState.warning:
       return AppColors.kFCB92C;
-    case SnackBarState.INFO:
+    case SnackBarState.info:
       return AppColors.k17A2B8;
     default:
       return Colors.white;

@@ -227,7 +227,7 @@ class OrganizerApplicationsView
           );
         }
       },
-      modalState: title == 'Accept' ? ModalState.SUCCESS : ModalState.DANGER,
+      modalState: title == 'Accept' ? ModalState.success : ModalState.danger,
       alignment: Alignment.center,
     );
   }
