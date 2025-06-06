@@ -1,14 +1,15 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:get/get.dart';
 
-import 'app/constants/app_colors.dart';
 import 'app/data/config/initialize_app.dart';
+import 'app/middleware/auth_middleware.dart';
 import 'app/data/local/user_provider.dart';
+import 'app/constants/app_colors.dart';
 import 'app/routes/app_pages.dart';
 
 Future<void> main() async {
@@ -49,7 +50,17 @@ class MyApp extends StatelessWidget {
         colorSchemeSeed: AppColors.k806dff,
       ),
       initialRoute: UserProvider.initialRoute,
-      getPages: AppPages.routes,
+      getPages: AppPages.routes.map(
+        (e) {
+          return e.name == (Routes.LOGIN)
+              ? e
+              : e.copy(
+                  middlewares: [
+                    RouteMiddleWare(),
+                  ],
+                );
+        },
+      ).toList(),
       defaultTransition: Transition.fadeIn,
       builder: EasyLoading.init(),
     );
