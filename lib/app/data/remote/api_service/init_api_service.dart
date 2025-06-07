@@ -20,7 +20,7 @@ InterceptorsWrapper addAuthToken() => InterceptorsWrapper(
 class APIService {
   static final Dio _dio = Dio();
 
-  static const String _baseUrl = 'http://localhost:5000/api/';
+  // static const String _baseUrl = 'http://13.60.208.221:5000/api/';
 
   /// Initialize the API service
   static void initialize() {
@@ -57,7 +57,7 @@ class APIService {
     Options? options,
   }) async =>
       _dio.get<T>(
-        (forcedBaseUrl ?? _baseUrl) + path,
+        '/api/' + path,
         queryParameters: params,
         options: options ??
             Options(headers: <String, dynamic>{
@@ -87,7 +87,7 @@ class APIService {
     String? forcedBaseUrl,
   }) async =>
       _dio.post<Map<String, dynamic>?>(
-        (forcedBaseUrl ?? _baseUrl) + path,
+        '/api/' + path,
         data: data,
         queryParameters: params,
         options: Options(headers: <String, dynamic>{
@@ -117,7 +117,7 @@ class APIService {
     String? forcedBaseUrl,
   }) async =>
       _dio.put<Map<String, dynamic>?>(
-        (forcedBaseUrl ?? _baseUrl) + path,
+        '/api/' + path,
         data: data,
         queryParameters: params,
         options: Options(headers: <String, dynamic>{
@@ -147,7 +147,7 @@ class APIService {
     String? forcedBaseUrl,
   }) async =>
       _dio.patch<Map<String, dynamic>?>(
-        (forcedBaseUrl ?? _baseUrl) + path,
+        '/api/' + path,
         data: data,
         queryParameters: params,
         options: Options(headers: <String, dynamic>{
@@ -170,7 +170,7 @@ class APIService {
     String? forcedBaseUrl,
   }) async =>
       _dio.delete<Map<String, dynamic>?>(
-        (forcedBaseUrl ?? _baseUrl) + path,
+        '/api/' + path,
         queryParameters: params,
       );
 
