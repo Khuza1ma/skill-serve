@@ -23,7 +23,7 @@ A modern Flutter web application for skill management and services.
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/Khuza1ma/skill-serve.git
+git clone [https://github.com/Khuza1ma/skill-serve.git]
 cd skill_serve
 ```
 
