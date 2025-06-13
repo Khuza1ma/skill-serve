@@ -57,7 +57,7 @@ class APIService {
     Options? options,
   }) async =>
       _dio.get<T>(
-        '/api/' + path,
+        '/api/$path',
         queryParameters: params,
         options: options ??
             Options(headers: <String, dynamic>{
@@ -87,7 +87,7 @@ class APIService {
     String? forcedBaseUrl,
   }) async =>
       _dio.post<Map<String, dynamic>?>(
-        '/api/' + path,
+        '/api/$path',
         data: data,
         queryParameters: params,
         options: Options(headers: <String, dynamic>{
@@ -117,7 +117,7 @@ class APIService {
     String? forcedBaseUrl,
   }) async =>
       _dio.put<Map<String, dynamic>?>(
-        '/api/' + path,
+        '/api/$path',
         data: data,
         queryParameters: params,
         options: Options(headers: <String, dynamic>{
@@ -147,7 +147,7 @@ class APIService {
     String? forcedBaseUrl,
   }) async =>
       _dio.patch<Map<String, dynamic>?>(
-        '/api/' + path,
+        '/api/$path',
         data: data,
         queryParameters: params,
         options: Options(headers: <String, dynamic>{
@@ -170,7 +170,7 @@ class APIService {
     String? forcedBaseUrl,
   }) async =>
       _dio.delete<Map<String, dynamic>?>(
-        '/api/' + path,
+        '/api/$path',
         queryParameters: params,
       );
 
